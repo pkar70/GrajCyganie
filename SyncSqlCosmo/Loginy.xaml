@@ -1,0 +1,83 @@
+﻿<Page
+    x:Class="SyncSqlCosmo.Loginy"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:SyncSqlCosmo"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Loaded="Page_Loaded">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" /> <!-- tytul -->
+            <RowDefinition Height="Auto" /> <!-- formatka nowego -->
+            <RowDefinition Height="*" /> <!-- lista -->
+        </Grid.RowDefinitions>
+
+        <TextBlock FontSize="24" HorizontalAlignment="Center" Text="Zarządzanie loginami" />
+
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <ToggleButton HorizontalAlignment="Right" Content="+" Click="uiShowAdd_Click" Name="uiShowAdd"/>
+            <Grid Name="uiNewItem" Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <TextBlock Text="User name: " VerticalAlignment="Center" Grid.Row="0" Grid.Column="0" />
+                <TextBox Name="uiUserName" Grid.Row="0" Grid.Column="1" MaxLength="90" />
+                <TextBlock Text="Limit path: " VerticalAlignment="Center" Grid.Row="1" Grid.Column="0" />
+                <TextBox Name="uiLimitPath" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Stretch"  />
+                <ToggleSwitch Name="uiAlsoPriv" OnContent="Also priv" OffContent="only public" Grid.Row="2" Grid.Column="0" />
+                <ToggleSwitch Name="uiAlsoTajne" OnContent="Also Tajne" OffContent="bez Tajne" Grid.Row="2" Grid.Column="1" />
+                <Button Content="Add!" HorizontalAlignment="Center" Grid.Row="3" Grid.Column="1" Margin="5,5,20,5" Click="uiAdd_Click" />
+            </Grid>
+
+        </Grid>
+
+        <ListView Name="uiList" HorizontalContentAlignment="Stretch" Grid.Row="2" BorderBrush="blue" BorderThickness="2">
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="HorizontalContentAlignment"  Value="Stretch"/>
+                    <Setter Property="MinHeight" Value="0"/>
+                </Style>
+            </ListView.ItemContainerStyle>
+
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Grid HorizontalAlignment="Stretch" Margin="0,5,0,0" BorderBrush="blue" BorderThickness="1" Padding="2,2,2,2">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <TextBox Text="{Binding sUserName, Mode=OneWay }" VerticalAlignment="Center" IsReadOnly="True" Margin="0,0,50,0"/> <!-- Box readonly - zeby było Copy z tego-->
+                        <Button HorizontalAlignment="Right" Content="DEL" Click="uiDelItem_Click" />
+                        
+                        <TextBox Text="{Binding sLimitPath, Mode=OneWay }" Grid.Row="1" IsReadOnly="True"/>
+
+                        <ToggleSwitch Name="uiAlsoPriv" OnContent="Also priv" OffContent="only public" Grid.Row="2" HorizontalAlignment="Left" IsOn="{Binding bAlsoPriv, Mode=OneWay }" IsEnabled="False" />
+                        <ToggleSwitch Name="uiAlsoTajne" OnContent="Also Tajne" OffContent="bez Tajne" Grid.Row="2" HorizontalAlignment="Right" IsOn="{Binding bAlsoTajne, Mode=OneWay }" IsEnabled="False"/>
+
+                    </Grid>
+
+                </DataTemplate>
+            </ListView.ItemTemplate>
+
+        </ListView>
+
+
+    </Grid>
+</Page>

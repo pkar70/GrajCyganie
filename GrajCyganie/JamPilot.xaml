@@ -1,0 +1,56 @@
+﻿<Page
+    x:Class="GrajCyganie.JamPilot"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:GrajCyganie"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Loaded="Page_Loaded" Unloaded="Page_Unloaded">
+
+    <Grid Margin="5,5,5,5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <TextBlock FontSize="18" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,10" Text="Jam pilot..." />
+
+        <ListView Grid.Row="1" x:Name="uiListItems" Margin="2,5,5,5" HorizontalContentAlignment="Stretch"  >
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="HorizontalContentAlignment"  Value="Stretch"/>
+                </Style>
+            </ListView.ItemContainerStyle>
+
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Grid  HorizontalAlignment="Stretch" Margin="2,5,2,5" BorderThickness="2" BorderBrush="Blue" >
+<!--                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="8*"/>
+                                <ColumnDefinition Width="1*"/>
+                                <ColumnDefinition Width="1*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock FontSize="20" Grid.Column="0" Text="{Binding DisplayName, Mode=OneWay }"  />
+                            <CheckBox Grid.Row="0" Grid.Column="1" IsChecked="{Binding IsAvailableByProximity, Mode=OneWay}"   />
+                            <TextBlock Grid.Row="0" Grid.Column="2" Text="{Binding Status, Mode=OneWay}"   />
+                            <TextBlock Grid.Row="1" Grid.ColumnSpan="3" Text="{Binding Id, Mode=OneWay }" />
+-->
+                        <TextBlock FontSize="24" Text="{Binding DisplayName, Mode=OneWay }"  />
+                        <Grid.ContextFlyout>
+                                <MenuFlyout>
+                                    <MenuFlyoutItem Text="Next" Click="uiGoNext_Click" />
+                                    <MenuFlyoutItem Text="Pause/resume" Click="uiPause_Click"/>
+                                <MenuFlyoutItem Text="Details/speak" Click="uiGetDetails_Click" />
+                            </MenuFlyout>
+                            </Grid.ContextFlyout>
+                        </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+    </Grid>
+</Page>

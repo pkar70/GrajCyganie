@@ -1,6 +1,17 @@
 ﻿
 ' start: 2021.10.17
 
+' od strony tejże app powinno być:
+' filmy         - TAK, filmy oraz aktorzy (oddzielne z main)
+' biblioteka    - NIE, bo to jest ograniczone wyszukiwanie, więc oddzielnego nie trzeba
+' muzyka        - TAK, bo wyszukiwanie albumów etc., sprawdzanie przy ściaganiu czy warto ściągać
+' Graj Cyganie  - NIE, bo od tego jest inna app
+' wyszukiwarka plikow - TAK
+' browser       - chyba nie korzystam
+' browser priv  - chyba nie korzystam
+' Tworzenie linkow albumowych   - w ogole z tego nie korzystam, poza tym jest app fotoramka ?
+' podglad logow - ewentualnie
+
 Partial Public NotInheritable Class MainPage
     Inherits Page
 
@@ -12,25 +23,13 @@ Partial Public NotInheritable Class MainPage
         ProgRingInit(True, False)
 
         ProgRingShow(True)
-        Dim sMsg As String = CosmosLogin()
+        Dim sMsg As String = CosmosConnect(True)
         ProgRingShow(False)
         If Not String.IsNullOrEmpty(sMsg) Then Await DialogBoxAsync(sMsg)
 
     End Sub
 
-    Private Function CosmosLogin() As String
-
-        If App.gmCosmosClient Is Nothing Then
-            App.gmCosmosClient = New Microsoft.Azure.Cosmos.CosmosClient(cosmosEndpointUri, cosmosPrimaryKeyRW)
-        End If
-        If App.gmCosmosClient Is Nothing Then Return "Cannot create dbase client"
-
-        If App.gmCosmosDatabase Is Nothing Then
-            App.gmCosmosDatabase = App.gmCosmosClient.GetDatabase("PKARweb")
-        End If
-
-        If App.gmCosmosDatabase Is Nothing Then Return "Cannot connect to dbase"
-
-        Return ""
-    End Function
+    Private Sub uiGoSearch_Click(sender As Object, e As RoutedEventArgs)
+        Me.Frame.Navigate(GetType(SzukajPliku))
+    End Sub
 End Class

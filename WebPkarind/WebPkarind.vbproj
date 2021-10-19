@@ -193,19 +193,12 @@
     <Content Include="static.html" />
     <Content Include="base64encdec.inc" />
     <Content Include="buksy.aspx" />
-    <Content Include="cygan-shared.inc" />
     <Content Include="ksiegozbior.aspx" />
     <Content Include="spisek.aspx" />
     <Content Include="ThirdPartyNotice.txt" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="base64encdec.inc.designer.vb">
-      <DependentUpon>base64encdec.inc.vb</DependentUpon>
-    </Compile>
-    <Compile Include="base64encdec.inc.vb">
-      <SubType>ASPXCodebehind</SubType>
-    </Compile>
     <Compile Include="buksy.aspx.designer.vb">
       <DependentUpon>buksy.aspx</DependentUpon>
     </Compile>
@@ -213,12 +206,7 @@
       <DependentUpon>buksy.aspx</DependentUpon>
       <SubType>ASPXCodebehind</SubType>
     </Compile>
-    <Compile Include="cygan-shared.inc.designer.vb">
-      <DependentUpon>cygan-shared.inc.vb</DependentUpon>
-    </Compile>
-    <Compile Include="cygan-shared.inc.vb">
-      <SubType>ASPXCodebehind</SubType>
-    </Compile>
+    <Compile Include="cosmoDBweb.vb" />
     <Compile Include="ksiegozbior.aspx.designer.vb">
       <DependentUpon>ksiegozbior.aspx</DependentUpon>
     </Compile>
@@ -226,7 +214,7 @@
       <DependentUpon>ksiegozbior.aspx</DependentUpon>
       <SubType>ASPXCodebehind</SubType>
     </Compile>
-    <Compile Include="modulek.vb" />
+    <Compile Include="cosmoDB.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
@@ -247,6 +235,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="pswd.vb" />
+    <Compile Include="modulek.vb" />
     <Compile Include="spisek.aspx.designer.vb">
       <DependentUpon>spisek.aspx</DependentUpon>
     </Compile>
@@ -254,6 +243,7 @@
       <DependentUpon>spisek.aspx</DependentUpon>
       <SubType>ASPXCodebehind</SubType>
     </Compile>
+    <Compile Include="typki.vb" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="My Project\Resources.resx">

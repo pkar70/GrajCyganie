@@ -11,6 +11,13 @@
 
     <div runat="server" id="loggedOK">
         <p>Seems like logged-in</p>
+        <ul>
+            <li><a href="ksiegozbior.aspx">biblioteka</a></li>
+            <!--
+                <li><a href=storefiles1.asp>wyszukiwarka plikow</a>
+<li><a href=browser.asp?resetbase=1>browser</a>
+                -->
+        </ul>
     </div>
 
     <div runat="server" id="loggedError">

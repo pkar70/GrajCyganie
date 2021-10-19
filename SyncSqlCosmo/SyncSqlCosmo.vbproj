@@ -130,6 +130,7 @@
     <Compile Include="App.xaml.vb">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="cosmoDB.vb" />
     <Compile Include="Loginy.xaml.vb">
       <DependentUpon>Loginy.xaml</DependentUpon>
     </Compile>
@@ -139,6 +140,10 @@
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="pkarModule.vb" />
     <Compile Include="pswd.vb" />
+    <Compile Include="SzukajPliku.xaml.vb">
+      <DependentUpon>SzukajPliku.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="typki.vb" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
@@ -167,6 +172,10 @@
     <Page Include="MainPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="SzukajPliku.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>

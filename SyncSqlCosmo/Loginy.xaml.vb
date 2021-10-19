@@ -4,7 +4,6 @@
 Public NotInheritable Class Loginy
     Inherits Page
 
-    Private mCosmosLoginContainer As Microsoft.Azure.Cosmos.Container = Nothing
     Private mLoginy As New List(Of oneLogin)
 
     Private Async Sub Page_Loaded(sender As Object, e As RoutedEventArgs)
@@ -13,6 +12,12 @@ Public NotInheritable Class Loginy
         uiNewItem.Visibility = Visibility.Collapsed
 
         ProgRingShow(True)
+        Dim sError As String = CosmosConnectLoginsy()
+        If sError <> "" Then
+            DialogBox(sError)
+            Return
+        End If
+
         Dim sMsg As String = Await LoadFromCosmos()
         ProgRingShow(False)
         If sMsg <> "" Then
@@ -22,6 +27,7 @@ Public NotInheritable Class Loginy
 
         DialogBox("Read " & mLoginy.Count & " logins")
         uiList.ItemsSource = mLoginy
+
     End Sub
 
     Private Async Sub uiAdd_Click(sender As Object, e As RoutedEventArgs)
@@ -39,6 +45,7 @@ Public NotInheritable Class Loginy
             End If
         Next
 
+        Dim mCosmosLoginContainer As Microsoft.Azure.Cosmos.Container = CosmosGetTableContainer("loginsy")
         If mCosmosLoginContainer Is Nothing Then
             DialogBox("container is null")
             Return
@@ -49,6 +56,7 @@ Public NotInheritable Class Loginy
         oNew.sLimitPath = uiLimitPath.Text
         oNew.bAlsoPriv = uiAlsoPriv.IsOn
         oNew.bAlsoTajne = uiAlsoTajne.IsOn
+        oNew.bNoLinks = uiNoLinks.IsOn
         oNew.id = oNew.sUserName
 
         ' dodaj do bazy Cosmos
@@ -69,6 +77,7 @@ Public NotInheritable Class Loginy
 
     Private Sub uiDelItem_Click(sender As Object, e As RoutedEventArgs)
         ' odejmowanie danych
+        DialogBox("nie umiem - i może nigdy nie będę umieć")
     End Sub
 
     Private Sub uiShowAdd_Click(sender As Object, e As RoutedEventArgs)
@@ -81,18 +90,15 @@ Public NotInheritable Class Loginy
 
     Private Async Function LoadFromCosmos() As Task(Of String)
         ' zakładam, że MainPage zrobiła klienta
-        If App.gmCosmosDatabase Is Nothing Then Return "Cannot connect to dbase"
 
-        If mCosmosLoginContainer Is Nothing Then
-            mCosmosLoginContainer = App.gmCosmosDatabase.GetContainer("loginsy")
-        End If
-
-        If mCosmosLoginContainer Is Nothing Then Return "cannot get container"
+        Dim mCosmosLoginContainer As Microsoft.Azure.Cosmos.Container = CosmosGetTableContainer("loginsy")
+        If mCosmosLoginContainer Is Nothing Then Return "mCosmosLoginContainer is null"
 
         Dim sqlQueryText As String = "SELECT * FROM c"
-        Dim sqlQueryDef As New Microsoft.Azure.Cosmos.QueryDefinition(sqlQueryText)
+        ' Dim sqlQueryDef As New Microsoft.Azure.Cosmos.QueryDefinition(sqlQueryText)
 
-        Dim oIterator As Microsoft.Azure.Cosmos.FeedIterator(Of oneLogin) = mCosmosLoginContainer.GetItemQueryIterator(Of oneLogin)(sqlQueryDef)
+        Dim oIterator As Microsoft.Azure.Cosmos.FeedIterator(Of oneLogin) =
+            mCosmosLoginContainer.GetItemQueryIterator(Of oneLogin)(sqlQueryText)
 
         While oIterator.HasMoreResults
             Dim currentResultSet As Microsoft.Azure.Cosmos.FeedResponse(Of oneLogin) = Await oIterator.ReadNextAsync()
@@ -102,16 +108,31 @@ Public NotInheritable Class Loginy
             Next
         End While
 
+        oIterator.Dispose()
+
+        'Dim sError As String = CosmosConnectLoginsy()
+        'If sError <> "" Then Return sError
+
+
+        'Dim mCosmosLoginContainer As Microsoft.Azure.Cosmos.Container = Nothing
+
+        'Dim sqlQueryText As String = "SELECT * FROM c"
+        'Dim sqlQueryDef As New Microsoft.Azure.Cosmos.QueryDefinition(sqlQueryText)
+
+        'Dim oIterator As Microsoft.Azure.Cosmos.FeedIterator(Of Object) = mCosmosLoginContainer.GetItemQueryIterator(Of Object)(sqlQueryText)
+
+        'While oIterator.HasMoreResults
+        '    Dim currentResultSet As Microsoft.Azure.Cosmos.FeedResponse(Of oneLogin) = Await oIterator.ReadNextAsync()
+
+        '    For Each oItem As oneLogin In currentResultSet
+        '        mLoginy.Add(oItem)
+        '    Next
+        'End While
+
         Return ""
     End Function
 
 End Class
 
-Public Class oneLogin
-    Public Property id As String
-    Public Property sUserName As String
-    Public Property sLimitPath As String
-    Public Property bAlsoPriv As Boolean
-    Public Property bAlsoTajne As Boolean
-End Class
+
 

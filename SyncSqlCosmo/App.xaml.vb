@@ -130,7 +130,4 @@ Partial NotInheritable Class App
         Return ""
     End Function
 
-    Public Shared gmCosmosClient As Microsoft.Azure.Cosmos.CosmosClient = Nothing
-    Public Shared gmCosmosDatabase As Microsoft.Azure.Cosmos.Database = Nothing
-
 End Class

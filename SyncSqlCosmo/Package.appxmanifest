@@ -5,8 +5,9 @@
   xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest"
   xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
     xmlns:uap3="http://schemas.microsoft.com/appx/manifest/uap/windows10/3"
-  xmlns:uap5="http://schemas.microsoft.com/appx/manifest/uap/windows10/5" 
-  IgnorableNamespaces="uap mp uap3 uap5">
+  xmlns:uap5="http://schemas.microsoft.com/appx/manifest/uap/windows10/5"
+  xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
+  IgnorableNamespaces="uap mp uap3 uap5 rescap">
 
   <Identity
     Name="ea06eeb3-08b0-4571-89f9-2ec6299f5790"
@@ -61,5 +62,8 @@
 
   <Capabilities>
     <Capability Name="internetClient" />
+    <uap:Capability Name="removableStorage"/>
+    <rescap:Capability Name="broadFileSystemAccess" />
+    <Capability Name="privateNetworkClientServer"/>
   </Capabilities>
 </Package>

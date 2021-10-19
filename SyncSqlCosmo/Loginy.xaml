@@ -27,6 +27,7 @@
             <Grid Name="uiNewItem" Grid.Row="1">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
@@ -36,12 +37,13 @@
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <TextBlock Text="User name: " VerticalAlignment="Center" Grid.Row="0" Grid.Column="0" />
-                <TextBox Name="uiUserName" Grid.Row="0" Grid.Column="1" MaxLength="90" />
+                <TextBox Name="uiUserName" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" MaxLength="90" />
                 <TextBlock Text="Limit path: " VerticalAlignment="Center" Grid.Row="1" Grid.Column="0" />
-                <TextBox Name="uiLimitPath" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Stretch"  />
+                <TextBox Name="uiLimitPath" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" HorizontalAlignment="Stretch"  />
                 <ToggleSwitch Name="uiAlsoPriv" OnContent="Also priv" OffContent="only public" Grid.Row="2" Grid.Column="0" />
                 <ToggleSwitch Name="uiAlsoTajne" OnContent="Also Tajne" OffContent="bez Tajne" Grid.Row="2" Grid.Column="1" />
-                <Button Content="Add!" HorizontalAlignment="Center" Grid.Row="3" Grid.Column="1" Margin="5,5,20,5" Click="uiAdd_Click" />
+                <ToggleSwitch Name="uiNoLinks" OnContent="bez linków" OffContent=" z linkami" Grid.Row="2" Grid.Column="2" />
+                <Button Content="Add!" HorizontalAlignment="Center" Grid.Row="3" Grid.ColumnSpan="3" Margin="5,5,20,5" Click="uiAdd_Click" />
             </Grid>
 
         </Grid>
@@ -68,8 +70,9 @@
                         
                         <TextBox Text="{Binding sLimitPath, Mode=OneWay }" Grid.Row="1" IsReadOnly="True"/>
 
-                        <ToggleSwitch Name="uiAlsoPriv" OnContent="Also priv" OffContent="only public" Grid.Row="2" HorizontalAlignment="Left" IsOn="{Binding bAlsoPriv, Mode=OneWay }" IsEnabled="False" />
-                        <ToggleSwitch Name="uiAlsoTajne" OnContent="Also Tajne" OffContent="bez Tajne" Grid.Row="2" HorizontalAlignment="Right" IsOn="{Binding bAlsoTajne, Mode=OneWay }" IsEnabled="False"/>
+                        <ToggleSwitch OnContent="Also priv" OffContent="only public" Grid.Row="2" HorizontalAlignment="Left" IsOn="{Binding bAlsoPriv, Mode=OneWay }" IsEnabled="False" />
+                        <ToggleSwitch OnContent="Also Tajne" OffContent="bez Tajne" Grid.Row="2" HorizontalAlignment="Center"  IsOn="{Binding bAlsoTajne, Mode=OneWay }" IsEnabled="False"/>
+                        <ToggleSwitch OnContent="bez linków" OffContent=" z linkami" Grid.Row="2" HorizontalAlignment="Right" IsOn="{Binding bNoLinks, Mode=OneWay }" IsEnabled="False"/>
 
                     </Grid>
 

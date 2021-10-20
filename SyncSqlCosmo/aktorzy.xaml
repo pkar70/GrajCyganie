@@ -10,6 +10,8 @@
 
     <UserControl.Resources>
         <local:KonwersjaActorIdNaUri x:Key="KonwersjaActorIdNaUri"/>
+        <local:KonwersjaPostaci x:Key="KonwersjaPostaci"/>
+        <local:KonwersjaFilmIdNaUri x:Key="KonwersjaFilmIdNaUri"/>
     </UserControl.Resources>
 
     <Grid Margin="5,5,5,5">
@@ -58,7 +60,7 @@
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
 
-                        <TextBlock Grid.Column="0" HorizontalAlignment="Left" Text="{Binding name, Mode=OneWay }" Tapped="uiShowFilmy_Tapped"/>
+                        <TextBlock Grid.Column="0" HorizontalAlignment="Left" Text="{Binding name, Mode=OneWay }" Tapped="uiShowFilmy_Tapped" TextDecorations="Underline"/>
                         <HyperlinkButton Grid.Column="1" Content="imdb" NavigateUri="{Binding id, Mode=OneWay, Converter={StaticResource KonwersjaActorIdNaUri} }" Margin="5,0,5,0" Padding="0,0,0,0"  />
 
                         <Grid.ContextFlyout>
@@ -87,13 +89,14 @@
                     <Grid Margin="0,5,0,0" Padding="2,2,2,2">
                         <!--HorizontalAlignment="Stretch" -->
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
 
-                        <TextBlock Grid.Column="0" HorizontalAlignment="Left" Text="{Binding name, Mode=OneWay }" />
-                        <!--<HyperlinkButton Grid.Column="1" Content="imdb" NavigateUri="{Binding id, Mode=OneWay, Converter={StaticResource KonwersjaActorIdNaUri} }" Margin="5,0,5,0" Padding="0,0,0,0" MaxHeight="20" Height="20"/>-->
-                        <TextBlock Grid.Column="1" Text="imdb" Tapped="uiOpenImdbName_Click" />
+                        <TextBlock Grid.Column="0" HorizontalAlignment="Left" Text="{Binding oFile.name, Mode=OneWay }" Tapped="uiGoFile_Tapped" TextDecorations="Underline" />
+                        <HyperlinkButton Grid.Column="1" Content="imdb" NavigateUri="{Binding oFilm.filmId, Mode=OneWay, Converter={StaticResource KonwersjaFilmIdNaUri} }" Margin="5,0,5,0" Padding="0,0,0,0"  />
+                        <TextBlock Grid.Column="2" Text="{Binding oFilm.postac, Mode=OneWay, Converter={StaticResource KonwersjaPostaci} }" />
 
                         <Grid.ContextFlyout>
                             <MenuFlyout>

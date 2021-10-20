@@ -70,23 +70,106 @@ Public NotInheritable Class aktorzy
 
 #End Region
 
-    Private Async Function WyszukajFilmyAktora(oItem As oneActorNames) As Task
-        uiListAktorzy.Visibility = Visibility.Collapsed
-
-        uiAktorTitle.Visibility = Visibility.Visible
-        uiAktorTitle.Text = oItem.name
-
-        ' 1) wyszukuj oItem.id.Trim jako StartsWith oneActorFilm.actorId
-        ' 2) dla każdego oneActorFilm.filmId , znajdz Contains w oneStoreFiles
-        ' 3) uzyj jeszcze oneActorFilm.postac
-
-        Dim oLista As List(Of oneActorNames) = Await CosmosQueryActorNamesAsync(uiName.Text)
-
-        uiListFilmy.ItemsSource = oLista
-        uiListFilmy.Visibility = Visibility.Visible
-    End Function
 
 #Region "wykaz filmów"
+
+    Private Sub uiGoFile_Tapped(sender As Object, e As TappedRoutedEventArgs)
+        Dim oTB As TextBlock = sender
+        Dim oItem As oneAktorWfilmie = oTB.DataContext
+        ' Me.Frame.Navigate(GetType(filmy),oItem.oFilm.filmId)
+    End Sub
+
+    Private Async Function IdAktora2IdFilmow(oItem As oneActorNames) As Task(Of List(Of oneActorFilm))
+        ' wyszukuj oItem.id.Trim jako StartsWith oneActorFilm.actorId
+
+        Dim oRet As New List(Of oneActorFilm)
+
+        Dim sError As String = CosmosConnectActorFilm()
+        If sError <> "" Then
+            DialogBox(sError)
+            Return oRet
+        End If
+
+        ' Cosmos cost: 3 RU
+        Dim sQry As String = "SELECT * FROM c WHERE StartsWith(c.actorId, '" & oItem.id.Trim & "') OFFSET 0 LIMIT 50"
+        Dim oContainer As Microsoft.Azure.Cosmos.Container = CosmosGetTableContainer("actorFilm")
+
+        Dim oIterator As Microsoft.Azure.Cosmos.FeedIterator(Of oneActorFilm) =
+                oContainer.GetItemQueryIterator(Of oneActorFilm)(sQry)
+
+        While oIterator.HasMoreResults
+
+            Dim currentResultSet As Microsoft.Azure.Cosmos.FeedResponse(Of oneActorFilm) = Await oIterator.ReadNextAsync()
+
+            For Each oItemFilm As oneActorFilm In currentResultSet
+                oRet.Add(oItemFilm)
+            Next
+
+        End While
+
+        oIterator.Dispose()
+
+        Return oRet
+
+    End Function
+
+
+
+    Private Async Function WyszukajFilmyAktora(oItem As oneActorNames) As Task
+        uiListAktorzy.Visibility = Visibility.Collapsed
+        uiAktorTitle.Visibility = Visibility.Visible
+        uiAktorTitle.Text = oItem.name
+        uiListFilmy.Visibility = Visibility.Visible
+
+        Dim sError As String = CosmosConnectStoreFiles()
+        If sError <> "" Then
+            DialogBox(sError)
+            Return
+        End If
+
+
+        ProgRingShow(True)
+
+        ' 1) wyszukuj oItem.id.Trim jako StartsWith oneActorFilm.actorId
+        Dim oListaIdFilmow As List(Of oneActorFilm) = Await IdAktora2IdFilmow(oItem)
+
+        ' 2) dla każdego oneActorFilm.filmId , znajdz Contains w oneStoreFiles
+        Dim oListaPlikow As New List(Of oneAktorWfilmie)
+
+        For Each oFilmId As oneActorFilm In oListaIdFilmow
+
+            Dim sQry As String = "SELECT * FROM c WHERE Contains(c.name, '" & oFilmId.filmId.Trim & "') OFFSET 0 LIMIT 50"
+            Dim oContainer As Microsoft.Azure.Cosmos.Container = CosmosGetTableContainer("storeFiles")
+
+            Dim oIterator As Microsoft.Azure.Cosmos.FeedIterator(Of oneStoreFiles) =
+                oContainer.GetItemQueryIterator(Of oneStoreFiles)(sQry)
+
+            While oIterator.HasMoreResults
+
+                Dim currentResultSet As Microsoft.Azure.Cosmos.FeedResponse(Of oneStoreFiles) = Await oIterator.ReadNextAsync()
+
+                For Each oItemFilm As oneStoreFiles In currentResultSet
+                    Dim oNewActorWfilmie As New oneAktorWfilmie
+                    oNewActorWfilmie.oActor = oItem
+                    oNewActorWfilmie.oFilm = oFilmId
+                    oNewActorWfilmie.oFile = oItemFilm
+                    oListaPlikow.Add(oNewActorWfilmie)
+                    uiListFilmy.ItemsSource = From c In oListaPlikow
+                Next
+
+            End While
+
+            oIterator.Dispose()
+
+        Next
+
+
+        ProgRingShow(False)
+
+        'uiListFilmy.ItemsSource = Nothing
+        'uiListFilmy.ItemsSource = oListaPlikow
+
+    End Function
 
 #End Region
 
@@ -134,6 +217,26 @@ Public NotInheritable Class aktorzy
 
 End Class
 
+Public Class oneAktorWfilmie
+    ' Inherits oneStoreFiles
+
+    Public Property oFile As oneStoreFiles
+    Public Property oFilm As oneActorFilm
+    Public Property oActor As oneActorNames
+
+    ' Public Class oneActorFilm
+    'Public Property actorId As String    '": "nm0713421   ", <- uwaga: są spacje!
+    'Public Property postac As String    '": "Fernand Jérôme",
+
+    '' Public Class oneActorNames
+    'Public Property actorname As String    '": "Dan Hanlon",
+
+    'Public Sub New()
+
+    'End Sub
+
+End Class
+
 Public Class KonwersjaActorIdNaUri
     Implements IValueConverter
 
@@ -160,3 +263,58 @@ Public Class KonwersjaActorIdNaUri
 
     End Function
 End Class
+
+Public Class KonwersjaPostaci
+    Implements IValueConverter
+
+    Public Function Convert(ByVal value As Object,
+            ByVal targetType As Type, ByVal parameter As Object,
+            ByVal language As System.String) As Object _
+            Implements IValueConverter.Convert
+
+        ' value is the data from the source object.
+        Dim sId As String = CType(value, String)
+
+        Return "(as " & sId.Trim & ")"
+
+
+    End Function
+
+    ' ConvertBack is not implemented for a OneWay binding.
+    Public Function ConvertBack(ByVal value As Object,
+            ByVal targetType As Type, ByVal parameter As Object,
+            ByVal language As System.String) As Object _
+            Implements IValueConverter.ConvertBack
+
+        Throw New NotImplementedException
+
+    End Function
+End Class
+
+Public Class KonwersjaFilmIdNaUri
+    Implements IValueConverter
+
+    Public Function Convert(ByVal value As Object,
+            ByVal targetType As Type, ByVal parameter As Object,
+            ByVal language As System.String) As Object _
+            Implements IValueConverter.Convert
+
+        ' value is the data from the source object.
+        Dim sId As String = CType(value, String)
+
+        Return "https://www.imdb.com/title/" & sId.Trim & "/"
+
+
+    End Function
+
+    ' ConvertBack is not implemented for a OneWay binding.
+    Public Function ConvertBack(ByVal value As Object,
+            ByVal targetType As Type, ByVal parameter As Object,
+            ByVal language As System.String) As Object _
+            Implements IValueConverter.ConvertBack
+
+        Throw New NotImplementedException
+
+    End Function
+End Class
+

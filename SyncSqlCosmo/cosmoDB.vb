@@ -5,6 +5,8 @@
     Private mCosmosLoginContainer As Microsoft.Azure.Cosmos.Container = Nothing
     Private mCosmosFilesContainer As Microsoft.Azure.Cosmos.Container = Nothing
     Private mCosmosActorNamesContainer As Microsoft.Azure.Cosmos.Container = Nothing
+    Private mCosmosActorFilmContainer As Microsoft.Azure.Cosmos.Container = Nothing
+
 
     Public gCountActors As Long = 0
 
@@ -62,6 +64,8 @@
                 Return mCosmosLoginContainer
             Case "actornames"
                 Return mCosmosActorNamesContainer
+            Case "actorfilm"
+                Return mCosmosActorFilmContainer
         End Select
 
         Return Nothing
@@ -148,6 +152,18 @@
 
     End Function
 
+    Public Function CosmosConnectActorFilm() As String
+        If gmCosmosDatabase Is Nothing Then Return "Cannot connect to dbase"
+
+        If mCosmosActorFilmContainer Is Nothing Then
+            mCosmosActorFilmContainer = gmCosmosDatabase.GetContainer("actorFilm")
+        End If
+
+        If mCosmosActorFilmContainer Is Nothing Then Return "cannot get container"
+
+        Return ""
+
+    End Function
 
     Public Function CosmosConnect() As String
 

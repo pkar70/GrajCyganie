@@ -4,11 +4,14 @@
     Private gmCosmosDatabase As Microsoft.Azure.Cosmos.Database = Nothing
     Private mCosmosLoginContainer As Microsoft.Azure.Cosmos.Container = Nothing
     Private mCosmosFilesContainer As Microsoft.Azure.Cosmos.Container = Nothing
+    Private mCosmosActorNamesContainer As Microsoft.Azure.Cosmos.Container = Nothing
 
-    Public Async Function CosmosQueryFilesAsync(sWhere As String, Optional iTop As Integer = 100) As Threading.Tasks.Task(Of List(Of oneFile))
+    Public gCountActors As Long = 0
 
-        Dim oRet As New List(Of oneFile)
-        Dim oMsg As New oneFile
+    Public Async Function CosmosQueryFilesAsync(sWhere As String, Optional iTop As Integer = 100) As Threading.Tasks.Task(Of List(Of oneStoreFiles))
+
+        Dim oRet As New List(Of oneStoreFiles)
+        Dim oMsg As New oneStoreFiles
 
         Dim sErr As String = CosmosConnectStoreFiles()
         If sErr <> "" Then
@@ -26,20 +29,20 @@
         'oMsg.path = sQry
         'oRet.Add(oMsg)
 
-        Dim oIterator As Microsoft.Azure.Cosmos.FeedIterator(Of oneFile) =
-                mCosmosFilesContainer.GetItemQueryIterator(Of oneFile)(sQry)
+        Dim oIterator As Microsoft.Azure.Cosmos.FeedIterator(Of oneStoreFiles) =
+                mCosmosFilesContainer.GetItemQueryIterator(Of oneStoreFiles)(sQry)
 
         While oIterator.HasMoreResults
 
-            Dim currentResultSet As Microsoft.Azure.Cosmos.FeedResponse(Of oneFile) = Await oIterator.ReadNextAsync()
+            Dim currentResultSet As Microsoft.Azure.Cosmos.FeedResponse(Of oneStoreFiles) = Await oIterator.ReadNextAsync()
 
-            'Dim oMsg1 As New oneFile
+            'Dim oMsg1 As New oneStoreFiles
             'oMsg1.len = 0
             'oMsg1.name = "HasMoreResults"
             'oMsg1.path = currentResultSet.Count
             'oRet.Add(oMsg1)
 
-            For Each oItem As oneFile In currentResultSet
+            For Each oItem As oneStoreFiles In currentResultSet
                 oRet.Add(oItem)
             Next
 
@@ -57,6 +60,8 @@
                 Return mCosmosFilesContainer
             Case "loginsy"
                 Return mCosmosLoginContainer
+            Case "actornames"
+                Return mCosmosActorNamesContainer
         End Select
 
         Return Nothing
@@ -129,6 +134,20 @@
         Return ""
 
     End Function
+
+    Public Function CosmosConnectActorNamesFiles() As String
+        If gmCosmosDatabase Is Nothing Then Return "Cannot connect to dbase"
+
+        If mCosmosActorNamesContainer Is Nothing Then
+            mCosmosActorNamesContainer = gmCosmosDatabase.GetContainer("actorNames")
+        End If
+
+        If mCosmosActorNamesContainer Is Nothing Then Return "cannot get container"
+
+        Return ""
+
+    End Function
+
 
     Public Function CosmosConnect() As String
 

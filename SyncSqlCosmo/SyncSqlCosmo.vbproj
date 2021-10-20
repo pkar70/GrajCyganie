@@ -127,6 +127,9 @@
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="aktorzy.xaml.vb">
+      <DependentUpon>aktorzy.xaml</DependentUpon>
+    </Compile>
     <Compile Include="App.xaml.vb">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
@@ -165,6 +168,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="aktorzy.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Loginy.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

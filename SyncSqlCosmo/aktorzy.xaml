@@ -1,0 +1,114 @@
+﻿<Page
+    x:Class="SyncSqlCosmo.aktorzy"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:SyncSqlCosmo"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Loaded="Page_Loaded">
+
+    <UserControl.Resources>
+        <local:KonwersjaActorIdNaUri x:Key="KonwersjaActorIdNaUri"/>
+    </UserControl.Resources>
+
+    <Grid Margin="5,5,5,5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <!-- tytul -->
+            <RowDefinition Height="Auto" />
+            <!-- szukania -->
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <!-- lista -->
+            <RowDefinition Height="Auto" />
+            <!-- statystyka -->
+        </Grid.RowDefinitions>
+
+        <TextBlock FontSize="24" HorizontalAlignment="Center" Text="Aktorzy" />
+
+        <Grid Grid.Row="1" BorderBrush="blue" BorderThickness="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="200" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Grid.Column="0" HorizontalAlignment="Center" Text="Aktor: " VerticalAlignment="Center"  />
+            <TextBox Grid.Column="1" HorizontalAlignment="Stretch" Name="uiName" Margin="5,0,5,0"/>
+            <Button Content="Szukaj!" Grid.Column="2" Click="uiSearchName_Click" />
+        </Grid>
+
+        <TextBlock FontSize="18" Margin="5,5,5,5" Grid.Row="2" Name="uiAktorTitle" />
+        
+        <ListView Name="uiListAktorzy" HorizontalContentAlignment="Stretch" Grid.Row="3" >
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <!--<Setter Property="HorizontalContentAlignment"  Value="Stretch"/>-->
+                    <Setter Property="MinHeight" Value="0"/>
+                </Style>
+            </ListView.ItemContainerStyle>
+
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Margin="0,5,0,0" Padding="2,2,2,2">
+                        <!--HorizontalAlignment="Stretch" -->
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Column="0" HorizontalAlignment="Left" Text="{Binding name, Mode=OneWay }" Tapped="uiShowFilmy_Tapped"/>
+                        <HyperlinkButton Grid.Column="1" Content="imdb" NavigateUri="{Binding id, Mode=OneWay, Converter={StaticResource KonwersjaActorIdNaUri} }" Margin="5,0,5,0" Padding="0,0,0,0"  />
+
+                        <Grid.ContextFlyout>
+                            <MenuFlyout>
+                                <MenuFlyoutItem Text="pokaż filmy" Click="uiShowFilmy_Click" />
+                                <MenuFlyoutItem Text="open IMDB" Click="uiOpenImdbName_Click" />
+                            </MenuFlyout>
+                        </Grid.ContextFlyout>
+                    </Grid>
+
+                </DataTemplate>
+            </ListView.ItemTemplate>
+
+        </ListView>
+
+        <ListView Name="uiListFilmy" HorizontalContentAlignment="Stretch" Grid.Row="3" Visibility="Collapsed" >
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <!--<Setter Property="HorizontalContentAlignment"  Value="Stretch"/>-->
+                    <Setter Property="MinHeight" Value="0"/>
+                </Style>
+            </ListView.ItemContainerStyle>
+
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Margin="0,5,0,0" Padding="2,2,2,2">
+                        <!--HorizontalAlignment="Stretch" -->
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Column="0" HorizontalAlignment="Left" Text="{Binding name, Mode=OneWay }" />
+                        <!--<HyperlinkButton Grid.Column="1" Content="imdb" NavigateUri="{Binding id, Mode=OneWay, Converter={StaticResource KonwersjaActorIdNaUri} }" Margin="5,0,5,0" Padding="0,0,0,0" MaxHeight="20" Height="20"/>-->
+                        <TextBlock Grid.Column="1" Text="imdb" Tapped="uiOpenImdbName_Click" />
+
+                        <Grid.ContextFlyout>
+                            <MenuFlyout>
+                                <MenuFlyoutItem Text="pokaż filmy" Click="uiShowFilmy_Click" />
+                                <MenuFlyoutItem Text="open IMDB" Click="uiOpenImdbName_Click" />
+                            </MenuFlyout>
+                        </Grid.ContextFlyout>
+                    </Grid>
+
+                </DataTemplate>
+            </ListView.ItemTemplate>
+
+        </ListView>
+
+
+        <TextBox Grid.Row="4" Name="uiStats" IsReadOnly="true" BorderThickness="0"/>
+    </Grid>
+</Page>

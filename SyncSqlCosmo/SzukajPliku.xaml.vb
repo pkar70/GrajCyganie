@@ -21,7 +21,7 @@ Public NotInheritable Class SzukajPliku
         Dim iCount As Long = Await CosmosGetCountAsync("StoreFiles")
         Dim iTotalBytes As Long = Await CosmosGetSumAsync("StoreFiles", "len")
         uiStats.Text = "Global stat: " & iCount.ToStringWithSpaces & ", " & iTotalBytes.ToStringWithSpaces
-        ProgRingShow(True)
+        ProgRingShow(False)
     End Sub
 
     Private Async Sub uiSearch_Click(sender As Object, e As RoutedEventArgs)
@@ -51,13 +51,13 @@ Public NotInheritable Class SzukajPliku
         sWhere = "WHERE " & sWhere & " AND c.del=false ORDER BY c." & oCBI.Content.ToString
 
         ProgRingShow(True)
-        Dim oLista As List(Of oneFile) = Await CosmosQueryFilesAsync(sWhere)
+        Dim oLista As List(Of oneStoreFiles) = Await CosmosQueryFilesAsync(sWhere)
         ProgRingShow(False)
 
         uiList.ItemsSource = oLista
     End Sub
 
-    Private Function GetGisWebPath(oItem As oneFile)
+    Private Function GetGisWebPath(oItem As oneStoreFiles)
 
         Dim sPath As String = gmStorageUri
         sPath = sPath & oItem.path.Substring(3).Replace("\", "/")
@@ -67,14 +67,14 @@ Public NotInheritable Class SzukajPliku
         Return sPath
     End Function
     Private Sub uiCopyGisExpPath_Click(sender As Object, e As RoutedEventArgs)
-        Dim oItem As oneFile = Sender2Item(sender)
+        Dim oItem As oneStoreFiles = Sender2Item(sender)
 
         Dim sPath = oItem.path.Substring(2) & "\" & oItem.name
         sPath = GetMatrixPath(sPath) ' ma być od \
         ClipPut(sPath)
     End Sub
 
-    Private Function Sender2Item(sender As Object) As oneFile
+    Private Function Sender2Item(sender As Object) As oneStoreFiles
         Dim oMFI As MenuFlyoutItem = sender
         Return oMFI.DataContext
     End Function
@@ -88,7 +88,7 @@ Public NotInheritable Class SzukajPliku
     End Sub
 
     Private Async Sub uiOpenGisExp_Click(sender As Object, e As RoutedEventArgs)
-        Dim oItem As oneFile = Sender2Item(sender)
+        Dim oItem As oneStoreFiles = Sender2Item(sender)
 
         If Not CheckRAIDavail() Then
             DialogBox("Sorry, bez Matrixa nie da rady!")
@@ -111,7 +111,7 @@ Public NotInheritable Class SzukajPliku
     End Sub
 
     Private Async Sub uiOpenGisFile_Click(sender As Object, e As RoutedEventArgs)
-        Dim oItem As oneFile = Sender2Item(sender)
+        Dim oItem As oneStoreFiles = Sender2Item(sender)
 
         If oItem.isDir Then
             DialogBox("to DIR")

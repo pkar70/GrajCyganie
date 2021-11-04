@@ -2,11 +2,20 @@
 ' funkcjonalności:
 ' 1) znajdź aktora wedle nazwiska <- DONE
 ' 2) jakie filmy danego aktora już znamy
-' 3) dla filmu tt (przed jego ściągnięciem) - kogo już widziałem i gdzie
+' 3) dla filmu tt (przed jego ściągnięciem) - kogo już widziałem i gdzie (IMDB)
 ' 4) ? dodawanie do CosmoDB aktorów filmu
+' 5) aktorzy dla filmu ttxxx <-- wejście z FILMY.xaml
 
 Public NotInheritable Class aktorzy
     Inherits Page
+
+    Private mOpenParam As String = ""
+
+    Protected Overrides Sub onNavigatedTo(e As NavigationEventArgs)
+        If e.Parameter Is Nothing Then Return
+
+        mOpenParam = e.Parameter.ToString
+    End Sub
 
     Private Async Sub Page_Loaded(sender As Object, e As RoutedEventArgs)
         ProgRingInit(True, False)

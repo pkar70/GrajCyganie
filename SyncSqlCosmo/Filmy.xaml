@@ -1,0 +1,109 @@
+﻿<Page
+    x:Class="SyncSqlCosmo.Filmy"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:SyncSqlCosmo"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Loaded="Page_Loaded">
+
+    <Grid Margin="5,5,5,5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" /> <!-- tytul -->
+            <RowDefinition Height="Auto" /> <!-- formatka szukania -->
+            <RowDefinition Height="Auto" /> <!-- znalezione - statystyka -->
+            <RowDefinition Height="*" /> <!-- lista -->
+            <RowDefinition Height="Auto" /> <!-- statystyka globalna -->
+        </Grid.RowDefinitions>
+
+        <TextBlock FontSize="24" HorizontalAlignment="Center" Text="Kinomaniak" />
+
+        <Grid Grid.Row="1" BorderBrush="blue" BorderThickness="2" Padding="2,2,2,2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="100" />
+                <ColumnDefinition Width="8*"/>
+                <ColumnDefinition Width="100" />
+                <ColumnDefinition Width="100" />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Grid.Column="0" HorizontalAlignment="Center" Text="Name" />
+            <TextBlock Grid.Column="1" HorizontalAlignment="Center" Text="Len" />
+            <TextBlock Grid.Column="2" HorizontalAlignment="Center" Text="Path" />
+            <TextBlock Grid.Column="3" HorizontalAlignment="Center" Text="Duration" />
+
+            <TextBox Grid.Row="1" Grid.Column="0" HorizontalAlignment="Stretch" Name="uiName" />
+
+            <ComboBox Grid.Row="1" Grid.Column="2" HorizontalAlignment="Center" Name="uiPath">
+                <ComboBoxItem Content="wszystko" IsSelected="True"/>
+                <ComboBoxItem Content="pol" />
+                <ComboBoxItem Content="  pol\filmy" />
+                <ComboBoxItem Content="    pol\filmy\dowojny" />
+                <ComboBoxItem Content="    pol\filmy\powojnie" />
+                <ComboBoxItem Content="  pol\seriale" />
+                <ComboBoxItem Content="  pol\kabarety" />
+                <ComboBoxItem Content="  pol\teatr" />
+                <ComboBoxItem Content="  pol\dzieci"/>
+                <ComboBoxItem Content="zagr"/>
+                <ComboBoxItem Content="  zagr\filmy" />
+                <ComboBoxItem Content="  zagr\seriale"/>
+                <ComboBoxItem Content="dokument" />
+            </ComboBox>
+
+            <Button Content="Szukaj!" HorizontalAlignment="Center" Grid.Row="1" Grid.Column="3" Click="uiSearch_Click" />
+        </Grid>
+
+        <TextBlock Grid.Row="2" Name="uiMatchedStat" />
+
+        <ListView Name="uiList" HorizontalContentAlignment="Stretch" Grid.Row="3" >
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="HorizontalContentAlignment"  Value="Stretch"/>
+                    <Setter Property="MinHeight" Value="0"/>
+                </Style>
+            </ListView.ItemContainerStyle>
+
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Grid HorizontalAlignment="Stretch" Margin="0,5,0,0" BorderBrush="blue" BorderThickness="1" Padding="2,2,2,2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2*" />
+                                <ColumnDefinition Width="100" />
+                                <ColumnDefinition Width="8*"/>
+                                <ColumnDefinition Width="100" />
+                                <ColumnDefinition Width="100" />
+                            </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Column="0" HorizontalAlignment="Left" Text="{Binding name, Mode=OneWay }" ToolTipService.ToolTip="{Binding name, Mode=OneWay }" />
+                        <TextBlock Grid.Column="1" HorizontalAlignment="Right" Text="{Binding len, Mode=OneWay }" />
+                        <TextBlock Grid.Column="2" HorizontalAlignment="Left" Text="{Binding path, Mode=OneWay }" Margin="5,0,0,0" ToolTipService.ToolTip="{Binding path, Mode=OneWay }"/>
+                        <TextBlock Grid.Column="3" HorizontalAlignment="Left" Text="{Binding duration, Mode=OneWay }" Margin="5,0,5,0" />
+
+                        <StackPanel Orientation="Horizontal" Grid.Column="4">
+                        <!-- ale jak zrobic linki do info, play, imdb, aktorzy? -->
+                        </StackPanel>
+                        <Grid.ContextFlyout>
+                            <MenuFlyout>
+                                <MenuFlyoutItem Text="copy web path" Click="uiCopyGisWebPath_Click" />
+                                <MenuFlyoutItem Text="open Web" Click="uiOpenGisWeb_Click" />
+                                <MenuFlyoutItem Text="copy GIS path" Click="uiCopyGisExpPath_Click" />
+                                <MenuFlyoutItem Text="open GIS folder" Click="uiOpenGisExp_Click" />
+                                <MenuFlyoutItem Text="open GIS file" Click="uiOpenGisFile_Click" />
+                                <MenuFlyoutItem Text="open local folder" Click="uiOpenLocalFolder_Click" />
+                            </MenuFlyout>
+                        </Grid.ContextFlyout>
+                    </Grid>
+
+                </DataTemplate>
+            </ListView.ItemTemplate>
+
+        </ListView>
+
+        <TextBox Grid.Row="4" Name="uiStats" IsReadOnly="true" BorderThickness="0"/>
+    </Grid>
+</Page>

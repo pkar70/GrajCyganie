@@ -36,4 +36,16 @@ Partial Public NotInheritable Class MainPage
     Private Sub uiGoAktorzy_Click(sender As Object, e As RoutedEventArgs)
         Me.Frame.Navigate(GetType(aktorzy))
     End Sub
+
+    Private Sub uiGoFilmy_Click(sender As Object, e As RoutedEventArgs)
+        Me.Frame.Navigate(GetType(Filmy))
+    End Sub
+
+    Private Sub uiGoMuzyka_Click(sender As Object, e As RoutedEventArgs)
+
+    End Sub
+
+    Private Sub uiGoPlyty_Click(sender As Object, e As RoutedEventArgs)
+
+    End Sub
 End Class

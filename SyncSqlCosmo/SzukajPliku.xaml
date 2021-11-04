@@ -21,7 +21,7 @@
 
         <TextBlock FontSize="24" HorizontalAlignment="Center" Text="Wyszukiwarka" />
 
-        <Grid Grid.Row="1" BorderBrush="blue" BorderThickness="2">
+        <Grid Grid.Row="1" BorderBrush="blue" BorderThickness="2" Padding="2,2,2,2">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
@@ -70,10 +70,10 @@
                             <ColumnDefinition Width="8*"/>
                         </Grid.ColumnDefinitions>
 
-                        <TextBlock Grid.Column="0" HorizontalAlignment="Left" Text="{Binding name, Mode=OneWay }" />
+                        <TextBlock Grid.Column="0" HorizontalAlignment="Left" Text="{Binding name, Mode=OneWay }" ToolTipService.ToolTip="{Binding name, Mode=OneWay }" />
                         <TextBlock Grid.Column="1" HorizontalAlignment="Left" Text="{Binding filedate, Mode=OneWay }" Margin="5,0,5,0" />
                         <TextBlock Grid.Column="2" HorizontalAlignment="Right" Text="{Binding len, Mode=OneWay }" />
-                        <TextBlock Grid.Column="3" HorizontalAlignment="Left" Text="{Binding path, Mode=OneWay }" Margin="5,0,0,0"/>
+                        <TextBlock Grid.Column="3" HorizontalAlignment="Left" Text="{Binding path, Mode=OneWay }" Margin="5,0,0,0" ToolTipService.ToolTip="{Binding path, Mode=OneWay }"/>
 
                         <Grid.ContextFlyout>
                             <MenuFlyout>

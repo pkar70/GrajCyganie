@@ -41,7 +41,8 @@
             sQry = sQry & " AND CONTAINS(c.path,'" & Me.Session("sLimitPath") & "',true)"
         End If
 
-        Return " WHERE " & sQry & " AND CONTAINS(c.path,'\Texts',true) "
+        ' contains("\text") dawało także w Public\Public.xxx\Texts, ale było wolniejsze - bo starts jest szybsze.
+        Return " WHERE " & sQry & " AND STARTSWITH(c.path,'u:\Public\MyProduction\Texts',true) "
 
     End Function
 
@@ -62,7 +63,7 @@
             uiResults.Rows.Remove(uiResults.Rows.Item(i))
         Next
 
-        Dim oList As List(Of oneFile) = Await CosmosQueryFilesAsync(sWhere, 100)
+        Dim oList As List(Of oneStoreFiles) = Await CosmosQueryFilesAsync(sWhere, 100)
         ' Response.Write "<tr><td colspan=4><small>Running query: " & sQry & "</small></tr>"
 
         'Dim oMsg As New oneFile
@@ -71,7 +72,7 @@
         'oMsg.path = oList.Count.ToString
         'oList.Add(oMsg)
 
-        For Each oItem As oneFile In oList
+        For Each oItem As oneStoreFiles In oList
             Dim oNewRow As HtmlTableRow =
                 StorageFileToHtmlRow(oItem, Me.Session("bNoLinks"), "\Public\MyProduction\Texts\")
             uiResults.Rows.Add(oNewRow)

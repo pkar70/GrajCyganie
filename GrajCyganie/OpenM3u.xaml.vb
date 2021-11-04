@@ -7,12 +7,12 @@ Public NotInheritable Class OpenM3u
     Inherits Page
 
     Private Sub ShowStat()
-        If App.mlDekady Is Nothing Then Exit Sub
+        If App.goDbase.mlDekady Is Nothing Then Exit Sub
 
         If uiGrid.ActualWidth > 500 Then
-            uiListItems1Row.ItemsSource = From c In App.mlDekady
+            uiListItems1Row.ItemsSource = From c In App.goDbase.mlDekady
         Else
-            uiListItems2Row.ItemsSource = From c In App.mlDekady
+            uiListItems2Row.ItemsSource = From c In App.goDbase.mlDekady
         End If
     End Sub
 
@@ -33,20 +33,20 @@ Public NotInheritable Class OpenM3u
 
     Private Async Sub Page_Loaded(sender As Object, e As RoutedEventArgs)
 
-        If Not Await App.BeskidGetDekady(False) Then Exit Sub
+        If Not Await App.goDbase.GetDekady(False) Then Exit Sub
 
         ShowStat()
 
     End Sub
 
     Private Async Sub uiRefresh_Click(sender As Object, e As RoutedEventArgs)
-        If Not Await App.BeskidGetDekady(True) Then Exit Sub
+        If Not Await App.goDbase.GetDekady(True) Then Exit Sub
 
         ShowStat()
     End Sub
 
     Private Async Sub uiSave_Click(sender As Object, e As RoutedEventArgs)
-        Await App.BeskidSaveDekadyFile()
+        Await App.goDbase.DekadySave()
     End Sub
 
     'Private Sub uiFreqSlider_ValueChanged(sender As Object, e As RangeBaseValueChangedEventArgs) Handles uiFreqSlider.ValueChanged

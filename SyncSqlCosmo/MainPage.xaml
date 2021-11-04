@@ -13,10 +13,10 @@
             <TextBlock HorizontalAlignment="Center" FontSize="24" Text="Sync SQL i Cosmo" />
             <Button Margin="0,10,0,5" HorizontalAlignment="Center" Content="Loginy" Click="uiGoLogin_Click" />
             <Button Margin="0,10,0,5" HorizontalAlignment="Center" Content="Szukaj pliku" Click="uiGoSearch_Click" />
-            <Button Margin="0,10,0,5" HorizontalAlignment="Center" Content="Filmy" Click="uiGoSearch_Click" />
+            <Button Margin="0,10,0,5" HorizontalAlignment="Center" Content="Filmy" Click="uiGoFilmy_Click" />
             <Button Margin="0,10,0,5" HorizontalAlignment="Center" Content="Aktorzy" Click="uiGoAktorzy_Click" />
-            <Button Margin="0,10,0,5" HorizontalAlignment="Center" Content="Muzyka" Click="uiGoSearch_Click" />
-            <Button Margin="0,10,0,5" HorizontalAlignment="Center" Content="Albumy" Click="uiGoSearch_Click" />
+            <Button Margin="0,10,0,5" HorizontalAlignment="Center" Content="Muzyka" Click="uiGoMuzyka_Click" />
+            <Button Margin="0,10,0,5" HorizontalAlignment="Center" Content="Płyty" Click="uiGoPlyty_Click" />
 
         </StackPanel>
     </Grid>

@@ -25,7 +25,7 @@ Public NotInheritable Class Login
             Return False
         End If
 
-        Dim sRes As String = Await App.BeskidGetPermission(sUser)
+        Dim sRes As String = Await App.goDbase.GetPermission(sUser)
         uiLoginRes.Text = sRes
         If sRes.IndexOf("Masz prawo") < 0 Then Return False
         Return True
@@ -36,7 +36,7 @@ Public NotInheritable Class Login
         If GetSettingsInt("loginTryCount") > 5 Then
             uiUserName.IsReadOnly = True
             uiLoginRes.Text = "Brak uprawnień"
-            App.mbGranted = False
+            ' App.mbGranted = False
         Else
             uiUserName.IsReadOnly = False
             TestPermission(uiUserName.Text)

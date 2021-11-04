@@ -6,9 +6,13 @@
     Private mCosmosFilesContainer As Microsoft.Azure.Cosmos.Container = Nothing
     Private mCosmosActorNamesContainer As Microsoft.Azure.Cosmos.Container = Nothing
     Private mCosmosActorFilmContainer As Microsoft.Azure.Cosmos.Container = Nothing
-
+    Private mCosmosVideoContainer As Microsoft.Azure.Cosmos.Container = Nothing
 
     Public gCountActors As Long = 0
+    Public gCountFiles As Long = 0
+    Public gSumFiles As Long = 0
+    Public gCountFilmy As Long = 0
+    Public gSumFilmy As Long = 0
 
     Public Async Function CosmosQueryFilesAsync(sWhere As String, Optional iTop As Integer = 100) As Threading.Tasks.Task(Of List(Of oneStoreFiles))
 
@@ -104,7 +108,7 @@
         Dim oIterator As Microsoft.Azure.Cosmos.FeedIterator(Of Long) = oCont.GetItemQueryIterator(Of Long)(sqlQueryDef)
         While oIterator.HasMoreResults
             Dim currentResultSet As Microsoft.Azure.Cosmos.FeedResponse(Of Long) = Await oIterator.ReadNextAsync()
-            For Each oItem As Integer In currentResultSet
+            For Each oItem As Long In currentResultSet
                 Return oItem
             Next
         End While
@@ -134,6 +138,18 @@
         End If
 
         If mCosmosFilesContainer Is Nothing Then Return "cannot get container"
+
+        Return ""
+
+    End Function
+    Public Function CosmosConnectVideoParam() As String
+        If gmCosmosDatabase Is Nothing Then Return "Cannot connect to dbase"
+
+        If mCosmosVideoContainer Is Nothing Then
+            mCosmosVideoContainer = gmCosmosDatabase.GetContainer("videoParam")
+        End If
+
+        If mCosmosVideoContainer Is Nothing Then Return "cannot get container"
 
         Return ""
 

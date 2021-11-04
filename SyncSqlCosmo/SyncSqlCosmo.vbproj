@@ -134,6 +134,9 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="cosmoDB.vb" />
+    <Compile Include="Filmy.xaml.vb">
+      <DependentUpon>Filmy.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Loginy.xaml.vb">
       <DependentUpon>Loginy.xaml</DependentUpon>
     </Compile>
@@ -169,6 +172,10 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Page Include="aktorzy.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Filmy.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

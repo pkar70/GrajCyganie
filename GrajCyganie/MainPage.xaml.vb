@@ -119,10 +119,10 @@ Public NotInheritable Class MainPage
     Private Function CreateWinTitle() As String
         DebugOut("CreateWinTitle")
         Dim sTxt As String = ""
-        If miNextMode <> 1 Then sTxt = App.mtGranyUtwor.artist
+        If miNextMode <> 1 Then sTxt = App.mtGranyUtwor.oAudioParam.artist
         If miNextMode <> 2 Then
             If sTxt <> "" Then sTxt = sTxt & ": "
-            sTxt = sTxt & App.mtGranyUtwor.title
+            sTxt = sTxt & App.mtGranyUtwor.oAudioParam.title
         End If
 
         Return sTxt
@@ -133,10 +133,10 @@ Public NotInheritable Class MainPage
         If miNextMode = 6 Then Exit Function
 
         Dim sLang As String
-        sLang = SpeakRozpoznajJezykStringu(App.mtGranyUtwor.artist)
-        If sLang = "" Then sLang = SpeakRozpoznajJezykStringu(App.mtGranyUtwor.title)
+        sLang = SpeakRozpoznajJezykStringu(App.mtGranyUtwor.oAudioParam.artist)
+        If sLang = "" Then sLang = SpeakRozpoznajJezykStringu(App.mtGranyUtwor.oAudioParam.title)
         If sLang = "" Then
-            Dim sT As String = App.mtGranyUtwor.uri.ToLower
+            Dim sT As String = App.mtGranyUtwor.oStoreFile.path.ToLower
             If sT.IndexOf("/pol/") > -1 Then sLang = "pl-PL"
             If sT.IndexOf("/polcd/") > -1 Then sLang = "pl-PL"
             If sT.IndexOf("/winylownia/") > -1 Then sLang = "pl-PL" ' choć nie tylko polskie tam są
@@ -171,35 +171,35 @@ Public NotInheritable Class MainPage
                 Return
             End If
 
-            uiArtist.Text = App.mtGranyUtwor.artist
+            uiArtist.Text = App.mtGranyUtwor.oAudioParam.artist
             WypelnPoleZapetlacza(uiArtist_Radio, App.mtGranyUtwor.countArtist)
 
-            uiTitle.Text = App.mtGranyUtwor.title
+            uiTitle.Text = App.mtGranyUtwor.oAudioParam.title
             WypelnPoleZapetlacza(uiTitle_Radio, App.mtGranyUtwor.countTitle)
 
-            If App.mtGranyUtwor.track <> "" Then
-                uiAlbum.Text = App.mtGranyUtwor.track & " z: " & App.mtGranyUtwor.album
+            If App.mtGranyUtwor.oAudioParam.track <> "" Then
+                uiAlbum.Text = App.mtGranyUtwor.oAudioParam.track & " z: " & App.mtGranyUtwor.oAudioParam.album
             Else
-                uiAlbum.Text = App.mtGranyUtwor.album
+                uiAlbum.Text = App.mtGranyUtwor.oAudioParam.album
             End If
             WypelnPoleZapetlacza(uiAlbum_Radio, App.mtGranyUtwor.countAlbum)
 
-            uiRok.Text = App.mtGranyUtwor.year
+            uiRok.Text = App.mtGranyUtwor.oAudioParam.year
             WypelnPoleZapetlacza(uiRok_Radio, App.mtGranyUtwor.countYear)
 
-            uiDekada.Text = App.mtGranyUtwor.dekada
+            uiDekada.Text = App.mtGranyUtwor.oAudioParam.dekada
             WypelnPoleZapetlacza(uiDekada_Radio, App.mtGranyUtwor.countDekada)
 
-            uiComment.Text = App.mtGranyUtwor.comment
+            uiComment.Text = App.mtGranyUtwor.oAudioParam.comment
 
-            If App.mlDekady Is Nothing Then
+            If App.goDbase.mlDekady Is Nothing Then
                 uiSlider.Visibility = Visibility.Collapsed
                 uiSliderInfo.Visibility = Visibility.Collapsed
             Else
                 uiSlider.Visibility = Visibility.Visible
                 uiSliderInfo.Visibility = Visibility.Visible
-                For Each oItem As tDekada In App.mlDekady
-                    If oItem.sNazwa = App.mtGranyUtwor.dekada Then
+                For Each oItem As tDekada In App.goDbase.mlDekady
+                    If oItem.sNazwa = App.mtGranyUtwor.oAudioParam.dekada Then
                         uiSlider.Value = oItem.iFreq
                         uiSliderInfo.Text = oItem.sFreq
                         Exit For
@@ -207,7 +207,7 @@ Public NotInheritable Class MainPage
                 Next
             End If
 
-            Dim iMiB As Integer = App.mtGranyUtwor.fsize
+            Dim iMiB As Integer = App.mtGranyUtwor.oStoreFile.len
             iMiB = iMiB / 1024 / 1024
             iMiB = iMiB + 1
 
@@ -275,7 +275,7 @@ Public NotInheritable Class MainPage
         uiReadAfter.IsChecked = GetSettingsBool("uiReadAfter")
         uiReadBefore.IsChecked = GetSettingsBool("uiReadBefore")
 
-        If Not Await App.BeskidLogin(True) Then
+        If Not Await App.goDbase.Login(True) Then
             uiGoLogin.Visibility = Visibility.Visible
             uiGoSetting.Visibility = Visibility.Collapsed
             uiGoAudio.Visibility = Visibility.Collapsed
@@ -288,7 +288,7 @@ Public NotInheritable Class MainPage
         uiGoAudio.Visibility = Visibility.Visible
         uiGoSearch.Visibility = Visibility.Visible
 
-        Await App.BeskidGetDekady(False)
+        Await App.goDbase.GetDekady(False)
 
         If App.moReco Is Nothing Then
             App.moReco = New Windows.Media.SpeechRecognition.SpeechRecognizer()
@@ -455,192 +455,9 @@ Public NotInheritable Class MainPage
     Private Sub uiGoSearch_Click(sender As Object, e As RoutedEventArgs)
 
     End Sub
-    Private Async Function GetNextSong() As Task(Of Boolean)
-        DebugOut("GetNextSong, miNextMode=" & miNextMode)
-        Try
-            Dim iCurrId As Integer = 0
-            Dim sParams As String = ""
 
-            If App.mtGranyUtwor IsNot Nothing Then iCurrId = App.mtGranyUtwor.ID
-            Select Case miNextMode
-                Case 0
-                    iCurrId = GetSettingsInt("maxSoundId")
-                    If iCurrId = 0 Then Return False
-                    iCurrId = App.MakeRandom(iCurrId)
-                    ' random
-                    sParams = "id=" & iCurrId & "&mode=random"
-                Case 1
-                    sParams = "id=" & iCurrId & "&mode=artist"
-                Case 2
-                    sParams = "id=" & iCurrId & "&mode=title"
-                Case 3
-                    sParams = "id=" & iCurrId & "&mode=album"
-                Case 4
-                    sParams = "id=" & iCurrId & "&mode=rok"
-                Case 5
-                    sParams = "id=" & iCurrId & "&mode=dekada"
-            End Select
 
-            ' dane o nastepnym HttpPage -> App.mtGranyUtwor
-            Dim sPage As String = Await App.HttpPageAsync("/cygan-info.asp?" & sParams, "file data")
-            If sPage = "" Then
-                DialogBox("ERROR get cygan-info empty")
-                Return False
-            End If
-            Dim aArr As String() = sPage.Split(vbCrLf)
-            If aArr.GetUpperBound(0) < 2 Then
-                DialogBox("ERROR get cygan-info too short, " & vbCrLf &
-                    "Request: " & "/cygan-info.asp?" & sParams & vbCrLf &
-                    "Returned: " & sPage)
-                Return False
-            End If
-            If aArr(0).Trim <> "OK" Then
-                ' moze wygasła sesja, to powtarzamy
-                App.BeskidLogin(True)
-                sPage = Await App.HttpPageAsync("/cygan-info.asp?" & sParams, "file data")
-                If sPage = "" Then
-                    DialogBox("ERROR retry get cygan-info empty")
-                    Return False
-                End If
 
-                aArr = sPage.Split(vbCrLf)
-                If aArr.GetUpperBound(0) < 2 Then
-                    DialogBox("ERROR retry get cygan-info too short, " & vbCrLf &
-                    "Request: " & "/cygan-info.asp?" & sParams & vbCrLf &
-                    "Returned: " & sPage)
-                    Return False
-                End If
-
-                If aArr(0).Trim <> "OK" Then
-                    DialogBox("ERROR get cygan-info not OK, aArr(0): " & aArr(0))
-                    Return False
-                End If
-            End If
-
-            App.mtGranyUtwor = New tGranyUtwor
-
-            If Not Await ExtractCyganInfo(aArr) Then Return False
-
-            Return True
-        Catch ex As Exception
-            CrashMessageAdd("@GetNextSong", ex)
-        End Try
-
-        Return False
-    End Function
-
-    Private Async Function ExtractCyganInfo(aArr As String()) As Task(Of Boolean)
-        ' base64 z linku
-        Dim sTxt As String = aArr(1).Trim
-        If sTxt.Length Mod 4 > 0 Then sTxt = sTxt & "=" ' dodaj padding
-        If sTxt.Length Mod 4 > 0 Then sTxt = sTxt & "="
-        If sTxt.Length Mod 4 > 0 Then sTxt = sTxt & "="
-
-        Dim oBuff As Byte() = Nothing
-        Dim bError As Boolean = False
-        Try
-            oBuff = System.Convert.FromBase64String(sTxt)
-        Catch ex As Exception
-            bError = True
-        End Try
-
-        If bError Then
-            Await DialogBoxAsync("dodaje minus")
-            sTxt = sTxt & "="
-            bError = False
-            Try
-                oBuff = System.Convert.FromBase64String(sTxt)
-            Catch ex As Exception
-                bError = True
-            End Try
-        End If
-
-        If bError Then
-            Await DialogBoxAsync("dodaje minus2")
-            sTxt = sTxt & "="
-            bError = False
-            Try
-                oBuff = System.Convert.FromBase64String(sTxt)
-            Catch ex As Exception
-                bError = True
-            End Try
-        End If
-
-        If bError Then
-            App.mtGranyUtwor = Nothing
-            Return False
-        End If
-
-        sTxt = System.Text.Encoding.ASCII.GetString(oBuff)
-        ' "U:\Public\MyProduction\OldMusic\DVD\OldMusic.001\OldMusic\70\AlRobertsJr"
-        App.mtGranyUtwor.uri = sTxt
-
-        For i As Integer = 2 To aArr.GetUpperBound(0)
-            Dim aFld As String() = aArr(i).Split("|")
-            If aFld.GetUpperBound(0) = 2 Then
-                Select Case aFld(1)
-                    Case "ID"
-                        App.mtGranyUtwor.ID = aFld(2).Trim
-                    Case "Artist"
-                        App.mtGranyUtwor.artist = aFld(2).Trim
-                    Case "Title"
-                        App.mtGranyUtwor.title = aFld(2).Trim
-                    Case "Album"
-                        App.mtGranyUtwor.album = aFld(2).Trim
-                    Case "Rok"
-                        App.mtGranyUtwor.year = aFld(2).Trim
-                    Case "Dekada"
-                        App.mtGranyUtwor.dekada = aFld(2).Trim
-                    Case "Track"
-                        App.mtGranyUtwor.track = aFld(2).Trim
-                    Case "Bitrate"
-                        App.mtGranyUtwor.bitrate = aFld(2).Trim
-                    Case "Duration"
-                        App.mtGranyUtwor.duration = aFld(2).Trim
-                    Case "Channels"
-                        App.mtGranyUtwor.channels = aFld(2).Trim
-                    Case "Sample"
-                        App.mtGranyUtwor.sample = aFld(2).Trim
-                    Case "fSize"
-                        App.mtGranyUtwor.fsize = aFld(2).Trim
-                    Case Else   ' Comment
-                        App.mtGranyUtwor.comment &= aFld(2).Trim
-                End Select
-
-            End If
-            '|Artist|The Beatles |Title|Till There Was You |Album|Anthology 1 (disc 2) |Rok|1995 
-            '|Dekada|199x |Track| |Bitrate|192 |Duration|174 |channels|Stereo |sample|44100 |fsize|4183064 |Comment|RiBor 
-        Next
-
-        Return True
-
-    End Function
-
-    Private Sub ExtractCyganCounts(sPage As String)
-        Dim aArr As String() = sPage.Split(vbCrLf)
-        If aArr.GetUpperBound(0) < 2 Then Return    ' jakiś błąd, ale niby jaki?
-
-        For i As Integer = 0 To aArr.GetUpperBound(0)
-            If Not aArr(i).Trim.StartsWith("COUNT") Then Continue For
-
-            Dim aFld As String() = aArr(i).Split("|")
-            If aFld.GetUpperBound(0) = 2 Then
-                Select Case aFld(1)
-                    Case "artist"
-                        App.mtGranyUtwor.countArtist = aFld(2).Trim
-                    Case "title"
-                        App.mtGranyUtwor.countTitle = aFld(2).Trim
-                    Case "album"
-                        App.mtGranyUtwor.countAlbum = aFld(2).Trim
-                    Case "year"
-                        App.mtGranyUtwor.countYear = aFld(2).Trim
-                    Case "dekada"
-                        App.mtGranyUtwor.countDekada = aFld(2).Trim
-                End Select
-            End If
-        Next
-
-    End Sub
 
 #Region "Zapetlenia"
 
@@ -687,7 +504,7 @@ Public NotInheritable Class MainPage
     Private Async Function GoNextSong() As Task(Of Boolean)
         Dim sDOut As String = ""
         If App.mtGranyUtwor IsNot Nothing Then
-            sDOut = "GoNextSong, miNextMode=" & miNextMode & ", miCoCzytam=" & miCoCzytam & ", artist=" & App.mtGranyUtwor.artist & vbCrLf
+            sDOut = "GoNextSong, miNextMode=" & miNextMode & ", miCoCzytam=" & miCoCzytam & ", artist=" & App.mtGranyUtwor.oAudioParam.artist & vbCrLf
         Else
             sDOut = "GoNextSong, miNextMode=" & miNextMode & ", miCoCzytam=" & miCoCzytam & ", artist=NULL" & vbCrLf
         End If
@@ -718,27 +535,27 @@ Public NotInheritable Class MainPage
                         Return False
                     End If
 
-                    If Not Await GetNextSong() Then Return False
-                    App.gsLog = App.gsLog & "GoNextSong, wylosowany " & App.mtGranyUtwor.ID & vbCrLf
+                    If Not Await App.goDbase.GetNextSong(miNextMode, App.mtGranyUtwor) Then Return False
+                    App.gsLog = App.gsLog & "GoNextSong, wylosowany " & App.mtGranyUtwor.oAudioParam.id & vbCrLf
 
                     If miNextMode = 0 Then
-                        Dim iCnt As Integer = GetSettingsInt("dekada" & App.mtGranyUtwor.dekada)
+                        Dim iCnt As Integer = GetSettingsInt("dekada" & App.mtGranyUtwor.oAudioParam.dekada)
                         iCnt = iCnt - 1
                         If iCnt > 1 Then
                             ' jeszcze nie
-                            SetSettingsInt("dekada" & App.mtGranyUtwor.dekada, iCnt)
+                            SetSettingsInt("dekada" & App.mtGranyUtwor.oAudioParam.dekada, iCnt)
                             App.gsLog = App.gsLog & "GoNextSong, ale nie każdy z tej dekady! " & vbCrLf
                             bFound = False
                         Else
                             ' juz zagraj
                             iCnt = 1
-                            For Each oItem As tDekada In App.mlDekady
-                                If oItem.sNazwa = App.mtGranyUtwor.dekada Then
+                            For Each oItem As tDekada In App.goDbase.mlDekady
+                                If oItem.sNazwa = App.mtGranyUtwor.oAudioParam.dekada Then
                                     iCnt = App.FreqSlider2Counter(oItem.iFreq)
                                     Exit For
                                 End If
                             Next
-                            SetSettingsInt("dekada" & App.mtGranyUtwor.dekada, iCnt)
+                            SetSettingsInt("dekada" & App.mtGranyUtwor.oAudioParam.dekada, iCnt)
                             bFound = True
                         End If
                     Else
@@ -749,8 +566,10 @@ Public NotInheritable Class MainPage
 
                 ' App.mtGranyUtwor.ID ustawiony wczesniej (w ExtractCyganInfo)
                 ' to robimy tylko raz, zas cygan-info moze isc kilka razy (bo nie kazdy z tej dekady jest do pokazania)
-                Dim sPage As String = Await App.HttpPageAsync("/cygan-counts.asp?id=" & App.mtGranyUtwor.ID, "song stats")
-                ExtractCyganCounts(sPage) ' uzupełnia count* w App.mtGranyUtwor
+                Await App.goDbase.GetCountsy(App.mtGranyUtwor)
+
+                'Dim sPage As String = Await App.HttpPageAsync("/cygan-counts.asp?id=" & App.mtGranyUtwor.oAudioParam.id, "song stats")
+                'ExtractCyganCounts(sPage) ' uzupełnia count* w App.mtGranyUtwor
 
                 WypelnijPola()
 
@@ -765,12 +584,12 @@ Public NotInheritable Class MainPage
         End If ' if LoopUtworu
 
         If miCoCzytam = 1 Or miNextMode = 6 Then
-            Dim sTxt As String = App.mtGranyUtwor.uri
+            'Dim sTxt As String = App.mtGranyUtwor.uri
 
-            sTxt = sTxt.Replace("#", "%23")  ' to jest tylko proba - teraz moze podwojnie escapeowa?
-            Dim oUri As Uri = New Uri(App.BaseUri & "/p" & sTxt)   ' sTxt = "/store/.... "
-            ' Dim oMSource As Windows.Media.Core.MediaSource
-            moMSource = Windows.Media.Core.MediaSource.CreateFromUri(oUri)
+            'sTxt = sTxt.Replace("#", "%23")  ' to jest tylko proba - teraz moze podwojnie escapeowa?
+            'Dim oUri As Uri = New Uri(App.BaseUri & "/p" & sTxt)   ' sTxt = "/store/.... "
+            '' Dim oMSource As Windows.Media.Core.MediaSource
+            moMSource = Await App.goStorage.GetMediaSourceFrom(App.mtGranyUtwor.oStoreFile)
 
             App.moMediaPlayer.Source = moMSource
             Try
@@ -792,8 +611,8 @@ Public NotInheritable Class MainPage
                 .IsEnabled = True
                 With .DisplayUpdater
                     .Type = MediaPlaybackType.Music
-                    .MusicProperties.Artist = App.mtGranyUtwor.artist
-                    .MusicProperties.Title = App.mtGranyUtwor.title
+                    .MusicProperties.Artist = App.mtGranyUtwor.oAudioParam.artist
+                    .MusicProperties.Title = App.mtGranyUtwor.oAudioParam.title
                 End With
             End With
             AddHandler App.moMediaPlayer.SystemMediaTransportControls.ButtonPressed, AddressOf SystemMediaControls_Button
@@ -864,7 +683,7 @@ Public NotInheritable Class MainPage
         'oDekada.sFreq = App.FreqSlider2Text(oSlider.Value)
 
         uiSliderInfo.Text = App.FreqSlider2Text(uiSlider.Value)
-        For Each oDekada As tDekada In App.mlDekady
+        For Each oDekada As tDekada In App.goDbase.mlDekady
             If oDekada.sNazwa = uiDekada.Text Then
                 oDekada.sFreq = uiSliderInfo.Text
                 oDekada.iFreq = uiSlider.Value
@@ -958,13 +777,13 @@ Public NotInheritable Class MainPage
 
         Select Case sSenderName.Substring(2, 4)
             Case "arti"
-                sTxt = App.mtGranyUtwor.artist
+                sTxt = App.mtGranyUtwor.oAudioParam.artist
                 iInd = sTxt.IndexOfAny(",&")
                 If iInd > -1 Then sTxt = sTxt.Substring(0, iInd)
             Case "titl"
-                sTxt = App.mtGranyUtwor.title
+                sTxt = App.mtGranyUtwor.oAudioParam.title
             Case "albu"
-                sTxt = App.mtGranyUtwor.album
+                sTxt = App.mtGranyUtwor.oAudioParam.album
         End Select
 
         If sTxt = "" Then Return
@@ -975,7 +794,7 @@ Public NotInheritable Class MainPage
         ElseIf sSenderName.EndsWith("wiki") Then
             Dim sUrl As String = "https://en.wikipedia.org/wiki"
             sUrl = sUrl & "/" & sTxt
-            App.OpenBrowser(sUrl, False)
+            OpenBrowser(sUrl)
         End If
 
     End Sub

@@ -1,5 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" xmlns:uap3="http://schemas.microsoft.com/appx/manifest/uap/windows10/3" xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities" xmlns:desktop="http://schemas.microsoft.com/appx/manifest/desktop/windows10" IgnorableNamespaces="uap mp uap3 desktop rescap">
+<Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" 
+         xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest" 
+         xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" 
+         xmlns:uap3="http://schemas.microsoft.com/appx/manifest/uap/windows10/3" 
+         xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities" 
+         xmlns:desktop="http://schemas.microsoft.com/appx/manifest/desktop/windows10" 
+         IgnorableNamespaces="uap mp uap3 desktop rescap">
   <Identity Name="622PKar.GrajCyganie" Publisher="CN=B2AF14E8-43FD-463C-83BA-4CEC47122EA2" Version="1.2.4.0" />
   <mp:PhoneIdentity PhoneProductId="118a573d-dbbb-4f83-ac95-6f649233e16e" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
@@ -35,8 +41,9 @@
     <Capability Name="internetClient" />
     <uap3:Capability Name="backgroundMediaPlayback" />
     <uap3:Capability Name="remoteSystem" />
-    <!--  <rescap:Capability Name="fullTrust" /> -->
+    <rescap:Capability Name="fullTrust" /> <!-- było zaREMowane, ale dla dostepu do plikow lokalnych muszę to mieć -->
     <rescap:Capability Name="confirmAppClose" />
+    <rescap:Capability Name="broadFileSystemAccess" />
     <DeviceCapability Name="microphone" />
   </Capabilities>
 </Package>

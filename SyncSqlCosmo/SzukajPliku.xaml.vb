@@ -18,9 +18,11 @@ Public NotInheritable Class SzukajPliku
         End If
 
         ProgRingShow(True)
-        Dim iCount As Long = Await CosmosGetCountAsync("StoreFiles")
-        Dim iTotalBytes As Long = Await CosmosGetSumAsync("StoreFiles", "len")
-        uiStats.Text = "Global stat: " & iCount.ToStringWithSpaces & ", " & iTotalBytes.ToStringWithSpaces
+        If gCountFiles = 0 Then
+            gCountFiles = Await CosmosGetCountAsync("StoreFiles")
+            gSumFiles = Await CosmosGetSumAsync("StoreFiles", "len")
+        End If
+        uiStats.Text = "Global stat: " & gCountFiles.ToStringWithSpaces & ", " & gSumFiles.ToStringWithSpaces
         ProgRingShow(False)
     End Sub
 

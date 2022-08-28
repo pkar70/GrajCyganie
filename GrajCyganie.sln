@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31424.327
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32602.215
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "GrajCyganie", "GrajCyganie\GrajCyganie.vbproj", "{80926213-367D-4D58-9824-1027274A0243}"
 EndProject
@@ -10,6 +10,8 @@ EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "SyncSqlCosmo", "SyncSqlCosmo\SyncSqlCosmo.vbproj", "{509A984D-0370-40FE-9A1E-D9F1BFEB8072}"
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "WebPkarind", "WebPkarind\WebPkarind.vbproj", "{1D8A5A75-2774-4364-A65C-EE13DF13DCD1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetCoreSWebApp", "NetCoreSWebApp\NetCoreSWebApp.csproj", "{2CE15846-4DFB-4755-9826-D3A1315625E7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -113,6 +115,26 @@ Global
 		{1D8A5A75-2774-4364-A65C-EE13DF13DCD1}.Release|x64.Build.0 = Release|Any CPU
 		{1D8A5A75-2774-4364-A65C-EE13DF13DCD1}.Release|x86.ActiveCfg = Release|Any CPU
 		{1D8A5A75-2774-4364-A65C-EE13DF13DCD1}.Release|x86.Build.0 = Release|Any CPU
+		{2CE15846-4DFB-4755-9826-D3A1315625E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2CE15846-4DFB-4755-9826-D3A1315625E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2CE15846-4DFB-4755-9826-D3A1315625E7}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{2CE15846-4DFB-4755-9826-D3A1315625E7}.Debug|ARM.Build.0 = Debug|Any CPU
+		{2CE15846-4DFB-4755-9826-D3A1315625E7}.Debug|ARM64.ActiveCfg = Debug|Any CPU
+		{2CE15846-4DFB-4755-9826-D3A1315625E7}.Debug|ARM64.Build.0 = Debug|Any CPU
+		{2CE15846-4DFB-4755-9826-D3A1315625E7}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{2CE15846-4DFB-4755-9826-D3A1315625E7}.Debug|x64.Build.0 = Debug|Any CPU
+		{2CE15846-4DFB-4755-9826-D3A1315625E7}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{2CE15846-4DFB-4755-9826-D3A1315625E7}.Debug|x86.Build.0 = Debug|Any CPU
+		{2CE15846-4DFB-4755-9826-D3A1315625E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2CE15846-4DFB-4755-9826-D3A1315625E7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2CE15846-4DFB-4755-9826-D3A1315625E7}.Release|ARM.ActiveCfg = Release|Any CPU
+		{2CE15846-4DFB-4755-9826-D3A1315625E7}.Release|ARM.Build.0 = Release|Any CPU
+		{2CE15846-4DFB-4755-9826-D3A1315625E7}.Release|ARM64.ActiveCfg = Release|Any CPU
+		{2CE15846-4DFB-4755-9826-D3A1315625E7}.Release|ARM64.Build.0 = Release|Any CPU
+		{2CE15846-4DFB-4755-9826-D3A1315625E7}.Release|x64.ActiveCfg = Release|Any CPU
+		{2CE15846-4DFB-4755-9826-D3A1315625E7}.Release|x64.Build.0 = Release|Any CPU
+		{2CE15846-4DFB-4755-9826-D3A1315625E7}.Release|x86.ActiveCfg = Release|Any CPU
+		{2CE15846-4DFB-4755-9826-D3A1315625E7}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

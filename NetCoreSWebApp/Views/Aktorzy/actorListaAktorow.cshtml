@@ -1,0 +1,14 @@
+﻿@page
+
+<h2>lista aktorow</h2>
+
+<ul>
+@foreach(ActorName aktor in ViewBag.Lista)
+{
+ <li>
+      <a href="aktorzy?actorId=@aktor.Id">@aktor.Name</a>
+     <small><a href="https://www.imdb.com/name/@aktor.Id.Trim()">imdb</a></small>
+ </li> 
+}
+
+</ul>

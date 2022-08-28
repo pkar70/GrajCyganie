@@ -130,6 +130,8 @@
                         <MenuFlyoutSeparator/>
                         <MenuFlyoutItem Text="Dekady" Click="uiGoStat_Click" />
                         <MenuFlyoutSeparator/>
+                        <MenuFlyoutItem Text="Baza i pliki" Click="uiGoDbaseFiles_Click" />
+                        <MenuFlyoutSeparator/>
                         <MenuFlyoutItem Text="Net stat" Click="uiGoNetStat_Click" />
                     </MenuFlyout>
                 </AppBarButton.Flyout>

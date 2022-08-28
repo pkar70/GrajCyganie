@@ -116,6 +116,7 @@ Public NotInheritable Class OpenM3u
         If oSlider Is Nothing Then Exit Sub
 
         Dim oDekada As tDekada = TryCast(oSlider.DataContext, tDekada)
+        If oDekada Is Nothing Then Exit Sub
         oDekada.sFreq = App.FreqSlider2Text(oSlider.Value)
 
         Dim oGrid As Grid = TryCast(oSlider.Parent, Grid)

@@ -1,0 +1,16 @@
+﻿@page
+
+
+<h2>lista filmów aktora</h2>
+
+<h4>@ViewBag.ActorName</h4>
+
+<ul>
+@*uwaga: podmienione są Path na osobę jako kto aktor występuje
+*@
+
+@foreach(StoreFile pliczek in ViewBag.Lista)
+    {
+    <li><a href='filmy.asp?name=@pliczek.ID'>@pliczek.Name</a> <small>(as @pliczek.Path)</small></li>
+    }
+</ul>

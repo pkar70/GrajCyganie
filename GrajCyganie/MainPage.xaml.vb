@@ -30,34 +30,8 @@ Public NotInheritable Class MainPage
     Private moMSource As Windows.Media.Core.MediaSource
     'Private moMSource As Windows.Media.Playback.MediaPlaybackItem
 
-    Private Sub uiGoLogin_Click(sender As Object, e As RoutedEventArgs)
-        DebugOut("uiGoLogin_Click")
-        Me.Frame.Navigate(GetType(Login))
-    End Sub
 
-    Private Sub uiGoStat_Click(sender As Object, e As RoutedEventArgs)
-        DebugOut("uiGoStat_Click")
-        Me.Frame.Navigate(GetType(OpenM3u))
-    End Sub
 
-    Private Sub uiGoNetStat_Click(sender As Object, e As RoutedEventArgs)
-        DebugOut("uiGoNetStat_Click")
-        Me.Frame.Navigate(GetType(Siec))
-    End Sub
-
-    Private Sub uiGoNet_Click(sender As Object, e As RoutedEventArgs)
-        DebugOut("uiGoNet_Click")
-        If Not NetIsIPavailable(False) Then
-            DialogBox("Ale najpierw włącz Internety...")
-            Return
-        End If
-        Me.Frame.Navigate(GetType(JamPilot))
-    End Sub
-
-    Private Sub uiGoAudio_Click(sender As Object, e As RoutedEventArgs)
-        DebugOut("uiGoAudio_Click")
-        Me.Frame.Navigate(GetType(Audio))
-    End Sub
 #Region "Gadaczka"
 
     Private Function SpeakRozpoznajJezykStringu(sString As String) As String
@@ -255,12 +229,57 @@ Public NotInheritable Class MainPage
 
     End Sub
 
+    Private Sub ConnectDbase()
+        Dim sSelected As String = GetSettingsString("usingBaza")
+
+        If (New dbase_beskidAsp).Nazwa = sSelected Then
+            App.goDbase = New dbase_beskidAsp
+            Return
+        End If
+
+        If (New dbase_localASP).Nazwa = sSelected Then
+            App.goDbase = New dbase_localASP
+            Return
+        End If
+
+        If App.goDbase Is Nothing Then App.goDbase = New dbase_localASP
+
+    End Sub
+
+    Private Sub ConnectFiles()
+        Dim sSelected As String = GetSettingsString("usingPliki")
+
+        If (New storage_beskid).Nazwa = sSelected Then
+            App.goStorage = New storage_beskid
+            Return
+        End If
+
+        If (New Storage_Local).Nazwa = sSelected Then
+            App.goStorage = New Storage_Local
+            Return
+        End If
+
+        If App.goStorage Is Nothing Then App.goStorage = New Storage_Local
+
+    End Sub
+
+
+
+    Private Sub ConnectServices()
+        ConnectDbase()
+        ConnectFiles()
+
+
+    End Sub
+
     Private Async Sub Page_Loaded(sender As Object, e As RoutedEventArgs)
         DebugOut("Page_Loaded")
         moLastNextDate = Date.Now
 
+        ConnectServices()
+
         If Not IsFamilyMobile() Then
-            ApplicationView.GetForCurrentView().SetPreferredMinSize(New Size(300, 400))
+            ApplicationView.GetForCurrentView().SetPreferredMinSize(New Size(310, 400))
         End If
 
         AddHandler Windows.UI.Core.Preview.SystemNavigationManagerPreview.GetForCurrentView().CloseRequested, AddressOf SNM_CloseRequested
@@ -452,9 +471,6 @@ Public NotInheritable Class MainPage
 
 #End Region
 
-    Private Sub uiGoSearch_Click(sender As Object, e As RoutedEventArgs)
-
-    End Sub
 
 
 
@@ -799,8 +815,12 @@ Public NotInheritable Class MainPage
 
     End Sub
 
+#Region "BottomMenu"
+#Region "BottomMenu-Settings"
+
     Private Sub uiLogShow_Click(sender As Object, e As RoutedEventArgs)
-        DebugOut("uiLogShow_Click")
+        DumpCurrMethod()
+
         If App.gsLog.Length > 10000 Then
             App.gsLog = App.gsLog.Substring(App.gsLog.Length - 10000)
         End If
@@ -808,11 +828,54 @@ Public NotInheritable Class MainPage
     End Sub
 
     Private Async Sub uiLogClear_Click(sender As Object, e As RoutedEventArgs)
-        DebugOut("uiLogClear_Click")
+        DumpCurrMethod()
+
         If Await DialogBoxYNAsync("Skasować log?") Then
             App.gsLog = ""
         End If
     End Sub
+
+    Private Sub uiGoStat_Click(sender As Object, e As RoutedEventArgs)
+        DumpCurrMethod()
+        Me.Frame.Navigate(GetType(OpenM3u))
+    End Sub
+
+    Private Sub uiGoNetStat_Click(sender As Object, e As RoutedEventArgs)
+        DumpCurrMethod()
+        Me.Frame.Navigate(GetType(Siec))
+    End Sub
+
+    Private Sub uiGoDbaseFiles_Click(sender As Object, e As RoutedEventArgs)
+        DumpCurrMethod()
+        Me.Frame.Navigate(GetType(DbaseAndStorage))
+    End Sub
+#End Region
+
+    Private Sub uiGoSearch_Click(sender As Object, e As RoutedEventArgs)
+        DumpCurrMethod()
+    End Sub
+
+    Private Sub uiGoLogin_Click(sender As Object, e As RoutedEventArgs)
+        DumpCurrMethod()
+        Me.Frame.Navigate(GetType(Login))
+    End Sub
+
+    Private Sub uiGoNet_Click(sender As Object, e As RoutedEventArgs)
+        DumpCurrMethod()
+
+        If Not NetIsIPavailable(False) Then
+            DialogBox("Ale najpierw włącz Internety...")
+            Return
+        End If
+        Me.Frame.Navigate(GetType(JamPilot))
+    End Sub
+
+    Private Sub uiGoAudio_Click(sender As Object, e As RoutedEventArgs)
+        DumpCurrMethod()
+        Me.Frame.Navigate(GetType(Audio))
+    End Sub
+
+#End Region
 
     Private Sub Page_Unloaded(sender As Object, e As RoutedEventArgs)
         DebugOut("Page_Unloaded")
@@ -844,4 +907,5 @@ Public NotInheritable Class MainPage
         End Try
 
     End Sub
+
 End Class

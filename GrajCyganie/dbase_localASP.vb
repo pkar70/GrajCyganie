@@ -1,25 +1,7 @@
 ﻿Public Class dbase_localASP
-    Inherits dbase_base
-
+    Inherits dbase_baseASP
     Public Overrides ReadOnly Property Nazwa As String = "LocalASP"
 
-    Public Overrides Async Function GetPermission(sUser As String) As Task(Of String)
-        mbGranted = True
-        Return "MAM"
-    End Function
+    Protected Overrides ReadOnly Property BaseUri As String = "http://127.0.0.1/"
 
-    Public Overrides Async Function GetMaxId() As Task(Of Boolean)
-        Throw New NotImplementedException()
-    End Function
-
-    Protected Overrides Async Function DekadyDownload() As Task(Of Boolean)
-        Throw New NotImplementedException()
-    End Function
-    Public Overrides Async Function GetCountsy(oGrany As tGranyUtwor) As Task(Of Boolean)
-
-    End Function
-
-    Public Overrides Function GetNextSong(iNextMode As Integer, oGrany As tGranyUtwor) As Task(Of Boolean)
-        Throw New NotImplementedException()
-    End Function
 End Class

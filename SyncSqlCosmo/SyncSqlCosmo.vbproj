@@ -133,7 +133,8 @@
     <Compile Include="App.xaml.vb">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="cosmoDB.vb" />
+    <Compile Include="dbase_cosmoDB.vb" />
+    <Compile Include="dbase_SQLlocal.vb" />
     <Compile Include="Filmy.xaml.vb">
       <DependentUpon>Filmy.xaml</DependentUpon>
     </Compile>
@@ -165,6 +166,8 @@
     <Content Include="Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
     <Content Include="Assets\StoreLogo.png" />
     <Content Include="Assets\Wide310x150Logo.scale-200.png" />
+    <None Include="$(MSBuildThisFileDirectory)_changes.txt" />
+    <None Include="$(MSBuildThisFileDirectory)_tudus.txt" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">

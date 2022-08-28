@@ -1,5 +1,5 @@
 ﻿Partial Public Class Storage_Beskid
-    Inherits Storage_Base
+    Inherits Storage_BaseWeb
 
     Public Overrides ReadOnly Property Nazwa As String = "Beskid"
 

@@ -77,12 +77,12 @@
 
                         <Grid.ContextFlyout>
                             <MenuFlyout>
-                                <MenuFlyoutItem Text="copy web path" Click="uiCopyGisWebPath_Click" />
+                                <!--<MenuFlyoutItem Text="copy web path" Click="uiCopyGisWebPath_Click" />
                                 <MenuFlyoutItem Text="open Web" Click="uiOpenGisWeb_Click" />
                                 <MenuFlyoutItem Text="copy GIS path" Click="uiCopyGisExpPath_Click" />
                                 <MenuFlyoutItem Text="open GIS folder" Click="uiOpenGisExp_Click" />
                                 <MenuFlyoutItem Text="open GIS file" Click="uiOpenGisFile_Click" />
-                                <MenuFlyoutItem Text="open local folder" Click="uiOpenLocalFolder_Click" />
+                                <MenuFlyoutItem Text="open local folder" Click="uiOpenLocalFolder_Click" />-->
                             </MenuFlyout>
                         </Grid.ContextFlyout>
                     </Grid>

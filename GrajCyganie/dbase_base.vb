@@ -94,6 +94,11 @@ Public MustInherit Class dbase_base
         Await DekadySave()
         SetSettingsInt("lastDekadyStat", Date.Now.DayOfYear)
 
+        ' 2021.11.14, po przenosinach na nowy komp
+        ' czyzby tego brakowalo, i dlatego w kolko trafialo na ten jeden utwor?
+        ' nigdzie nie bylo ustawiania MaxId!
+        If Not Await GetMaxId() Then Return False
+
         Return True
 
     End Function

@@ -1,0 +1,85 @@
+﻿https://github.com/nsimat/BethanyPieShop/tree/master/BethanyPieShop/Models
+
+
+
+Co jest teraz z bazy danych:
+
+AKTORZY:
+	' aktorzy do filmu
+	sQry = "SELECT * FROM StoreFiles WHERE name LIKE '%" & Request("filmId") & "%' OR path LIKE '%" & Request("filmId") & "%'"
+	sQry = "SELECT * FROM actorNames INNER JOIN actorFilm ON actorNames.id = actorFilm.actorId WHERE filmId LIKE '" & Request("filmId") & "%'"
+
+	' filmy aktora
+	sQry = "SELECT * FROM actorNames WHERE id LIKE '" & Request("actorId") & "%'"
+	sQry = "SELECT * FROM actorFilm WHERE actorId LIKE '" & Request("actorId") & "%'"
+			sQry = "SELECT * FROM StoreFiles WHERE name LIKE '%" & sFilmId & "%' OR path LIKE '%" & sFilmId & "'"
+
+						' czyli wyszukujemy aktora...
+			sQry = "SELECT * FROM actorNames WHERE name LIKE '%" & Request("name") & "%' ORDER BY name"
+
+				sQry = "U:\Public\MyProduction\Models\" & Left(sTmp,1) & "\" & Left(sTmp,2) & "\" & sTmp
+	sQuery = "SELECT COUNT(*) FROM StoreFiles WHERE path LIKE '" & sQry & "%' AND isDir=0 AND del=0 AND name != 'webdir.htm' AND name !='descript.ion'"
+
+ALBUMPICS:
+		sQry = "SELECT * FROM Galleries WHERE name = '" & Replace(sId,"'","''") & "' AND deadline > GetDate()"
+	sWhere = sWhere & "' AND isDir=0 AND del=0 AND name NOT LIKE '%htm' AND name != 'descript.ion' AND name NOT LIKE '%avi'"
+	sQry = "SELECT COUNT(*) FROM StoreFiles WHERE " & sWhere
+...
+
+BROWSER:
+ sQry = "SELECT name FROM StoreFiles WHERE isDir=1 AND del=0 AND path = '" & sDir & "' ORDER BY name"
+ sQry = "SELECT name,filedate,len FROM StoreFiles WHERE isDir=0 AND del=0 AND path = '" & sDir & "' ORDER BY name"
+
+
+ BUKSY:
+  sQry = "SELECT DISTINCT name FROM StoreFiles WHERE isDir=1 AND del=0 AND " & sLike & " ORDER BY name"
+ sQry = "SELECT name,filedate,len,path FROM StoreFiles WHERE isDir=0 AND del=0 AND " & sLike & " ORDER BY name"
+
+ createAlbLink
+ 	sQry = "SELECT COUNT(*) FROM Galleries WHERE name='" & sId & "'"
+
+
+cygan-counts
+		sQry = "SELECT COUNT(*) FROM audioParam WHERE artist='" & Replace(oRs("artist"),"'","''") & "'"
+		sQry = "SELECT COUNT(*) FROM audioParam WHERE title='" & Replace(oRs("title"),"'","''") & "'"
+		sQry = "SELECT COUNT(*) FROM audioParam WHERE album='" & Replace(oRs("album"),"'","''") & "'"
+		sQry = "SELECT COUNT(*) FROM audioParam WHERE year='" & Replace(oRs("year"),"'","''") & "'"
+		sQry = "SELECT COUNT(*) FROM audioParam WHERE dekada='" & Replace(oRs("dekada"),"'","''") & "'"
+
+
+cygan-dekady
+	 sQry = "select dekada, count(*), sum(duration) from audioParam group by dekada order by dekada"
+
+
+cygan-info
+			sQry = "SELECT TOP 1 * FROM audioParam WHERE artist='" & oRs("artist") & "'"
+			sQry = "SELECT TOP 1 * FROM audioParam WHERE title='" & oRs("title") & "'"
+			sQry = "SELECT TOP 1 * FROM audioParam WHERE album='" & oRs("album") & "'"
+			sQry = "SELECT TOP 1 * FROM audioParam WHERE year='" & oRs("year") & "'"
+			sQry = "SELECT TOP 1 * FROM audioParam WHERE dekada='" & oRs("dekada") & "'"
+			sQry = "SELECT TOP 1 * FROM audioParam WHERE 1=1 "
+		sQry = "SELECT TOP 1 path,name,len FROM StoreFiles WHERE ID = " & oRs("fileID")
+
+
+cygan-maxId
+		sQry = "SELECT MAX(ID) FROM audioParam"
+
+
+filmy
+	 sInnerJoin = " FROM StoreFiles LEFT JOIN videoParam ON StoreFiles.ID = videoParam.fileID " 
+	sQry = "(name LIKE '" & sTmp & "' OR path LIKE '" & sTmp & "') "
+	sQuery = "SELECT COUNT (fileID),SUM(duration) " & sInnerJoin & " WHERE " & sQry
+
+filmyaktora
+				sQry = "(name LIKE '%" & sFilmId & "%' OR path LIKE '%" & sFilmId & "%') "
+			sInnerJoin = " FROM StoreFiles INNER JOIN videoParam ON StoreFiles.ID = videoParam.fileID " 
+			sQuery = "SELECT TOP 25 path, name, len, duration, imageSize, mimeType, video, audio, subtitle, other " & sInnerJoin & " WHERE " & sQry
+			sQuery = sQuery & " AND del=0 AND (path LIKE 'u:\public\recordings\%' OR path LIKE 'u:\public\boughtcontents\__d\%')"
+	sQuery = "SELECT COUNT (ID),SUM(duration) FROM videoParam"
+
+
+fotosy:
+				sQuery = "SELECT COUNT(*) FROM StoreFiles WHERE path LIKE '" & sQry & "%' AND isDir=0 AND del=0 AND name != 'webdir.htm' AND name !='descript.ion'"
+
+
+

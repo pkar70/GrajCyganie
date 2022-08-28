@@ -324,8 +324,7 @@ Partial NotInheritable Class App
 
     Public Shared gsLog As String = ""
 
-    Public Shared goStorage As Storage_Base = New Storage_Local
-    Public Shared goDbase As dbase_base = New dbase_beskidAsp
-    ' Public Shared goDbase As dbase_base = New dbase_sql
+    Public Shared goStorage As Storage_Base = Nothing
+    Public Shared goDbase As dbase_base = Nothing
 
 End Class

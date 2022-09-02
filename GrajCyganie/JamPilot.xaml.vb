@@ -1,4 +1,4 @@
-﻿' The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
+﻿Imports vb14 = Vblib.pkarlibmodule14
 
 ''' <summary>
 ''' An empty page that can be used on its own or navigated to within a Frame.
@@ -14,7 +14,7 @@ Public NotInheritable Class JamPilot
             Await Windows.System.RemoteSystems.RemoteSystem.RequestAccessAsync()
 
         If oAccStat <> Windows.System.RemoteSystems.RemoteSystemAccessStatus.Allowed Then
-            Await DialogBoxAsync("Not permission")
+            Await vb14.DialogBoxAsync("Not permission")
             Return
         End If
 
@@ -115,7 +115,7 @@ Public NotInheritable Class JamPilot
         Return oRemSysResp
 
         Catch ex As Exception
-            CrashMessageAdd("@SendCommandToRemoteSystemAsync", ex)
+            vb14.CrashMessageAdd("@SendCommandToRemoteSystemAsync", ex)
         End Try
 
         Return Nothing
@@ -152,7 +152,7 @@ Public NotInheritable Class JamPilot
         Dim sResp As String = Await SendMessageToRemoteSystemAsync(oRemSys, sCmd)
         If sResp <> "OK" Then
             ' Debug.WriteLine("ret z komendy '" & sCmd & "': " & sResp)
-            DialogBox("ret z komendy '" & sCmd & "': " & sResp)
+            vb14.DialogBox("ret z komendy '" & sCmd & "': " & sResp)
             Return False
         End If
 
@@ -175,24 +175,24 @@ Public NotInheritable Class JamPilot
         Dim oRemSysResp As AppService.AppServiceResponse = Await SendCommandToRemoteSystemAsync(oRemSys, "details")
         If oRemSysResp Is Nothing Then Return
         If oRemSysResp.Message("result").ToString() <> "OK" Then
-            DialogBox("Error: " & oRemSysResp.Message("result").ToString())
+            vb14.DialogBox("Error: " & oRemSysResp.Message("result").ToString())
             Return
         End If
 
         Dim sXml As String = oRemSysResp.Message("granyUtwor").ToString()
         If sXml.Length < 10 Then
-            DialogBox("Error: too short data: " & sXml)
+            vb14.DialogBox("Error: too short data: " & sXml)
             Return
         End If
 
         Dim oSer As Xml.Serialization.XmlSerializer
-        oSer = New Xml.Serialization.XmlSerializer(GetType(tGranyUtwor))
+        oSer = New Xml.Serialization.XmlSerializer(GetType(Vblib.tGranyUtwor))
         Dim oStream As Stream = New MemoryStream
         Dim oWrt As StreamWriter = New StreamWriter(oStream)
         oWrt.Write(sXml)
 
         App.mtGranyUtwor = oSer.Deserialize(oStream)
         oStream.Flush()
-        Me.Frame.GoBack()
+        Me.GoBack()
     End Sub
 End Class

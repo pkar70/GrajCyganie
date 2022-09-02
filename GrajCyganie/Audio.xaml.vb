@@ -1,6 +1,8 @@
 ﻿' The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
 Imports Windows.Devices.Enumeration
+Imports vb14 = Vblib.pkarlibmodule14
+
 ''' <summary>
 ''' An empty page that can be used on its own or navigated to within a Frame.
 ''' </summary>
@@ -18,7 +20,7 @@ Public NotInheritable Class Audio
             ' podczas grania nie da się?
         End Try
 
-        uiSex.IsOn = GetSettingsBool("sexZapowiedzi")
+        uiSex.GetSettingsBool("sexZapowiedzi")
 
         Dim audioSelector As String = Windows.Media.Devices.MediaDevice.GetAudioRenderSelector()
         Dim outputDevices As DeviceInformationCollection = Await DeviceInformation.FindAllAsync(audioSelector)
@@ -36,14 +38,14 @@ Public NotInheritable Class Audio
 
     Private Sub uiSetAudio_Click(sender As Object, e As RoutedEventArgs)
         If App.moMediaPlayer Is Nothing Then
-            DialogBox("MediaPlayer nie zainicjalizowany?")
+            vb14.DialogBox("MediaPlayer nie zainicjalizowany?")
             Exit Sub
         End If
 
         Dim selectedDevice As DeviceInformation = TryCast(uiComboDevices.SelectedItem, ComboBoxItem).Tag
         If selectedDevice IsNot Nothing Then App.moMediaPlayer.AudioDevice = selectedDevice
 
-        SetSettingsBool("sexZapowiedzi", uiSex.IsOn)
+        uiSex.SetSettingsBool("sexZapowiedzi")
 
     End Sub
 

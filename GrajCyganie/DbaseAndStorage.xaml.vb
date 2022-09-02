@@ -1,23 +1,21 @@
-﻿Public NotInheritable Class DbaseAndStorage
+﻿Imports vb14 = Vblib.pkarlibmodule14
+
+Public NotInheritable Class DbaseAndStorage
     Inherits Page
 
-    Private mbLoading As Boolean = True
-
     Private Sub Page_Loaded(sender As Object, e As RoutedEventArgs)
-        mbLoading = True
         FillComboBaza()
         FillComboPliki()
-
-        mbLoading = False
     End Sub
 
     Private Sub FillComboBaza()
         uiBaza.Items.Clear()
 
-        uiBaza.Items.Add((New dbase_beskidAsp).Nazwa)
-        uiBaza.Items.Add((New dbase_localASP).Nazwa)
+        For Each oDbSrc In App.inVb.gaDbs
+            uiPliki.Items.Add(oDbSrc.Nazwa)
+        Next
 
-        Dim sSelected As String = GetSettingsString("using" & uiBaza.Name)
+        Dim sSelected As String = vb14.GetSettingsString("usingDB")
         If sSelected <> "" Then
             For Each oItem As ComboBoxItem In uiBaza.Items
                 If oItem.Content = sSelected Then oItem.IsSelected = True
@@ -28,10 +26,12 @@
     Private Sub FillComboPliki()
         uiPliki.Items.Clear()
 
-        uiPliki.Items.Add((New storage_beskid).Nazwa)
-        uiPliki.Items.Add((New Storage_Local).Nazwa)
+        uiPliki.Items.Add("localstorage")
+        'For Each oDbSrc In App.inVb.gaDbs
+        '    uiPliki.Items.Add(oDbSrc.Nazwa)
+        'Next
 
-        Dim sSelected As String = GetSettingsString("using" & uiPliki.Name)
+        Dim sSelected As String = vb14.GetSettingsString("usingFS")
         If sSelected <> "" Then
             For Each oItem As ComboBoxItem In uiPliki.Items
                 If oItem.Content = sSelected Then oItem.IsSelected = True
@@ -39,17 +39,22 @@
         End If
     End Sub
 
-
     Private Sub SaveCombo(uiCombo As ComboBox)
         Dim iSelItem As Integer = uiCombo.SelectedIndex
         If iSelItem < 0 Then Return
         Dim sValue As String = uiCombo.SelectedItem().ToString
-        SetSettingsString("using" & uiCombo.Name, sValue)
+        Dim sSettName As String = "using"
+        If uiCombo.Name.Contains("Pliki") Then
+            sSettName &= "FS"
+        Else
+            sSettName &= "DB"
+        End If
+        vb14.SetSettingsString(sSettName, sValue)
     End Sub
     Private Sub uiSave_Click(sender As Object, e As RoutedEventArgs)
         SaveCombo(uiBaza)
         SaveCombo(uiPliki)
-        Me.Frame.GoBack()
+        Me.GoBack()
         ' przełączenie następuje w ramach MainPage:Loaded
     End Sub
 

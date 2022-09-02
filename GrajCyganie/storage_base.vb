@@ -5,6 +5,6 @@
 
 Public MustInherit Class Storage_Base
 
-    Public MustOverride Async Function GetMediaSourceFrom(oStoreFile As oneStoreFiles) As Task(Of Windows.Media.Core.MediaSource)
+    Public MustOverride Async Function GetMediaSourceFrom(oStoreFile As Vblib.oneStoreFiles) As Task(Of Windows.Media.Core.MediaSource)
     Public MustOverride ReadOnly Property Nazwa As String
 End Class

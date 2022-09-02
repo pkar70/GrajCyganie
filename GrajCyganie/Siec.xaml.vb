@@ -1,8 +1,7 @@
-﻿' The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
+﻿Imports vb14 = Vblib.pkarlibmodule14
+Imports Vblib.Extensions
 
-''' <summary>
-''' An empty page that can be used on its own or navigated to within a Frame.
-''' </summary>
+
 Public NotInheritable Class Siec
     Inherits Page
     '    ---- Network ---
@@ -21,25 +20,25 @@ Public NotInheritable Class Siec
         uiSessionFiles.Text = App.miSessionFiles
         uiSessionMiB.Text = App.miSessionMiB
 
-        uiTotalFiles.Text = BigNumFormat(GetSettingsInt("miTotalFiles"))
-        uiTotalMiB.Text = BigNumFormat(GetSettingsInt("miTotalMiB"))
+        uiTotalFiles.Text = vb14.GetSettingsInt("miTotalFiles").BigNumFormat
+        uiTotalMiB.Text = vb14.GetSettingsInt("miTotalMiB").BigNumFormat
 
-        uiMonthFiles.Text = BigNumFormat(GetSettingsInt("miMonthFiles"))
-        uiMonthMiB.Text = BigNumFormat(GetSettingsInt("miMonthMiB"))
+        uiMonthFiles.Text = vb14.GetSettingsInt("miMonthFiles").BigNumFormat
+        uiMonthMiB.Text = vb14.GetSettingsInt("miMonthMiB").BigNumFormat
 
     End Sub
 
     Private Async Sub uiResetSession_Click(sender As Object, e As RoutedEventArgs)
-        If Await DialogBoxYNAsync("Wyzerować liczniki?") Then
+        If Await vb14.DialogBoxYNAsync("Wyzerować liczniki?") Then
             App.miSessionFiles = 0
             App.miSessionMiB = 0
         End If
     End Sub
 
     Private Async Sub uiResetTotal_Click(sender As Object, e As RoutedEventArgs)
-        If Await DialogBoxYNAsync("Wyzerować liczniki?") Then
-            SetSettingsInt("miTotalFiles", 0)
-            SetSettingsInt("miTotalMiB", 0)
+        If Await vb14.DialogBoxYNAsync("Wyzerować liczniki?") Then
+            vb14.SetSettingsInt("miTotalFiles", 0)
+            vb14.SetSettingsInt("miTotalMiB", 0)
         End If
     End Sub
 

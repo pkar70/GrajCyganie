@@ -1,4 +1,6 @@
-﻿
+﻿Imports vb14 = Vblib.pkarlibmodule14
+Imports Vblib.Extensions
+
 ' 2021.10.16: nowszy pkarmodule (z RemoteSystem)
 ' 2021.10.16: początek przerabiania na CosmoDB
 
@@ -35,7 +37,7 @@ Public NotInheritable Class MainPage
 #Region "Gadaczka"
 
     Private Function SpeakRozpoznajJezykStringu(sString As String) As String
-        DebugOut("SpeakRozpoznajJezykStringu(" & sString)
+
         Dim sT As String = sString.ToLower
         If sT.IndexOf("ą") > -1 Then Return "pl-PL"
         If sT.IndexOf("ć") > -1 Then Return "pl-PL"
@@ -51,13 +53,13 @@ Public NotInheritable Class MainPage
     End Function
 
     Private Async Function SpeakOdczytajString(sString As String, sLang As String) As Task
-        DebugOut("SpeakOdczytajString(" & sString & ", " & sLang)
+        vb14.DumpCurrMethod(sString & ", " & sLang)
         Dim oSynth As Windows.Media.SpeechSynthesis.SpeechSynthesizer = New Windows.Media.SpeechSynthesis.SpeechSynthesizer()
         ' 15063 ma oSynth.Options którymi warto byłoby sie pobawić
 
         Dim bFound As Boolean = False
         Dim cGender As Windows.Media.SpeechSynthesis.VoiceGender = Windows.Media.SpeechSynthesis.VoiceGender.Female
-        If GetSettingsBool("sexZapowiedzi") Then cGender = Windows.Media.SpeechSynthesis.VoiceGender.Male
+        If vb14.GetSettingsBool("sexZapowiedzi") Then cGender = Windows.Media.SpeechSynthesis.VoiceGender.Male
 
         For Each oVoice As Windows.Media.SpeechSynthesis.VoiceInformation In oSynth.AllVoices
             If oVoice.Language = sLang AndAlso oVoice.Gender = cGender Then
@@ -91,7 +93,7 @@ Public NotInheritable Class MainPage
     End Function
 
     Private Function CreateWinTitle() As String
-        DebugOut("CreateWinTitle")
+        vb14.DumpCurrMethod()
         Dim sTxt As String = ""
         If miNextMode <> 1 Then sTxt = App.mtGranyUtwor.oAudioParam.artist
         If miNextMode <> 2 Then
@@ -103,7 +105,7 @@ Public NotInheritable Class MainPage
     End Function
 
     Private Async Function SpeakOdczytaj() As Task
-        DebugOut("SpeakOdczytaj")
+        vb14.DumpCurrMethod()
         If miNextMode = 6 Then Exit Function
 
         Dim sLang As String
@@ -138,10 +140,11 @@ Public NotInheritable Class MainPage
     End Sub
 
     Private Sub WypelnijPola()
-        DebugOut("WypelnijPola")
+        vb14.DumpCurrMethod()
+
         Try
             If App.mtGranyUtwor Is Nothing Then
-                CrashMessageAdd("@WypelnijPola", "Empty App.mtGranyUtwor")
+                vb14.CrashMessageAdd("@WypelnijPola", "Empty App.mtGranyUtwor")
                 Return
             End If
 
@@ -166,16 +169,16 @@ Public NotInheritable Class MainPage
 
             uiComment.Text = App.mtGranyUtwor.oAudioParam.comment
 
-            If App.goDbase.mlDekady Is Nothing Then
+            If App.inVb._dekady.GetList Is Nothing Then
                 uiSlider.Visibility = Visibility.Collapsed
                 uiSliderInfo.Visibility = Visibility.Collapsed
             Else
                 uiSlider.Visibility = Visibility.Visible
                 uiSliderInfo.Visibility = Visibility.Visible
-                For Each oItem As tDekada In App.goDbase.mlDekady
+                For Each oItem As Vblib.tDekada In App.inVb._dekady.GetList
                     If oItem.sNazwa = App.mtGranyUtwor.oAudioParam.dekada Then
                         uiSlider.Value = oItem.iFreq
-                        uiSliderInfo.Text = oItem.sFreq
+                        uiSliderInfo.Text = oItem.GetFreqString
                         Exit For
                     End If
                 Next
@@ -185,16 +188,16 @@ Public NotInheritable Class MainPage
             iMiB = iMiB / 1024 / 1024
             iMiB = iMiB + 1
 
-            SetSettingsInt("miTotalFiles", GetSettingsInt("miTotalFiles") + 1)
-            SetSettingsInt("miTotalMiB", GetSettingsInt("miTotalMiB") + iMiB)
+            vb14.SetSettingsInt("miTotalFiles", vb14.GetSettingsInt("miTotalFiles") + 1)
+            vb14.SetSettingsInt("miTotalMiB", vb14.GetSettingsInt("miTotalMiB") + iMiB)
 
-            If GetSettingsInt("miMonth") <> Date.Now.Month Then
-                SetSettingsInt("miMonth", Date.Now.Month)
-                SetSettingsInt("miMonthFiles", 0)
-                SetSettingsInt("miMonthMiB", 0)
+            If vb14.GetSettingsInt("miMonth") <> Date.Now.Month Then
+                vb14.SetSettingsInt("miMonth", Date.Now.Month)
+                vb14.SetSettingsInt("miMonthFiles", 0)
+                vb14.SetSettingsInt("miMonthMiB", 0)
             End If
-            SetSettingsInt("miMonthFiles", GetSettingsInt("miMonthFiles") + 1)
-            SetSettingsInt("miMonthMiB", GetSettingsInt("miMonthMiB") + iMiB)
+            vb14.SetSettingsInt("miMonthFiles", vb14.GetSettingsInt("miMonthFiles") + 1)
+            vb14.SetSettingsInt("miMonthMiB", vb14.GetSettingsInt("miMonthMiB") + iMiB)
 
             Try
                 ApplicationView.GetForCurrentView.Title = CreateWinTitle()
@@ -211,13 +214,13 @@ Public NotInheritable Class MainPage
             'Public Property uri As String
             'Public Property flen As Integer
         Catch ex As Exception
-            CrashMessageAdd("@WypelnijPola", ex)
+            vb14.CrashMessageAdd("@WypelnijPola", ex)
         End Try
 
     End Sub
 
     Private Async Sub SNM_CloseRequested(sender As Object, e As Windows.UI.Core.Preview.SystemNavigationCloseRequestedPreviewEventArgs)
-        DebugOut("SNM_CloseRequested")
+        vb14.DumpCurrMethod()
         Dim oDef As Deferral = e.GetDeferral
         ' tylko do systray
         'If (Metadata.ApiInformation.IsApiContractPresent("Windows.ApplicationModel.FullTrustAppContract", 1, 0)) Then
@@ -229,30 +232,25 @@ Public NotInheritable Class MainPage
 
     End Sub
 
-    Private Sub ConnectDbase()
-        Dim sSelected As String = GetSettingsString("usingBaza")
+    'Private Sub ConnectDbase()
+    '    Dim sSelected As String = vb14.GetSettingsString("usingDB")
 
-        If (New dbase_beskidAsp).Nazwa = sSelected Then
-            App.goDbase = New dbase_beskidAsp
-            Return
-        End If
+    '    If (New dbase_beskidAsp).Nazwa = sSelected Then
+    '        App.goDbase = New dbase_beskidAsp
+    '        Return
+    '    End If
 
-        If (New dbase_localASP).Nazwa = sSelected Then
-            App.goDbase = New dbase_localASP
-            Return
-        End If
+    '    If (New dbase_localASP).Nazwa = sSelected Then
+    '        App.goDbase = New dbase_localASP
+    '        Return
+    '    End If
 
-        If App.goDbase Is Nothing Then App.goDbase = New dbase_localASP
+    '    If App.goDbase Is Nothing Then App.goDbase = New dbase_localASP
 
-    End Sub
+    'End Sub
 
     Private Sub ConnectFiles()
-        Dim sSelected As String = GetSettingsString("usingPliki")
-
-        If (New storage_beskid).Nazwa = sSelected Then
-            App.goStorage = New storage_beskid
-            Return
-        End If
+        Dim sSelected As String = vb14.GetSettingsString("usingFS")
 
         If (New Storage_Local).Nazwa = sSelected Then
             App.goStorage = New Storage_Local
@@ -266,14 +264,14 @@ Public NotInheritable Class MainPage
 
 
     Private Sub ConnectServices()
-        ConnectDbase()
+        'ConnectDbase()
         ConnectFiles()
 
 
     End Sub
 
     Private Async Sub Page_Loaded(sender As Object, e As RoutedEventArgs)
-        DebugOut("Page_Loaded")
+        vb14.DumpCurrMethod()
         moLastNextDate = Date.Now
 
         ConnectServices()
@@ -291,10 +289,10 @@ Public NotInheritable Class MainPage
             uiGrajek.SetMediaPlayer(App.moMediaPlayer)
         End If
 
-        uiReadAfter.IsChecked = GetSettingsBool("uiReadAfter")
-        uiReadBefore.IsChecked = GetSettingsBool("uiReadBefore")
+        uiReadAfter.IsChecked = vb14.GetSettingsBool("uiReadAfter")
+        uiReadBefore.IsChecked = vb14.GetSettingsBool("uiReadBefore")
 
-        If Not Await App.goDbase.Login(True) Then
+        If Not Await App.inVb.GetCurrentDb.LoginAsync(True) Then
             uiGoLogin.Visibility = Visibility.Visible
             uiGoSetting.Visibility = Visibility.Collapsed
             uiGoAudio.Visibility = Visibility.Collapsed
@@ -307,7 +305,7 @@ Public NotInheritable Class MainPage
         uiGoAudio.Visibility = Visibility.Visible
         uiGoSearch.Visibility = Visibility.Visible
 
-        Await App.goDbase.GetDekady(False)
+        Await App.inVb.GetCurrentDb.ReloadDekadyAsync(False)
 
         If App.moReco Is Nothing Then
             App.moReco = New Windows.Media.SpeechRecognition.SpeechRecognizer()
@@ -392,7 +390,7 @@ Public NotInheritable Class MainPage
     End Sub
 
     Private Sub EventGuzikaMediaPlayer(sender As SystemMediaTransportControls, args As SystemMediaTransportControlsButtonPressedEventArgs)
-        DebugOut("EventGuzikaMediaPlayer")
+        vb14.DumpCurrMethod()
         Debug.WriteLine("guzik media player")
         'Select Case args.Button
         '    Case SystemMediaTransportControlsButton.Next
@@ -404,7 +402,7 @@ Public NotInheritable Class MainPage
     Private Shared msVoiceCmd As String
 
     Private Async Sub SpeechCommand(sTag As String, sTxt As String)
-        DebugOut("SpeechCommand(" & sTag & ", " & sTxt)
+        vb14.DumpCurrMethod(sTag & ", " & sTxt)
         If sTag <> "" Then
             msVoiceCmd = sTag
         Else
@@ -416,7 +414,7 @@ Public NotInheritable Class MainPage
     End Sub
 
     Private Sub recoDoCommand()
-        DebugOut("recDoCommand, msVoiceCmd=" & msVoiceCmd)
+        vb14.DumpCurrMethod("msVoiceCmd=" & msVoiceCmd)
         Select Case msVoiceCmd
             Case "play"
                 uiStart_Click(Nothing, Nothing)
@@ -453,12 +451,12 @@ Public NotInheritable Class MainPage
     End Sub
 
     Private Sub recoNewHypo(sender As Windows.Media.SpeechRecognition.SpeechRecognizer, args As Windows.Media.SpeechRecognition.SpeechRecognitionHypothesisGeneratedEventArgs)
-        DebugOut("recoNewHypo")
+        vb14.DumpCurrMethod()
         SpeechCommand("", args.Hypothesis.Text)
     End Sub
 
     Private Sub recoGetText(sender As Windows.Media.SpeechRecognition.SpeechContinuousRecognitionSession, args As Windows.Media.SpeechRecognition.SpeechContinuousRecognitionResultGeneratedEventArgs)
-        DebugOut("recoGetText")
+        vb14.DumpCurrMethod()
         Dim sTxt As String
         If args.Result.Constraint IsNot Nothing Then
             sTxt = args.Result.Constraint.Tag
@@ -479,7 +477,7 @@ Public NotInheritable Class MainPage
 
 
     Private Sub ZaznaczRadio(iMode As Integer)
-        DebugOut("ZaznaczRadio, iMode=" & iMode)
+        vb14.DumpCurrMethod()
         If miNextMode = iMode Then iMode = 0
 
         uiArtist_Radio.IsChecked = If(iMode = 1, True, False)
@@ -525,7 +523,7 @@ Public NotInheritable Class MainPage
             sDOut = "GoNextSong, miNextMode=" & miNextMode & ", miCoCzytam=" & miCoCzytam & ", artist=NULL" & vbCrLf
         End If
         App.gsLog = App.gsLog & sDOut & vbCrLf
-        DebugOut("GoNextSong: " & sDOut)
+        vb14.DebugOut("GoNextSong: " & sDOut)
 
         If miNextMode <> 6 Then
 
@@ -547,31 +545,34 @@ Public NotInheritable Class MainPage
                 While Not bFound AndAlso iGuard > 0
                     iGuard = iGuard - 1
                     If iGuard < 1 Then
-                        DialogBox("Przewidziane niemożliwe nr 1")
+                        vb14.DialogBox("Przewidziane niemożliwe nr 1")
                         Return False
                     End If
 
-                    If Not Await App.goDbase.GetNextSong(miNextMode, App.mtGranyUtwor) Then Return False
+                    Dim oNextSong As Vblib.tGranyUtwor = Await App.inVb.GetCurrentDb.GetNextSongAsync(miNextMode, App.mtGranyUtwor)
+                    If oNextSong Is Nothing Then Return False
+                    App.mtGranyUtwor = oNextSong
+
                     App.gsLog = App.gsLog & "GoNextSong, wylosowany " & App.mtGranyUtwor.oAudioParam.id & vbCrLf
 
                     If miNextMode = 0 Then
-                        Dim iCnt As Integer = GetSettingsInt("dekada" & App.mtGranyUtwor.oAudioParam.dekada)
+                        Dim iCnt As Integer = vb14.GetSettingsInt("dekada" & App.mtGranyUtwor.oAudioParam.dekada)
                         iCnt = iCnt - 1
                         If iCnt > 1 Then
                             ' jeszcze nie
-                            SetSettingsInt("dekada" & App.mtGranyUtwor.oAudioParam.dekada, iCnt)
+                            vb14.SetSettingsInt("dekada" & App.mtGranyUtwor.oAudioParam.dekada, iCnt)
                             App.gsLog = App.gsLog & "GoNextSong, ale nie każdy z tej dekady! " & vbCrLf
                             bFound = False
                         Else
                             ' juz zagraj
                             iCnt = 1
-                            For Each oItem As tDekada In App.goDbase.mlDekady
+                            For Each oItem As Vblib.tDekada In App.inVb._dekady.GetList
                                 If oItem.sNazwa = App.mtGranyUtwor.oAudioParam.dekada Then
-                                    iCnt = App.FreqSlider2Counter(oItem.iFreq)
+                                    iCnt = oItem.GetCounterValue
                                     Exit For
                                 End If
                             Next
-                            SetSettingsInt("dekada" & App.mtGranyUtwor.oAudioParam.dekada, iCnt)
+                            vb14.SetSettingsInt("dekada" & App.mtGranyUtwor.oAudioParam.dekada, iCnt)
                             bFound = True
                         End If
                     Else
@@ -582,7 +583,7 @@ Public NotInheritable Class MainPage
 
                 ' App.mtGranyUtwor.ID ustawiony wczesniej (w ExtractCyganInfo)
                 ' to robimy tylko raz, zas cygan-info moze isc kilka razy (bo nie kazdy z tej dekady jest do pokazania)
-                Await App.goDbase.GetCountsy(App.mtGranyUtwor)
+                Await App.inVb.GetCurrentDb.RetrieveCountsyAsync(App.mtGranyUtwor)
 
                 'Dim sPage As String = Await App.HttpPageAsync("/cygan-counts.asp?id=" & App.mtGranyUtwor.oAudioParam.id, "song stats")
                 'ExtractCyganCounts(sPage) ' uzupełnia count* w App.mtGranyUtwor
@@ -606,6 +607,7 @@ Public NotInheritable Class MainPage
             'Dim oUri As Uri = New Uri(App.BaseUri & "/p" & sTxt)   ' sTxt = "/store/.... "
             '' Dim oMSource As Windows.Media.Core.MediaSource
             moMSource = Await App.goStorage.GetMediaSourceFrom(App.mtGranyUtwor.oStoreFile)
+            If moMSource Is Nothing Then Return False
 
             App.moMediaPlayer.Source = moMSource
             Try
@@ -644,7 +646,8 @@ Public NotInheritable Class MainPage
     Private moLastNextDate As Date
 
     Private Async Sub SystemMediaControls_Button(sender As SystemMediaTransportControls, args As SystemMediaTransportControlsButtonPressedEventArgs)
-        DebugOut("SystemMediaControls_Button")
+        vb14.DumpCurrMethod()
+
         Select Case args.Button
             Case SystemMediaTransportControlsButton.Next
                 If moLastNextDate.AddSeconds(3) > Date.Now Then Exit Sub
@@ -657,30 +660,31 @@ Public NotInheritable Class MainPage
     End Sub
 
     Private Async Sub GoNextSongSub()
-        DebugOut("GoNextSongSub")
+        vb14.DumpCurrMethod()
         Await GoNextSong()
     End Sub
 
     Private Async Function GoNextSongUI() As Task
-        DebugOut("GoNextSongUI")
+        vb14.DumpCurrMethod()
         Await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, AddressOf GoNextSongSub)
     End Function
 
     Private Async Sub MediaPlayer_MediaEnded(sender As Object, e As RoutedEventArgs)
-        DebugOut("MediaPlayer_MediaEnded")
+        vb14.DumpCurrMethod()
         Await GoNextSongUI()
     End Sub
     Private Async Sub MediaPlayer_MediaFailed(sender As Object, e As Windows.Media.Playback.MediaPlayerFailedEventArgs)
-        DebugOut("MediaPlayer_MediaFailed")
+        vb14.DumpCurrMethod()
+
         Try
-            Await DialogBoxAsync("failed")
+            Await vb14.DialogBoxAsync("failed")
         Catch ex As Exception
             ' moze wtedy wylatuje z errorem?? moze nie moze byc dialogbox?
         End Try
         Await GoNextSongUI()
     End Sub
     Private Async Sub uiStart_Click(sender As Object, e As RoutedEventArgs)
-        DebugOut("uiStart_Click")
+        vb14.DumpCurrMethod()
         uiStart.Visibility = Visibility.Collapsed
         uiGrajek.Visibility = Visibility.Visible
         uiLoop_Radio.Visibility = Visibility.Visible
@@ -689,29 +693,29 @@ Public NotInheritable Class MainPage
     End Sub
 
     Private Async Sub uiNextSong_Click(sender As Object, e As RoutedEventArgs)
-        DebugOut("uiNextSong_Click")
+        vb14.DumpCurrMethod()
         Await GoNextSongUI()
     End Sub
 
     Private Sub uiSlider_ValueChanged(sender As Object, e As RangeBaseValueChangedEventArgs) Handles uiSlider.ValueChanged
-        DebugOut("uiSlider_ValueChanged")
+        vb14.DumpCurrMethod()
         'Dim oDekada As tDekada = TryCast(oSlider.DataContext, tDekada)
         'oDekada.sFreq = App.FreqSlider2Text(oSlider.Value)
 
-        uiSliderInfo.Text = App.FreqSlider2Text(uiSlider.Value)
-        For Each oDekada As tDekada In App.goDbase.mlDekady
+        For Each oDekada As Vblib.tDekada In App.inVb._dekady.GetList
             If oDekada.sNazwa = uiDekada.Text Then
-                oDekada.sFreq = uiSliderInfo.Text
                 oDekada.iFreq = uiSlider.Value
+
+                uiSliderInfo.Text = oDekada.GetFreqString
             End If
         Next
 
     End Sub
 
     Private Sub uiReadAfterBefore_Changed(sender As Object, e As RoutedEventArgs) Handles uiReadBefore.Unchecked, uiReadAfter.Unchecked, uiReadBefore.Checked, uiReadAfter.Checked
-        DebugOut("uiReadAfterBefore_Changed")
+        vb14.DumpCurrMethod()
         Dim oItem As ToggleButton = TryCast(sender, ToggleButton)
-        SetSettingsBool(oItem.Name, oItem.IsChecked)
+        vb14.SetSettingsBool(oItem.Name, oItem.IsChecked)
     End Sub
 
     'Private Sub uiPole_Tapped(sender As Object, e As RightTappedRoutedEventArgs) Handles uiTitle.RightTapped, uiAlbum.RightTapped, uiArtist.RightTapped
@@ -748,7 +752,7 @@ Public NotInheritable Class MainPage
     End Sub
 
     Private Sub uiRadio_AccessKeyInvoked(sender As UIElement, args As AccessKeyInvokedEventArgs) Handles uiLoop_Radio.AccessKeyInvoked, uiAlbum_Radio.AccessKeyInvoked, uiArtist_Radio.AccessKeyInvoked, uiTitle_Radio.AccessKeyInvoked, uiDekada_Radio.AccessKeyInvoked, uiRok_Radio.AccessKeyInvoked
-        DebugOut("uiRadio_AccessKeyInvoked")
+        vb14.DumpCurrMethod()
         Dim oRadio As RadioButton = TryCast(sender, RadioButton)
         If oRadio.IsChecked Then
             oRadio.IsChecked = False
@@ -757,7 +761,7 @@ Public NotInheritable Class MainPage
     End Sub
 
     Private Sub GrajekPauseResume()
-        DebugOut("GrajekPauseResume")
+        vb14.DumpCurrMethod()
         ' dla MediaPlayer
         Dim bPaused As Boolean = False
 
@@ -780,12 +784,12 @@ Public NotInheritable Class MainPage
     End Sub
 
     Private Sub uiGrajek_AccessKeyInvoked(sender As UIElement, args As AccessKeyInvokedEventArgs) Handles uiGrajek.AccessKeyInvoked
-        DebugOut("uiGrajek_AccessKeyInvoked")
+        vb14.DumpCurrMethod()
         GrajekPauseResume()
     End Sub
 
     Private Sub uiMenu_Click(sender As Object, e As RoutedEventArgs)
-        DebugOut("uiMenu_Click")
+        vb14.DumpCurrMethod()
         ' ui(Artist|Title|Album)(Wiki|Search|Copy)
         Dim sTxt As String = ""
         Dim iInd As Integer
@@ -805,12 +809,13 @@ Public NotInheritable Class MainPage
         If sTxt = "" Then Return
 
         If sSenderName.EndsWith("copy") Then
-            ClipPut(sTxt)
+            vb14.ClipPut(sTxt)
         ElseIf sSenderName.EndsWith("search") Then
         ElseIf sSenderName.EndsWith("wiki") Then
             Dim sUrl As String = "https://en.wikipedia.org/wiki"
             sUrl = sUrl & "/" & sTxt
-            OpenBrowser(sUrl)
+            Dim oUri = New Uri(sUrl)
+            oUri.OpenBrowser()
         End If
 
     End Sub
@@ -819,71 +824,72 @@ Public NotInheritable Class MainPage
 #Region "BottomMenu-Settings"
 
     Private Sub uiLogShow_Click(sender As Object, e As RoutedEventArgs)
-        DumpCurrMethod()
+        vb14.DumpCurrMethod()
 
         If App.gsLog.Length > 10000 Then
             App.gsLog = App.gsLog.Substring(App.gsLog.Length - 10000)
         End If
-        DialogBox(App.gsLog)
+        vb14.DialogBox(App.gsLog)
     End Sub
 
     Private Async Sub uiLogClear_Click(sender As Object, e As RoutedEventArgs)
-        DumpCurrMethod()
+        vb14.DumpCurrMethod()
 
-        If Await DialogBoxYNAsync("Skasować log?") Then
+        If Await vb14.DialogBoxYNAsync("Skasować log?") Then
             App.gsLog = ""
         End If
     End Sub
 
     Private Sub uiGoStat_Click(sender As Object, e As RoutedEventArgs)
-        DumpCurrMethod()
-        Me.Frame.Navigate(GetType(OpenM3u))
+        vb14.DumpCurrMethod()
+        Me.Navigate(GetType(OpenM3u))
     End Sub
 
     Private Sub uiGoNetStat_Click(sender As Object, e As RoutedEventArgs)
-        DumpCurrMethod()
-        Me.Frame.Navigate(GetType(Siec))
+        vb14.DumpCurrMethod()
+        Me.Navigate(GetType(Siec))
     End Sub
 
     Private Sub uiGoDbaseFiles_Click(sender As Object, e As RoutedEventArgs)
-        DumpCurrMethod()
-        Me.Frame.Navigate(GetType(DbaseAndStorage))
+        vb14.DumpCurrMethod()
+        Me.Navigate(GetType(DbaseAndStorage))
     End Sub
 #End Region
 
     Private Sub uiGoSearch_Click(sender As Object, e As RoutedEventArgs)
-        DumpCurrMethod()
+        vb14.DumpCurrMethod()
     End Sub
 
     Private Sub uiGoLogin_Click(sender As Object, e As RoutedEventArgs)
-        DumpCurrMethod()
-        Me.Frame.Navigate(GetType(Login))
+        vb14.DumpCurrMethod()
+        Me.Navigate(GetType(Login))
     End Sub
 
     Private Sub uiGoNet_Click(sender As Object, e As RoutedEventArgs)
-        DumpCurrMethod()
+        vb14.DumpCurrMethod()
 
         If Not NetIsIPavailable(False) Then
-            DialogBox("Ale najpierw włącz Internety...")
+            vb14.DialogBox("Ale najpierw włącz Internety...")
             Return
         End If
         Me.Frame.Navigate(GetType(JamPilot))
     End Sub
 
     Private Sub uiGoAudio_Click(sender As Object, e As RoutedEventArgs)
-        DumpCurrMethod()
+        vb14.DumpCurrMethod()
         Me.Frame.Navigate(GetType(Audio))
     End Sub
 
 #End Region
 
     Private Sub Page_Unloaded(sender As Object, e As RoutedEventArgs)
-        DebugOut("Page_Unloaded")
+        vb14.DumpCurrMethod()
         RemoveHandler App.PilotChce, AddressOf PilotChce
     End Sub
 
     Private Sub PilotChce(sCmd As String)
-        DebugOut("PilotChce")
+        vb14.DumpCurrMethod()
+
         Select Case sCmd
             Case "next"
                 GoNextSongUI()

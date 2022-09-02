@@ -1,18 +1,12 @@
-﻿' The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
-
-''' <summary>
-''' An empty page that can be used on its own or navigated to within a Frame.
-''' </summary>
+﻿
 Public NotInheritable Class OpenM3u
     Inherits Page
 
     Private Sub ShowStat()
-        If App.goDbase.mlDekady Is Nothing Then Exit Sub
-
         If uiGrid.ActualWidth > 500 Then
-            uiListItems1Row.ItemsSource = From c In App.goDbase.mlDekady
+            uiListItems1Row.ItemsSource = From c In App.inVb._dekady.GetList
         Else
-            uiListItems2Row.ItemsSource = From c In App.goDbase.mlDekady
+            uiListItems2Row.ItemsSource = From c In App.inVb._dekady.GetList
         End If
     End Sub
 
@@ -32,21 +26,17 @@ Public NotInheritable Class OpenM3u
     End Sub
 
     Private Async Sub Page_Loaded(sender As Object, e As RoutedEventArgs)
-
-        If Not Await App.goDbase.GetDekady(False) Then Exit Sub
-
         ShowStat()
-
     End Sub
 
     Private Async Sub uiRefresh_Click(sender As Object, e As RoutedEventArgs)
-        If Not Await App.goDbase.GetDekady(True) Then Exit Sub
+        If Not Await App.inVb.GetCurrentDb.ReloadDekadyAsync(True) Then Exit Sub
 
         ShowStat()
     End Sub
 
-    Private Async Sub uiSave_Click(sender As Object, e As RoutedEventArgs)
-        Await App.goDbase.DekadySave()
+    Private Sub uiSave_Click(sender As Object, e As RoutedEventArgs)
+        App.inVb._dekady.Save()
     End Sub
 
     'Private Sub uiFreqSlider_ValueChanged(sender As Object, e As RangeBaseValueChangedEventArgs) Handles uiFreqSlider.ValueChanged
@@ -115,15 +105,14 @@ Public NotInheritable Class OpenM3u
         Dim oSlider As Slider = TryCast(sender, Slider)
         If oSlider Is Nothing Then Exit Sub
 
-        Dim oDekada As tDekada = TryCast(oSlider.DataContext, tDekada)
+        Dim oDekada As Vblib.tDekada = TryCast(oSlider.DataContext, Vblib.tDekada)
         If oDekada Is Nothing Then Exit Sub
-        oDekada.sFreq = App.FreqSlider2Text(oSlider.Value)
 
         Dim oGrid As Grid = TryCast(oSlider.Parent, Grid)
         For Each oChild As UIElement In oGrid.Children
             Dim oTB As TextBlock = TryCast(oChild, TextBlock)
             If oTB IsNot Nothing AndAlso oTB.Name = "uiFreqStr" Then
-                oTB.Text = oDekada.sFreq
+                oTB.Text = oDekada.GetFreqString
             End If
         Next
 

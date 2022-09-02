@@ -1,8 +1,5 @@
-﻿' The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
+﻿Imports vb14 = Vblib.pkarlibmodule14
 
-''' <summary>
-''' An empty page that can be used on its own or navigated to within a Frame.
-''' </summary>
 Public NotInheritable Class Login
     Inherits Page
 
@@ -10,11 +7,11 @@ Public NotInheritable Class Login
         Dim sTmp As String = uiUserName.Text
 
         If Await TestPermission(sTmp) Then
-            SetSettingsString("userName", sTmp)
-            SetSettingsInt("loginTryCount", 0)
+            vb14.SetSettingsString("userName", sTmp)
+            vb14.SetSettingsInt("loginTryCount", 0)
         Else
-            Dim iCnt As Integer = GetSettingsInt("loginTryCount")
-            SetSettingsInt("loginTryCount", iCnt + 1)
+            Dim iCnt As Integer = vb14.GetSettingsInt("loginTryCount")
+            vb14.SetSettingsInt("loginTryCount", iCnt + 1)
         End If
 
     End Sub
@@ -25,15 +22,15 @@ Public NotInheritable Class Login
             Return False
         End If
 
-        Dim sRes As String = Await App.goDbase.GetPermission(sUser)
+        Dim sRes As String = Await App.inVb.GetCurrentDb.GetPermissionAsync(sUser)
         uiLoginRes.Text = sRes
         If sRes.IndexOf("Masz prawo") < 0 Then Return False
         Return True
     End Function
 
     Private Sub Page_Loaded(sender As Object, e As RoutedEventArgs)
-        uiUserName.Text = GetSettingsString("userName")
-        If GetSettingsInt("loginTryCount") > 5 Then
+        uiUserName.Text = vb14.GetSettingsString("userName")
+        If vb14.GetSettingsInt("loginTryCount") > 5 Then
             uiUserName.IsReadOnly = True
             uiLoginRes.Text = "Brak uprawnień"
             ' App.mbGranted = False

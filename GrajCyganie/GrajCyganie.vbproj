@@ -116,13 +116,6 @@
     <Compile Include="DbaseAndStorage.xaml.vb">
       <DependentUpon>DbaseAndStorage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="dbase_base.vb" />
-    <Compile Include="dbase_baseASP.vb" />
-    <Compile Include="dbase_beskidAsp.vb" />
-    <Compile Include="dbase_cosmos.vb" />
-    <Compile Include="dbase_domekASP.vb" />
-    <Compile Include="dbase_localASP.vb" />
-    <Compile Include="dbase_sql.vb" />
     <Compile Include="JamPilot.xaml.vb">
       <DependentUpon>JamPilot.xaml</DependentUpon>
     </Compile>
@@ -146,7 +139,6 @@
     </Compile>
     <Compile Include="storage_base.vb" />
     <Compile Include="storage_baseWeb.vb" />
-    <Compile Include="storage_beskid.vb" />
     <Compile Include="Storage_Domek.vb" />
     <Compile Include="storage_local.vb" />
     <Compile Include="typki.vb" />
@@ -259,10 +251,7 @@
       <Version>2.16.2</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
-      <Version>6.1.7</Version>
-    </PackageReference>
-    <PackageReference Include="System.Data.SqlClient">
-      <Version>4.8.3</Version>
+      <Version>6.2.14</Version>
     </PackageReference>
     <PackageReference Include="System.Threading.Thread">
       <Version>4.3.0</Version>
@@ -272,6 +261,12 @@
     <SDKReference Include="WindowsDesktop, Version=10.0.19041.0">
       <Name>Windows Desktop Extensions for the UWP</Name>
     </SDKReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\VbLib\VbLib.vbproj">
+      <Project>{b98c4149-a0d5-446b-a1e1-4ee213100cdb}</Project>
+      <Name>VbLib</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>

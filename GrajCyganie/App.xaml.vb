@@ -296,7 +296,7 @@ Partial NotInheritable Class App
 
     Public Shared gsLog As String = ""
 
-    Public Shared goStorage As Storage_Base = Nothing
+    ' Public Shared goStorage As Storage_Base = Nothing
     'Public Shared goDbase As Vblib.dbase_base = Nothing
 
     Public Shared inVb As New Vblib.App(Windows.Storage.ApplicationData.Current.LocalCacheFolder.Path)

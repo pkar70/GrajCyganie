@@ -29,7 +29,7 @@
         Dim mlDekady As New List(Of tDekada)
         If Not EnsureOpen() Then Return mlDekady
 
-        Using oQuery As New System.Data.SqlClient.SqlCommand("SELECT dekada, COUNT(*), SUM(duration) FROM audioParam GROUP BY dekada ORDER BY dekada")
+        Using oQuery As New System.Data.SqlClient.SqlCommand("SELECT dekada, COUNT(*), SUM(duration) FROM audioParam GROUP BY dekada ORDER BY dekada", moConnRO)
             Using oRdr As System.Data.SqlClient.SqlDataReader = oQuery.ExecuteReader()
                 While oRdr.Read
                     Dim oNew As New tDekada
@@ -49,7 +49,7 @@
     Private Function GetDbIntQueryResult(sQuery As String) As Integer
         DumpCurrMethod()
 
-        Using oQuery As New System.Data.SqlClient.SqlCommand("SELECT MAX(ID) FROM audioParam")
+        Using oQuery As New System.Data.SqlClient.SqlCommand("SELECT MAX(ID) FROM audioParam", moConnRO)
             Using oRdr As System.Data.SqlClient.SqlDataReader = oQuery.ExecuteReader()
                 While oRdr.Read
                     Return oRdr.GetInt32(0)
@@ -134,7 +134,7 @@
 
         Dim oNew As New tGranyUtwor
 
-        Using oQuery As New System.Data.SqlClient.SqlCommand(sQuery)
+        Using oQuery As New System.Data.SqlClient.SqlCommand(sQuery, moConnRO)
             Using oRdr As System.Data.SqlClient.SqlDataReader = oQuery.ExecuteReader()
                 While oRdr.Read
                     oNew.oAudioParam.id = oRdr.GetInt32(0)
@@ -160,7 +160,7 @@
 
         bEmpty = True
         sQuery = "SELECT name, path, filedate, len, del FROM StoreFiles WHERE id=" & oNew.oAudioParam.fileID
-        Using oQuery As New System.Data.SqlClient.SqlCommand(sQuery)
+        Using oQuery As New System.Data.SqlClient.SqlCommand(sQuery, moConnRO)
             Using oRdr As System.Data.SqlClient.SqlDataReader = oQuery.ExecuteReader()
                 While oRdr.Read
                     oNew.oStoreFile.id = oNew.oAudioParam.fileID
@@ -189,10 +189,19 @@
 
         'Exception thrown 'System.IO.FileNotFoundException' in System.Data.SqlClient.dll
         'Could Not load file Or assembly 'System.Threading.Thread, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a'. The system cannot find the file specified.
+        Dim iError As Integer
+        Try
+            moConnRO.Open()
+            If moConnRO.State = System.Data.ConnectionState.Open Then Return True
+        Catch ex As Exception
+            iError = ex.HResult
+        End Try
 
-
-        moConnRO.Open()
-        If moConnRO.State = System.Data.ConnectionState.Open Then Return True
+        If iError = -2147024894 Then
+            DialogBox("FAIL opening, maybe too low MinVersion (doesn't work for 15063)")
+        Else
+            DialogBox("FAIL opening, maybe SQL has no enabled TCP/IP (see ComputerManagement»Services»SQL»SQL server network»Protocols)")
+        End If
         Return False
     End Function
 

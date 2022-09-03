@@ -5,39 +5,46 @@ Public NotInheritable Class DbaseAndStorage
 
     Private Sub Page_Loaded(sender As Object, e As RoutedEventArgs)
         FillComboBaza()
-        FillComboPliki()
+
+        uiLocalPath.GetSettingsString()
+        uiLocalODPath.GetSettingsString()
+        ' FillComboPliki()
     End Sub
 
     Private Sub FillComboBaza()
         uiBaza.Items.Clear()
 
+        Dim sSelected As String = App.inVb.GetCurrentDb.Nazwa
+        Dim oSelect As ComboBoxItem = Nothing
+
         For Each oDbSrc In App.inVb.gaDbs
-            uiPliki.Items.Add(oDbSrc.Nazwa)
+            Dim oNew As New ComboBoxItem
+            oNew.Content = oDbSrc.Nazwa
+            If oDbSrc.Nazwa = sSelected Then oSelect = oNew
+            uiBaza.Items.Add(oDbSrc.Nazwa)
         Next
 
-        Dim sSelected As String = vb14.GetSettingsString("usingDB")
-        If sSelected <> "" Then
-            For Each oItem As ComboBoxItem In uiBaza.Items
-                If oItem.Content = sSelected Then oItem.IsSelected = True
-            Next
+        If oSelect IsNot Nothing Then
+            uiBaza.SelectedItem = oSelect
         End If
+
     End Sub
 
-    Private Sub FillComboPliki()
-        uiPliki.Items.Clear()
+    'Private Sub FillComboPliki()
+    '    uiPliki.Items.Clear()
 
-        uiPliki.Items.Add("localstorage")
-        'For Each oDbSrc In App.inVb.gaDbs
-        '    uiPliki.Items.Add(oDbSrc.Nazwa)
-        'Next
+    '    uiPliki.Items.Add("localstorage")
+    '    'For Each oDbSrc In App.inVb.gaDbs
+    '    '    uiPliki.Items.Add(oDbSrc.Nazwa)
+    '    'Next
 
-        Dim sSelected As String = vb14.GetSettingsString("usingFS")
-        If sSelected <> "" Then
-            For Each oItem As ComboBoxItem In uiPliki.Items
-                If oItem.Content = sSelected Then oItem.IsSelected = True
-            Next
-        End If
-    End Sub
+    '    Dim sSelected As String = vb14.GetSettingsString("usingFS")
+    '    If sSelected <> "" Then
+    '        For Each oItem As ComboBoxItem In uiPliki.Items
+    '            If oItem.Content = sSelected Then oItem.IsSelected = True
+    '        Next
+    '    End If
+    'End Sub
 
     Private Sub SaveCombo(uiCombo As ComboBox)
         Dim iSelItem As Integer = uiCombo.SelectedIndex
@@ -53,7 +60,15 @@ Public NotInheritable Class DbaseAndStorage
     End Sub
     Private Sub uiSave_Click(sender As Object, e As RoutedEventArgs)
         SaveCombo(uiBaza)
-        SaveCombo(uiPliki)
+        'SaveCombo(uiPliki)
+
+        ' żeby potem łatwiej sklejać
+        If Not uiLocalPath.Text.EndsWith("\") Then uiLocalPath.Text &= "\"
+        If Not uiLocalODPath.Text.EndsWith("\") Then uiLocalODPath.Text &= "\"
+
+        uiLocalPath.SetSettingsString()
+        uiLocalODPath.SetSettingsString()
+
         Me.GoBack()
         ' przełączenie następuje w ramach MainPage:Loaded
     End Sub

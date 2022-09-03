@@ -19,9 +19,10 @@ key=value # remark
 
 [app]
 ; lista z app (bez ustawiania)
-
+usingDB= # jaka baza jest używana
 
 [libs]
+usingDB=
 ; lista z pkarmodule
 remoteSystemDisabled=false
 appFailData=

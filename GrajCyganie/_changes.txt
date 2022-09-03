@@ -1,0 +1,4 @@
+2022.09.02
+* VBlib - obs³uga pliku dekad oraz DB (IDX)
+* openm3u (dekady): sFreq, sTime dekad robione konwerterami
+

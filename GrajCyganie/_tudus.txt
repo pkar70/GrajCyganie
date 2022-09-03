@@ -1,4 +1,11 @@
 
+' https://docs.microsoft.com/en-us/onedrive/sync-process  ?
+To find new changes and upload information: https://<tenant_name, i.e. contoso>-my.sharepoint.com/personal/<user_contoso_onmicrosoft_com>/_api/SPFileSync/sync/<default document library ID GUID>/
+
+To download items: https://<tenant_name, i.e. contoso>-my.sharepoint.com/personal/<user_contoso_onmicrosoft_com>/_layouts/15/download.aspx
+
+
+
 Zrobić vblib 1.4 - może się przydać między różnymi app, szczególnie biblioteki DB
 
 Może być oddzielny ClassLib z samym DB ? Bo indeksy będą nie tylko przy graniu,

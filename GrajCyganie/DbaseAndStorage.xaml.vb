@@ -63,8 +63,8 @@ Public NotInheritable Class DbaseAndStorage
         'SaveCombo(uiPliki)
 
         ' żeby potem łatwiej sklejać
-        If Not uiLocalPath.Text.EndsWith("\") Then uiLocalPath.Text &= "\"
-        If Not uiLocalODPath.Text.EndsWith("\") Then uiLocalODPath.Text &= "\"
+        If uiLocalPath.Text <> "" AndAlso Not uiLocalPath.Text.EndsWith("\") Then uiLocalPath.Text &= "\"
+        If uiLocalODPath.Text <> "" AndAlso Not uiLocalODPath.Text.EndsWith("\") Then uiLocalODPath.Text &= "\"
 
         uiLocalPath.SetSettingsString()
         uiLocalODPath.SetSettingsString()

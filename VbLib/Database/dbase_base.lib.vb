@@ -32,7 +32,7 @@ Public MustInherit Class dbase_base
 
     Public MustOverride Async Function RetrieveCountsyAsync(oGrany As tGranyUtwor) As Task(Of Boolean)
 
-    Public MustOverride Async Function GetNextSongAsync(iNextMode As Integer, oGrany As tGranyUtwor) As Task(Of tGranyUtwor)
+    Public MustOverride Async Function GetNextSongAsync(iNextMode As eNextMode, oGrany As tGranyUtwor) As Task(Of tGranyUtwor)
     ' Dim sPage As String = Await App.HttpPageAsync("/cygan-info.asp?" & sParams, "file data")
 
     ''' <summary>

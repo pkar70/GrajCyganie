@@ -16,7 +16,7 @@
         Throw New NotImplementedException()
     End Function
 
-    Public Overrides Function GetNextSongAsync(iNextMode As Integer, oGrany As tGranyUtwor) As Task(Of tGranyUtwor)
+    Public Overrides Function GetNextSongAsync(iNextMode As eNextMode, oGrany As tGranyUtwor) As Task(Of tGranyUtwor)
         Throw New NotImplementedException()
     End Function
 

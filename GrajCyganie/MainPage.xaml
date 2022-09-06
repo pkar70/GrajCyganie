@@ -104,15 +104,15 @@
                 <ColumnDefinition/> 
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <ToggleButton HorizontalAlignment="Center" x:Name="uiReadBefore" Content="przed" />
+            <ToggleButton HorizontalAlignment="Center" x:Name="uiReadBefore" Content="przed" Checked="uiReadAfterBefore_Changed"/>
             <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center"  Text="odczytaj" Grid.Column="1" />
-            <ToggleButton HorizontalAlignment="Center" x:Name="uiReadAfter" Content="po" Grid.Column="2" />
+            <ToggleButton HorizontalAlignment="Center" x:Name="uiReadAfter" Content="po" Grid.Column="2" Checked="uiReadAfterBefore_Changed"/>
         </Grid> 
         
         <Button x:Name="uiStart" Grid.Column="1" Grid.Row="7" Content="Start" Click="uiStart_Click" HorizontalAlignment="Center" />
 
-        <TextBlock Text="Comment" Grid.Row="10" Grid.Column="0" Margin="0,0,10,0"/>
-        <TextBox BorderThickness="0" IsReadOnly="True"  Text=" " Grid.Row="10" Grid.Column="1" x:Name="uiComment" TextWrapping="Wrap"/>
+        <TextBlock Text="Comment" Grid.Row="10" Grid.Column="0" Margin="0,0,10,0" />
+        <TextBox BorderThickness="0" IsReadOnly="True"  Text=" " Grid.Row="10" Grid.Column="1" Name="uiComment" TextWrapping="Wrap"/>
 
         <ToggleButton Name="uiUseMicro" Grid.Row="10" Grid.Column="2" ToolTipService.ToolTip="use voice commands" Tapped="uiUseMicro_Tapped" VerticalAlignment="Bottom" HorizontalAlignment="Right" >
             <SymbolIcon Symbol="Microphone" />
@@ -131,13 +131,14 @@
                         <MenuFlyoutItem Text="Dekady" Click="uiGoStat_Click" />
                         <MenuFlyoutSeparator/>
                         <MenuFlyoutItem Text="Baza i pliki" Click="uiGoDbaseFiles_Click" />
+                        <MenuFlyoutItem Text="Gadaczka" Click="uiGoGadaczka_Click" />
                         <MenuFlyoutSeparator/>
                         <MenuFlyoutItem Text="Net stat" Click="uiGoNetStat_Click" />
                     </MenuFlyout>
                 </AppBarButton.Flyout>
             </AppBarButton>
             <AppBarButton x:Name="uiGoNet" Icon="MapDrive" Label ="Network" Click="uiGoNet_Click" />
-            <AppBarButton x:Name="uiGoAudio" Icon="Volume" Label ="Audio" Click="uiGoAudio_Click" />
+           
         </CommandBar>
 
     </Page.BottomAppBar>

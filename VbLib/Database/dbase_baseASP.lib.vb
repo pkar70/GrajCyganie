@@ -90,7 +90,7 @@
 
     End Sub
 
-    Public Overrides Async Function GetNextSongAsync(iNextMode As Integer, oGrany As tGranyUtwor) As Task(Of tGranyUtwor)
+    Public Overrides Async Function GetNextSongAsync(iNextMode As eNextMode, oGrany As tGranyUtwor) As Task(Of tGranyUtwor)
         DumpCurrMethod()
 
         DebugOut("GetNextSong, miNextMode=" & iNextMode)
@@ -100,21 +100,21 @@
 
             If oGrany IsNot Nothing Then iCurrId = oGrany.oAudioParam.id
             Select Case iNextMode
-                Case 0
+                Case eNextMode.random
                     iCurrId = GetSettingsInt("maxSoundId")
                     If iCurrId = 0 Then Return Nothing
                     iCurrId = App.MakeRandom(iCurrId)
                     ' random
                     sParams = "id=" & iCurrId & "&mode=random"
-                Case 1
+                Case eNextMode.sameArtist
                     sParams = "id=" & iCurrId & "&mode=artist"
-                Case 2
+                Case eNextMode.sameTitle
                     sParams = "id=" & iCurrId & "&mode=title"
-                Case 3
+                Case eNextMode.sameAlbum
                     sParams = "id=" & iCurrId & "&mode=album"
-                Case 4
+                Case eNextMode.sameRok
                     sParams = "id=" & iCurrId & "&mode=rok"
-                Case 5
+                Case eNextMode.sameDekada
                     sParams = "id=" & iCurrId & "&mode=dekada"
             End Select
 

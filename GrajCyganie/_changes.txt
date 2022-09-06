@@ -1,3 +1,11 @@
+2022.09.05
+* osobny plik dla gadaczki:
+	* wi?cej j?zyków umie rozpozna?,
+	* lepsza architektura rozwi?zania,
+	* dowolny sub-region dla j?zyka
+	* tester gadaczki (do uruchamiania na naciskaniu w??cznika, ?eby potem nie by?o b??dów podczas gadania przy utworach)
+	* iNextMode oraz iCoCzytam (teraz iCoGram) z integer na enum
+
 2022.09.02
 * VBlib - obs³uga pliku dekad oraz DB (IDX)
 * openm3u (dekady): sFreq, sTime dekad robione konwerterami

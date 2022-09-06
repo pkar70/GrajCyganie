@@ -13,3 +13,13 @@ Public Class tGranyUtwor
     Public Property countDekada As Integer = 0
 
 End Class
+
+Public Enum eNextMode
+    random
+    sameArtist
+    sameTitle
+    sameAlbum
+    sameRok
+    sameDekada
+    loopSong
+End Enum

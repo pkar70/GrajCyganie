@@ -114,12 +114,13 @@
     <Compile Include="App.xaml.vb">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Audio.xaml.vb">
-      <DependentUpon>Audio.xaml</DependentUpon>
-    </Compile>
     <Compile Include="DbaseAndStorage.xaml.vb">
       <DependentUpon>DbaseAndStorage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="SetupAudio.xaml.vb">
+      <DependentUpon>SetupAudio.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GadaniaRecognize.vb" />
     <Compile Include="JamPilot.xaml.vb">
       <DependentUpon>JamPilot.xaml</DependentUpon>
     </Compile>
@@ -129,6 +130,7 @@
     <Compile Include="MainPage.xaml.vb">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="MediaGrajek.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="pkarModule.vb" />
     <Compile Include="pswd.vb" />
@@ -141,6 +143,7 @@
     <Compile Include="OpenM3u.xaml.vb">
       <DependentUpon>OpenM3u.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Speak.vb" />
     <Compile Include="typki.vb" />
     <Compile Include="typkiGrajCygan.vb" />
   </ItemGroup>
@@ -180,11 +183,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="Audio.xaml">
+    <Page Include="DbaseAndStorage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="DbaseAndStorage.xaml">
+    <Page Include="SetupAudio.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

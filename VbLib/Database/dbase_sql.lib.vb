@@ -93,7 +93,7 @@
     End Function
 
 
-    Public Overrides Async Function GetNextSongAsync(iNextMode As Integer, oGrany As tGranyUtwor) As Task(Of tGranyUtwor)
+    Public Overrides Async Function GetNextSongAsync(iNextMode As eNextMode, oGrany As tGranyUtwor) As Task(Of tGranyUtwor)
         DumpCurrMethod()
 
         DebugOut("GetNextSong, miNextMode=" & iNextMode)
@@ -105,17 +105,17 @@
         ' wymieniam kolumny, żeby znac ich układ (kolejność) w oResult
 
         Select Case iNextMode
-            Case 0
+            Case eNextMode.random
                 sQuery &= " 1=1 "
-            Case 1
+            Case eNextMode.sameArtist
                 sQuery &= " artist='" & oGrany.oAudioParam.artist.Replace("'", "''") & "'"
-            Case 2
+            Case eNextMode.sameTitle
                 sQuery &= " title='" & oGrany.oAudioParam.title.Replace("'", "''") & "'"
-            Case 3
+            Case eNextMode.sameAlbum
                 sQuery &= " album='" & oGrany.oAudioParam.album.Replace("'", "''") & "'"
-            Case 4
+            Case eNextMode.sameRok
                 sQuery &= " year='" & oGrany.oAudioParam.year.Replace("'", "''") & "'"
-            Case 5
+            Case eNextMode.sameDekada
                 sQuery &= " dekada='" & oGrany.oAudioParam.dekada.Replace("'", "''") & "'"
         End Select
 

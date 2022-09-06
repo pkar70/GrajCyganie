@@ -6,14 +6,102 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" SizeChanged="uiPage_SizeChanged">
+
+    <UserControl.Resources>
+        <local:KonwersjaZnikaniePol x:Key="KonwersjaZnikaniePol" />
+    </UserControl.Resources>
 
     <Grid Margin="5,5,5,5">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition/>
         </Grid.RowDefinitions>
         <TextBlock FontSize="18" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,10" Text="Szukajka" />
 
+        <Grid Name="uiQueryBuilder" Grid.Row="1">
+        <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <StackPanel>
+                <TextBox Header="Artist" Name="uiArtist" HorizontalAlignment="Stretch"/>
+                <TextBox Header="Title" Name="uiTitle" HorizontalAlignment="Stretch"/>
+                <TextBox Header="Album" Name="uiAlbum" HorizontalAlignment="Stretch"/>
+                <TextBox Header="Rok" Name="uiRok" Width="60" HorizontalAlignment="Left"/>
+            </StackPanel>
+<!--            <Button Content="Current" Click="uiCurrent_Click" Margin="10,10,0,10" Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Center" />
+            <Button Click="uiSearch_Click" Margin="10,20,0,10" Grid.Column="1" VerticalAlignment="Bottom" HorizontalAlignment="Center">
+                <SymbolIcon Symbol="Find" />
+            </Button> -->
+        </Grid>
+
+        <TextBlock Name="uiFoundSummary" Grid.Row="2" />
+
+        <ListView Grid.Row="3" Name="uiLista" HorizontalContentAlignment="Stretch" >
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="HorizontalContentAlignment"  Value="Stretch"/>
+                    <Setter Property="MinHeight" Value="10"/>
+                </Style>
+            </ListView.ItemContainerStyle>
+            <ListView.HeaderTemplate>
+                <DataTemplate>
+                    <Grid Margin="0,5,0,0" >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition x:Name="uiColArtistHdr"/>
+                            <ColumnDefinition x:Name="uiColTitleHdr"/>
+                            <ColumnDefinition x:Name="uiColAlbumHdr"/>
+                            <ColumnDefinition Width="20" x:Name="uiColTrackHdr"/>
+                            <ColumnDefinition Width="50" x:Name="uiColYearHdr"/>
+                            <ColumnDefinition Width="50" x:Name="uiColTimeHdr"/>
+                            <ColumnDefinition Width="50" x:Name="uiColBitrateHdr"/>
+                            <ColumnDefinition Width="50" x:Name="uiColChannelsHdr"/>
+                            <ColumnDefinition Width="20" x:Name="uiColSampleHdr"/>
+                            <ColumnDefinition Width="20" x:Name="uiColVbrHdr"/>
+                            <ColumnDefinition Width="20" x:Name="uiColCommHdr"/>
+                            <ColumnDefinition Width="Auto" x:Name="uiColInfoHdr"/>
+                            <ColumnDefinition Width="Auto" x:Name="uiColPlayHdr"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Artist" FontWeight="Bold" HorizontalAlignment="Center" FontSize="10"/>
+                        <TextBlock Grid.Column="1" Text="Title" FontWeight="Bold" HorizontalAlignment="Center" FontSize="10"/>
+                        <TextBlock Grid.Column="2" Text="Album" FontWeight="Bold" HorizontalAlignment="Center" FontSize="10"/>
+                        <TextBlock Grid.Column="3" Text="track" FontWeight="Bold" HorizontalAlignment="Center" FontSize="10"/>
+                        <TextBlock Grid.Column="4" Text="year" FontWeight="Bold" HorizontalAlignment="Center" FontSize="10"/>
+                        <TextBlock Grid.Column="5" Text="time" FontWeight="Bold" HorizontalAlignment="Center" FontSize="10"/>
+                        <TextBlock Grid.Column="6" Text="bitrate" FontWeight="Bold" HorizontalAlignment="Center" FontSize="10"/>
+                        <TextBlock Grid.Column="7" Text="chann" FontWeight="Bold" HorizontalAlignment="Center" FontSize="10"/>
+                        <TextBlock Grid.Column="8" Text="sample" FontWeight="Bold" HorizontalAlignment="Center" FontSize="10"/>
+                        <TextBlock Grid.Column="9" Text="vbr" FontWeight="Bold" HorizontalAlignment="Center" FontSize="10"/>
+                        <TextBlock Grid.Column="10" Text="commt" FontWeight="Bold" HorizontalAlignment="Center" FontSize="10"/>
+                        <TextBlock Grid.Column="11" Text="chann" FontWeight="Bold" HorizontalAlignment="Center" FontSize="10"/>
+                    </Grid>
+                </DataTemplate>
+            </ListView.HeaderTemplate>
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Margin="0,5,0,0" >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition x:Name="uiColArtist"/>
+                            <ColumnDefinition x:Name="uiColTitle"/>
+                            <ColumnDefinition x:Name="uiColAlbum"/>
+                            <ColumnDefinition Width="{Binding cosik, Mode=OneWay, Converter={StaticResource KonwersjaZnikaniePol}, ConverterParameter=20}" x:Name="uiColTrack"/>
+                            <ColumnDefinition Width="{Binding cosik, Mode=OneWay, Converter={StaticResource KonwersjaZnikaniePol}, ConverterParameter=50}" x:Name="uiColYear"/>
+                            <ColumnDefinition Width="{Binding cosik, Mode=OneWay, Converter={StaticResource KonwersjaZnikaniePol}, ConverterParameter=50}" x:Name="uiColTime"/>
+                            <ColumnDefinition Width="{Binding cosik, Mode=OneWay, Converter={StaticResource KonwersjaZnikaniePol}, ConverterParameter=50}" x:Name="uiColBitrate"/>
+                            <ColumnDefinition Width="{Binding cosik, Mode=OneWay, Converter={StaticResource KonwersjaZnikaniePol}, ConverterParameter=50}" x:Name="uiColChannels"/>
+                            <ColumnDefinition Width="{Binding cosik, Mode=OneWay, Converter={StaticResource KonwersjaZnikaniePol}, ConverterParameter=20}" x:Name="uiColSample"/>
+                            <ColumnDefinition Width="{Binding cosik, Mode=OneWay, Converter={StaticResource KonwersjaZnikaniePol}, ConverterParameter=20}" x:Name="uiColVbr"/>
+                            <ColumnDefinition Width="{Binding cosik, Mode=OneWay, Converter={StaticResource KonwersjaZnikaniePol}, ConverterParameter=20}" x:Name="uiColComm"/>
+                            <ColumnDefinition Width="Auto" x:Name="uiColInfo"/>
+                            <ColumnDefinition Width="Auto" x:Name="uiColPlay"/>
+                        </Grid.ColumnDefinitions>
+                        <!-- Artist	Title	 	Album	track	year	duration	bitrate	channels	sample	vbr	comment PLAY -->
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
     </Grid>
 </Page>

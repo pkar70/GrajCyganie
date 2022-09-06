@@ -267,4 +267,38 @@
         Return sPage
 
     End Function
+
+    Public Overrides Async Function SearchAsync(sArtist As String, sTitle As String, sAlbum As String, sRok As String) As Task(Of List(Of oneAudioParam))
+        If (sArtist & sTitle & sAlbum & sRok).Length < 3 Then Return Nothing
+
+        sArtist = dbase_sql.ConvertQueryParam(sArtist).Replace("&", "%26")
+        sTitle = dbase_sql.ConvertQueryParam(sTitle).Replace("&", "%26")
+        sAlbum = dbase_sql.ConvertQueryParam(sAlbum).Replace("&", "%26")
+        sRok = dbase_sql.ConvertQueryParam(sRok)
+
+        Dim sLinkQuery As String = $"artist={sArtist}&title={sTitle}&album={sAlbum}&rok={sRok}"
+        sLinkQuery = sLinkQuery.Replace("%", "%25")
+
+        Dim sPage As String = Await ThisHttpPageAsync("/cygan-search.asp?" & sLinkQuery, "file data")
+        If sPage = "" Then Return Nothing
+
+        Dim oLista As New List(Of oneAudioParam)
+        oLista = Newtonsoft.Json.JsonConvert.DeserializeObject(sPage, GetType(List(Of oneAudioParam)))
+        Return oLista
+
+    End Function
+
+    Public Overrides Async Function GetStoreFileAsync(id As Integer) As Task(Of oneStoreFiles)
+        DumpCurrMethod()
+
+        Dim sPage As String = Await ThisHttpPageAsync("/cygan-getfile.asp?id=" & id, "file data")
+        If sPage = "" Then Return Nothing
+
+        Dim oItem As oneStoreFiles
+        oItem = Newtonsoft.Json.JsonConvert.DeserializeObject(sPage, GetType(oneStoreFiles))
+        Return oItem
+
+    End Function
+
+
 End Class

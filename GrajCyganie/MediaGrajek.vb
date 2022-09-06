@@ -124,7 +124,7 @@ Public Module MediaGrajek
         Await GoNextSongUI()
     End Sub
 
-    Public Function CzyMPlayerGra() As Boolean
+    Public Function Grajek_CzyGra() As Boolean
         If WinVer() > 14392 Then
             If moMediaPlayer.PlaybackSession.PlaybackState = Windows.Media.Playback.MediaPlaybackState.Playing OrElse
                     moMediaPlayer.PlaybackSession.PlaybackState = Windows.Media.Playback.MediaPlaybackState.Opening OrElse

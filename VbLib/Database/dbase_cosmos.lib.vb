@@ -23,4 +23,12 @@
     Protected Overrides Function DekadyDownloadAsync() As Task(Of List(Of tDekada))
         Throw New NotImplementedException()
     End Function
+
+    Public Overrides Function SearchAsync(sArtist As String, sTitle As String, sAlbum As String, sRok As String) As Task(Of List(Of oneAudioParam))
+        Throw New NotImplementedException()
+    End Function
+
+    Public Overrides Function GetStoreFileAsync(id As Integer) As Task(Of oneStoreFiles)
+        Throw New NotImplementedException()
+    End Function
 End Class

@@ -53,7 +53,9 @@ Public NotInheritable Class SetupAudio
         Dim sTxt As String = uiTextDoPrzeczytania.Text
         If sTxt.Length < 5 Then Return
 
-        SpeakOdczytajStringAsync(sTxt, oVoice.Language, If(oVoice.Gender = Windows.Media.SpeechSynthesis.VoiceGender.Male, True, False))
+#Disable Warning BC42358 ' Because this call is not awaited, execution of the current method continues before the call is completed
+        SpeakOdczytajStringAsync(sTxt, oVoice.Language, oVoice.Gender = Windows.Media.SpeechSynthesis.VoiceGender.Male)
+#Enable Warning BC42358 ' Because this call is not awaited, execution of the current method continues before the call is completed
 
     End Sub
 

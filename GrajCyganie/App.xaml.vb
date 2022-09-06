@@ -84,7 +84,9 @@ Partial NotInheritable Class App
 
 
     ' RemoteSystems
+#Disable Warning BC42356 ' This async method lacks 'Await' operators and so will run synchronously
     Protected Overrides Async Sub OnBackgroundActivated(args As BackgroundActivatedEventArgs)
+#Enable Warning BC42356 ' This async method lacks 'Await' operators and so will run synchronously
         ' tile update / warnings
         moTaskDeferal = args.TaskInstance.GetDeferral() ' w pkarmodule.App
 
@@ -148,7 +150,9 @@ Partial NotInheritable Class App
 
     Public Shared Event PilotChce(sCmd As String)
 
+#Disable Warning BC42356 ' This async method lacks 'Await' operators and so will run synchronously
     Private Async Function AppServiceLocalCommand(sCommand As String) As Task(Of String)
+#Enable Warning BC42356 ' This async method lacks 'Await' operators and so will run synchronously
         Dim sResult As String = "ERROR while processing command " & sCommand
 
         Select Case sCommand.ToLower
@@ -208,7 +212,6 @@ Partial NotInheritable Class App
     'Public Shared goDbase As Vblib.dbase_base = Nothing
 
     Public Shared inVb As New Vblib.App(Windows.Storage.ApplicationData.Current.LocalCacheFolder.Path)
-
 
     Public Shared gbNoSpeak As Boolean = False
 End Class

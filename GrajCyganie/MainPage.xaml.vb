@@ -14,10 +14,7 @@ Imports Vblib.Extensions
 ' przygotowanie do RemoteSystem (jako pilot/grajek)
 ' miesiąc - automatyczne zerowanie przy zmianie Date.Now.Month
 
-
-Imports Windows.Media
-Imports Vblib
-Imports Windows.Media.Playback
+' Imports Vblib.
 
 Public NotInheritable Class MainPage
     Inherits Page
@@ -33,7 +30,7 @@ Public NotInheritable Class MainPage
     Private miNextMode As Vblib.eNextMode = Vblib.eNextMode.random
     Private miCoGram As eCoGram = eCoGram.nic
 
-    Private moMSource As Windows.Media.Core.MediaSource
+    ' Private moMSource As Windows.Media.Core.MediaSource
     'Private moMSource As Windows.Media.Playback.MediaPlaybackItem
 
 #Region "Gadaczka"
@@ -78,7 +75,7 @@ Public NotInheritable Class MainPage
         oRadio.IsEnabled = (iCount > 1)
     End Sub
 
-    Private Sub WypelnPolaOpisu(oGranyUtwor As tGranyUtwor)
+    Private Sub WypelnPolaOpisu(oGranyUtwor As Vblib.tGranyUtwor)
         If oGranyUtwor Is Nothing Then
             vb14.DumpMessage("Empty App.mtGranyUtwor")
             Return
@@ -108,13 +105,13 @@ Public NotInheritable Class MainPage
     End Sub
 
     Private Sub WypelnSliderDekady(sDekada As String)
-        If App.inVb._dekady.GetList Is Nothing Then
+        If Vblib.App._dekady.GetList Is Nothing Then
             uiSlider.Visibility = Visibility.Collapsed
             uiSliderInfo.Visibility = Visibility.Collapsed
         Else
             uiSlider.Visibility = Visibility.Visible
             uiSliderInfo.Visibility = Visibility.Visible
-            For Each oItem As Vblib.tDekada In App.inVb._dekady.GetList
+            For Each oItem As Vblib.tDekada In Vblib.App._dekady.GetList
                 If oItem.sNazwa = sDekada Then
                     uiSlider.Value = oItem.iFreq
                     uiSliderInfo.Text = oItem.GetFreqString
@@ -126,7 +123,7 @@ Public NotInheritable Class MainPage
 
 
 
-    Private Sub WypelnijPola(oGranyUtwor As tGranyUtwor)
+    Private Sub WypelnijPola(oGranyUtwor As Vblib.tGranyUtwor)
         vb14.DumpCurrMethod()
 
         WypelnPolaOpisu(oGranyUtwor)
@@ -160,18 +157,18 @@ Public NotInheritable Class MainPage
         vb14.SetSettingsInt("miMonthMiB", vb14.GetSettingsInt("miMonthMiB") + iMiB)
     End Sub
 
-    Private Async Sub SNM_CloseRequested(sender As Object, e As Windows.UI.Core.Preview.SystemNavigationCloseRequestedPreviewEventArgs)
-        vb14.DumpCurrMethod()
-        Dim oDef As Deferral = e.GetDeferral
-        ' tylko do systray
-        'If (Metadata.ApiInformation.IsApiContractPresent("Windows.ApplicationModel.FullTrustAppContract", 1, 0)) Then
-        '    Await FullTrustProcessLauncher.LaunchFullTrustProcessForCurrentAppAsync()
-        'End If
+    'Private Async Sub SNM_CloseRequested(sender As Object, e As Windows.UI.Core.Preview.SystemNavigationCloseRequestedPreviewEventArgs)
+    '    vb14.DumpCurrMethod()
+    '    Dim oDef As Deferral = e.GetDeferral
+    '    ' tylko do systray
+    '    'If (Metadata.ApiInformation.IsApiContractPresent("Windows.ApplicationModel.FullTrustAppContract", 1, 0)) Then
+    '    '    Await FullTrustProcessLauncher.LaunchFullTrustProcessForCurrentAppAsync()
+    '    'End If
 
-        e.Handled = False
-        oDef.Complete()
+    '    e.Handled = False
+    '    oDef.Complete()
 
-    End Sub
+    'End Sub
 
 
     Private Async Sub Page_Loaded(sender As Object, e As RoutedEventArgs)
@@ -185,12 +182,12 @@ Public NotInheritable Class MainPage
             ApplicationView.GetForCurrentView().SetPreferredMinSize(New Size(310, 400))
         End If
 
-        AddHandler Windows.UI.Core.Preview.SystemNavigationManagerPreview.GetForCurrentView().CloseRequested, AddressOf SNM_CloseRequested
+        ' AddHandler Windows.UI.Core.Preview.SystemNavigationManagerPreview.GetForCurrentView().CloseRequested, AddressOf SNM_CloseRequested
 
         Grajek_Init(uiGrajek, AddressOf GoNextSongUI)
 
-        uiReadAfter.IsChecked = vb14.GetSettingsBool("uiReadAfter")
-        uiReadBefore.IsChecked = vb14.GetSettingsBool("uiReadBefore")
+        uiReadAfter.GetSettingsBool()
+        uiReadBefore.GetSettingsBool()
 
         If Not Await App.inVb.GetCurrentDb.LoginAsync(True) Then
             uiGoLogin.Visibility = Visibility.Visible
@@ -220,7 +217,7 @@ Public NotInheritable Class MainPage
         AktualizujLiczniki(App.mtGranyUtwor.oStoreFile.len)
         ZaznaczRadio(0)
 
-        Dim bGramy As Boolean = CzyMPlayerGra()
+        Dim bGramy As Boolean = Grajek_CzyGra()
 
         If bGramy Then
             uiStart.Visibility = Visibility.Collapsed
@@ -257,14 +254,14 @@ Public NotInheritable Class MainPage
 
     End Sub
 
-    Private Sub EventGuzikaMediaPlayer(sender As SystemMediaTransportControls, args As SystemMediaTransportControlsButtonPressedEventArgs)
-        vb14.DumpCurrMethod()
-        Debug.WriteLine("guzik media player")
-        'Select Case args.Button
-        '    Case SystemMediaTransportControlsButton.Next
-        '        Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, AddressOf GoNextSongSub)
-        'End Select
-    End Sub
+    'Private Sub EventGuzikaMediaPlayer(sender As Windows.Media.SystemMediaTransportControls, args As Windows.Media.SystemMediaTransportControlsButtonPressedEventArgs)
+    '    vb14.DumpCurrMethod()
+    '    Debug.WriteLine("guzik media player")
+    '    'Select Case args.Button
+    '    '    Case SystemMediaTransportControlsButton.Next
+    '    '        Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, AddressOf GoNextSongSub)
+    '    'End Select
+    'End Sub
 #Region "voice commands"
 
     Private Shared msVoiceCmd As String
@@ -317,8 +314,7 @@ Public NotInheritable Class MainPage
 #End Region
 
 
-#Region "Zapetlenia"
-
+#Region "Zapetlenia - UI"
 
     Private Sub ZaznaczRadio(iMode As Vblib.eNextMode)
         vb14.DumpCurrMethod()
@@ -359,7 +355,6 @@ Public NotInheritable Class MainPage
     End Sub
 #End Region
 
-
     Private Enum eCoGram
         nic = 0
         zapowiedzPre = 1
@@ -367,7 +362,7 @@ Public NotInheritable Class MainPage
         song = 3
     End Enum
 
-    Private Async Function LosujDoSkutkuAsync(oGrany As tGranyUtwor, iNextMode As eNextMode) As Task(Of tGranyUtwor)
+    Private Async Function LosujDoSkutkuAsync(oGrany As Vblib.tGranyUtwor, iNextMode As Vblib.eNextMode) As Task(Of Vblib.tGranyUtwor)
 
         Dim oNextSong As Vblib.tGranyUtwor = Nothing
 
@@ -381,7 +376,7 @@ Public NotInheritable Class MainPage
             ' skoro nie losowo, to slidery dekadowe są ignorowane
             If iNextMode <> Vblib.eNextMode.random Then Return oNextSong
 
-            If App.inVb._dekady.CanPlay(oNextSong.oAudioParam.dekada) Then Return oNextSong
+            If Vblib.App._dekady.CanPlay(oNextSong.oAudioParam.dekada) Then Return oNextSong
 
             ' jeszcze nie
             App.gsLog = App.gsLog & "GoNextSong, ale nie każdy z dekady " & oNextSong.oAudioParam.dekada & vbCrLf
@@ -394,7 +389,7 @@ Public NotInheritable Class MainPage
     End Function
 
 
-    Private Async Function GoNextSong(iNextMode As eNextMode) As Task(Of Boolean)
+    Private Async Function GoNextSong(iNextMode As Vblib.eNextMode) As Task(Of Boolean)
         Dim sDOut As String = ""
         If App.mtGranyUtwor IsNot Nothing Then
             sDOut = $"miNextMode={iNextMode}, miCoGram={miCoGram}, artist={App.mtGranyUtwor.oAudioParam.artist}"
@@ -437,7 +432,7 @@ Public NotInheritable Class MainPage
 
                 miCoGram = eCoGram.zapowiedzPre
                 If uiReadBefore.IsChecked Then
-                    SpeakOdczytajAsync()
+                    Await SpeakOdczytajAsync()
                     Return True
                 End If
 
@@ -450,7 +445,7 @@ Public NotInheritable Class MainPage
 
             'sTxt = sTxt.Replace("#", "%23")  ' to jest tylko proba - teraz moze podwojnie escapeowa?
             'Dim oUri As Uri = New Uri(App.BaseUri & "/p" & sTxt)   ' sTxt = "/store/.... "
-            moMSource = Await GetMediaSourceFrom(App.mtGranyUtwor.oStoreFile)
+            Dim moMSource As Windows.Media.Core.MediaSource = Await GetMediaSourceFrom(App.mtGranyUtwor.oStoreFile)
             If moMSource Is Nothing Then
                 App.gsLog = App.gsLog & "GoNextSong, ale nie ma pliku w " & App.mtGranyUtwor.oStoreFile.path & vbCrLf
                 miCoGram = eCoGram.zapowiedzPost ' znaczy na pewno będzie losował następny
@@ -470,85 +465,6 @@ Public NotInheritable Class MainPage
 
         Return True
     End Function
-
-#Region "dostep do pliku"
-
-    Private Async Function GetFileFromPath(sPath As String) As Task(Of Windows.Storage.StorageFile)
-        vb14.DumpCurrMethod("sPath=" & sPath)
-
-        Dim oFile As Windows.Storage.StorageFile
-        Dim sMsg As String = ""
-        Try
-            oFile = Await Windows.Storage.StorageFile.GetFileFromPathAsync(sPath)
-            Return oFile
-        Catch ex As UnauthorizedAccessException
-            sMsg = "PermissionDenied, więc może Włącz permissiony: Apps » Settings » Privacy » File System"
-        Catch ex As FileNotFoundException
-            sMsg = ""
-        Catch ex As Exception
-            sMsg = ex.Message
-        End Try
-
-        If sMsg = "" Then Return Nothing
-
-        Await vb14.DialogBoxAsync(sMsg)
-        Return Nothing
-
-    End Function
-
-
-
-    Private Async Function GetMediaSourceFrom(oStoreFile As Vblib.oneStoreFiles) As Task(Of Windows.Media.Core.MediaSource)
-        vb14.DumpCurrMethod()
-
-        Dim sPath As String = oStoreFile.path
-        If sPath.ToLower.StartsWith("u:") Then sPath = sPath.Substring(3)     ' u:\...
-        ' teraz sPath zaczyna sie od pkar badz od public
-
-        If Not sPath.ToLower.StartsWith("pkar") And Not sPath.ToLower.StartsWith("public") Then
-            Await vb14.DialogBoxAsync("Uknown prefix in path? " & vbCrLf & sPath)
-            Return Nothing
-        End If
-
-        sPath = sPath.Replace("/", IO.Path.DirectorySeparatorChar)
-
-        Dim sPath1 As String = ""
-        Dim oFile As Windows.Storage.StorageFile
-
-        ' najpierw plik lokalnie jak jest
-        If vb14.GetSettingsString("uiLocalPath") <> "" Then
-            ' moje L:\, bez podziału na priv/public
-            If sPath.ToLower.StartsWith("pkar") Then sPath1 = sPath.Substring(5)
-            If sPath.ToLower.StartsWith("public") Then sPath1 = sPath.Substring(7)
-            sPath1 = vb14.GetSettingsString("uiLocalPath") & sPath1
-            oFile = Await GetFileFromPath(sPath1)
-            If oFile IsNot Nothing Then Return Windows.Media.Core.MediaSource.CreateFromStorageFile(oFile)
-
-            ' lokalnie (co może być dysk external!), z podziałem na priv/public
-            sPath1 = vb14.GetSettingsString("uiLocalPath") & sPath
-            oFile = Await GetFileFromPath(sPath1)
-            If oFile IsNot Nothing Then Return Windows.Media.Core.MediaSource.CreateFromStorageFile(oFile)
-        End If
-
-        ' potem wedle pliku z lokalnego cache OneDrive - ale tylko wtedy gdy jest sieć, inaczej nie ma sensu :)
-        If vb14.GetSettingsString("uiLocalODPath") <> "" Then
-            If NetIsIPavailable() Then
-                sPath1 = vb14.GetSettingsString("uiLocalODPath") & sPath
-                oFile = Await GetFileFromPath(sPath1)
-                If oFile IsNot Nothing Then Return Windows.Media.Core.MediaSource.CreateFromStorageFile(oFile)
-            Else
-                Await vb14.DialogBoxAsync("Nie ma lokalnie, a do OD potrzebuję sieci")
-                Return Nothing
-            End If
-        End If
-
-        ' a potem się poddajemy
-        Await vb14.DialogBoxAsync("Ale sorry, nie mogę znaleźć pliku")
-        Return Nothing
-
-    End Function
-
-#End Region
 
 
     Private Async Sub GoNextSongSub()
@@ -581,7 +497,7 @@ Public NotInheritable Class MainPage
         'Dim oDekada As tDekada = TryCast(oSlider.DataContext, tDekada)
         'oDekada.sFreq = App.FreqSlider2Text(oSlider.Value)
 
-        For Each oDekada As Vblib.tDekada In App.inVb._dekady.GetList
+        For Each oDekada As Vblib.tDekada In Vblib.App._dekady.GetList
             If oDekada.sNazwa = uiDekada.Text Then
                 oDekada.iFreq = uiSlider.Value
 

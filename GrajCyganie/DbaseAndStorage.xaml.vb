@@ -17,7 +17,7 @@ Public NotInheritable Class DbaseAndStorage
         Dim sSelected As String = App.inVb.GetCurrentDb.Nazwa
         Dim oSelect As ComboBoxItem = Nothing
 
-        For Each oDbSrc In App.inVb.gaDbs
+        For Each oDbSrc In Vblib.App.gaDbs
             Dim oNew As New ComboBoxItem
             oNew.Content = oDbSrc.Nazwa
             If oDbSrc.Nazwa = sSelected Then oSelect = oNew
@@ -29,22 +29,6 @@ Public NotInheritable Class DbaseAndStorage
         End If
 
     End Sub
-
-    'Private Sub FillComboPliki()
-    '    uiPliki.Items.Clear()
-
-    '    uiPliki.Items.Add("localstorage")
-    '    'For Each oDbSrc In App.inVb.gaDbs
-    '    '    uiPliki.Items.Add(oDbSrc.Nazwa)
-    '    'Next
-
-    '    Dim sSelected As String = vb14.GetSettingsString("usingFS")
-    '    If sSelected <> "" Then
-    '        For Each oItem As ComboBoxItem In uiPliki.Items
-    '            If oItem.Content = sSelected Then oItem.IsSelected = True
-    '        Next
-    '    End If
-    'End Sub
 
     Private Sub SaveCombo(uiCombo As ComboBox)
         Dim iSelItem As Integer = uiCombo.SelectedIndex

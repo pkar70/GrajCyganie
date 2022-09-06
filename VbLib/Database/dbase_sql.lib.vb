@@ -5,14 +5,19 @@
 
     Private moConnRO As New System.Data.SqlClient.SqlConnection(sConnString)
 
+#Disable Warning BC42356 ' This async method lacks 'Await' operators and so will run synchronously
+    <CodeAnalysis.SuppressMessage("Microsoft.Performance", "BC42356:ReviewUnusedParameters")>
     Public Overrides Async Function GetPermissionAsync(sUser As String) As Task(Of String)
+#Enable Warning BC42356 ' This async method lacks 'Await' operators and so will run synchronously
         DumpCurrMethod()
 
         mbGranted = True
         Return True
     End Function
 
+#Disable Warning BC42356 ' This async method lacks 'Await' operators and so will run synchronously
     Protected Overrides Async Function RetrieveMaxIdAsync() As Task(Of Integer)
+#Enable Warning BC42356 ' This async method lacks 'Await' operators and so will run synchronously
         DumpCurrMethod()
 
         If Not EnsureOpen() Then Return False
@@ -23,7 +28,9 @@
         Return iRet
     End Function
 
+#Disable Warning BC42356 ' This async method lacks 'Await' operators and so will run synchronously
     Protected Overrides Async Function DekadyDownloadAsync() As Task(Of List(Of tDekada))
+#Enable Warning BC42356 ' This async method lacks 'Await' operators and so will run synchronously
         DumpCurrMethod()
 
         Dim mlDekady As New List(Of tDekada)
@@ -59,7 +66,9 @@
 
         Return 0
     End Function
+#Disable Warning BC42356 ' This async method lacks 'Await' operators and so will run synchronously
     Public Overrides Async Function RetrieveCountsyAsync(oGrany As tGranyUtwor) As Task(Of Boolean)
+#Enable Warning BC42356 ' This async method lacks 'Await' operators and so will run synchronously
         DumpCurrMethod()
 
         If Not EnsureOpen() Then Return False
@@ -93,7 +102,9 @@
     End Function
 
 
+#Disable Warning BC42356 ' This async method lacks 'Await' operators and so will run synchronously
     Public Overrides Async Function GetNextSongAsync(iNextMode As eNextMode, oGrany As tGranyUtwor) As Task(Of tGranyUtwor)
+#Enable Warning BC42356 ' This async method lacks 'Await' operators and so will run synchronously
         DumpCurrMethod()
 
         DebugOut("GetNextSong, miNextMode=" & iNextMode)
@@ -205,4 +216,88 @@
         Return False
     End Function
 
+    Public Shared Function ConvertQueryParam(sMask As String) As String
+        If String.IsNullOrWhiteSpace(sMask) Then Return ""
+        sMask = sMask.Replace("'", "''")
+        sMask = sMask.Replace("*", "%")
+        sMask = sMask.Replace("?", "_")
+        If sMask.Contains("%") OrElse sMask.Contains("_") Then Return sMask
+
+        If Not sMask.StartsWith("^") Then
+            sMask = "%" & sMask
+        Else
+            sMask = sMask.Substring(1)
+        End If
+
+        If Not sMask.EndsWith("$") Then
+            sMask = sMask & "%"
+        Else
+            sMask = sMask.Substring(0, sMask.Length - 1)
+        End If
+
+        Return sMask
+    End Function
+
+
+    Private Function AddQueryParam(sFieldName As String, sMask As String) As String
+        If String.IsNullOrWhiteSpace(sMask) Then Return ""
+
+        sMask = ConvertQueryParam(sMask)
+        Return $" AND {sFieldName} LIKE '{sMask}' "
+    End Function
+
+#Disable Warning BC42356 ' This async method lacks 'Await' operators and so will run synchronously
+    Public Overrides Async Function SearchAsync(sArtist As String, sTitle As String, sAlbum As String, sRok As String) As Task(Of List(Of oneAudioParam))
+#Enable Warning BC42356 ' This async method lacks 'Await' operators and so will run synchronously
+        DumpCurrMethod()
+
+        If Not EnsureOpen() Then Return Nothing
+        If (sArtist & sTitle & sAlbum & sRok).Length < 3 Then Return Nothing
+
+        Dim sQry As String = "SELECT TOP 200 * FROM audioParam WHERE 1=1 "
+        sQry = sQry & AddQueryParam("artist", sArtist)
+        sQry = sQry & AddQueryParam("title", sTitle)
+        sQry = sQry & AddQueryParam("album", sAlbum)
+        sQry = sQry & AddQueryParam("rok", sRok)
+        sQry = sQry & " FOR JSON AUTO"
+
+        Using oQuery As New System.Data.SqlClient.SqlCommand(sQry, moConnRO)
+            Using oRdr As System.Data.SqlClient.SqlDataReader = oQuery.ExecuteReader()
+                While oRdr.Read
+                    Dim sJson As String = oRdr.GetString(0)
+                    ' import JSON
+                    Dim oLista As New List(Of oneAudioParam)
+                    oLista = Newtonsoft.Json.JsonConvert.DeserializeObject(sJson, GetType(List(Of oneAudioParam)))
+                    Return oLista
+                End While
+            End Using
+        End Using
+
+        Return Nothing
+    End Function
+
+#Disable Warning BC42356 ' This async method lacks 'Await' operators and so will run synchronously
+    Public Overrides Async Function GetStoreFileAsync(id As Integer) As Task(Of oneStoreFiles)
+#Enable Warning BC42356 ' This async method lacks 'Await' operators and so will run synchronously
+        DumpCurrMethod()
+
+        If Not EnsureOpen() Then Return Nothing
+
+        Dim sQry As String = "SELECT * FROM storeFiles WHERE id=" & id
+
+        Using oQuery As New System.Data.SqlClient.SqlCommand(sQry, moConnRO)
+            Using oRdr As System.Data.SqlClient.SqlDataReader = oQuery.ExecuteReader()
+                While oRdr.Read
+                    Dim sJson As String = oRdr.GetString(0)
+                    ' import JSON
+                    Dim oItem As oneStoreFiles
+                    oItem = Newtonsoft.Json.JsonConvert.DeserializeObject(sJson, GetType(oneStoreFiles))
+                    Return oItem
+                End While
+            End Using
+        End Using
+
+        Return Nothing
+
+    End Function
 End Class

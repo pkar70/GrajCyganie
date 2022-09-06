@@ -4,9 +4,9 @@ Public NotInheritable Class OpenM3u
 
     Private Sub ShowStat()
         If uiGrid.ActualWidth > 500 Then
-            uiListItems1Row.ItemsSource = From c In App.inVb._dekady.GetList
+            uiListItems1Row.ItemsSource = From c In Vblib.App._dekady.GetList
         Else
-            uiListItems2Row.ItemsSource = From c In App.inVb._dekady.GetList
+            uiListItems2Row.ItemsSource = From c In Vblib.App._dekady.GetList
         End If
     End Sub
 
@@ -25,7 +25,7 @@ Public NotInheritable Class OpenM3u
         ShowStat()
     End Sub
 
-    Private Async Sub Page_Loaded(sender As Object, e As RoutedEventArgs)
+    Private Sub Page_Loaded(sender As Object, e As RoutedEventArgs)
         ShowStat()
     End Sub
 
@@ -36,7 +36,7 @@ Public NotInheritable Class OpenM3u
     End Sub
 
     Private Sub uiSave_Click(sender As Object, e As RoutedEventArgs)
-        App.inVb._dekady.Save()
+        Vblib.App._dekady.Save()
     End Sub
 
     'Private Sub uiFreqSlider_ValueChanged(sender As Object, e As RangeBaseValueChangedEventArgs) Handles uiFreqSlider.ValueChanged

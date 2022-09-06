@@ -28,7 +28,7 @@ Public NotInheritable Class Login
         Return True
     End Function
 
-    Private Sub Page_Loaded(sender As Object, e As RoutedEventArgs)
+    Private Async Sub Page_Loaded(sender As Object, e As RoutedEventArgs)
         uiUserName.Text = vb14.GetSettingsString("userName")
         If vb14.GetSettingsInt("loginTryCount") > 5 Then
             uiUserName.IsReadOnly = True
@@ -36,7 +36,7 @@ Public NotInheritable Class Login
             ' App.mbGranted = False
         Else
             uiUserName.IsReadOnly = False
-            TestPermission(uiUserName.Text)
+            Await TestPermission(uiUserName.Text)
         End If
     End Sub
 End Class

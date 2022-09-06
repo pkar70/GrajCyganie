@@ -111,7 +111,7 @@ Public NotInheritable Class OpenM3u
         Dim oGrid As Grid = TryCast(oSlider.Parent, Grid)
         For Each oChild As UIElement In oGrid.Children
             Dim oTB As TextBlock = TryCast(oChild, TextBlock)
-            If oTB IsNot Nothing AndAlso oTB.Name = "uiFreqStr" Then
+            If oTB IsNot Nothing AndAlso oTB.Name.StartsWith("uiFreqStr") Then
                 oTB.Text = oDekada.GetFreqString
             End If
         Next

@@ -263,18 +263,44 @@
         If sPage = "" Then
             Await DialogBoxAsync(sErrMsg)
         End If
+        If sPage.Contains("Brak uprawnien, co tu robisz") Then
+            ' czyżby na tym polegał minus?
+            Await DialogBoxAsync(sPage)
+        End If
 
         Return sPage
 
     End Function
 
+    Public Shared Function ConvertQueryParam(sMask As String) As String
+        If String.IsNullOrWhiteSpace(sMask) Then Return ""
+        sMask = sMask.Replace("'", "''")
+        sMask = sMask.Replace("*", "%")
+        sMask = sMask.Replace("?", "_")
+        If sMask.Contains("%") OrElse sMask.Contains("_") Then Return sMask
+
+        If Not sMask.StartsWith("^") Then
+            sMask = "%" & sMask
+        Else
+            sMask = sMask.Substring(1)
+        End If
+
+        If Not sMask.EndsWith("$") Then
+            sMask = sMask & "%"
+        Else
+            sMask = sMask.Substring(0, sMask.Length - 1)
+        End If
+
+        Return sMask
+    End Function
+
     Public Overrides Async Function SearchAsync(sArtist As String, sTitle As String, sAlbum As String, sRok As String) As Task(Of List(Of oneAudioParam))
         If (sArtist & sTitle & sAlbum & sRok).Length < 3 Then Return Nothing
 
-        sArtist = dbase_sql.ConvertQueryParam(sArtist).Replace("&", "%26")
-        sTitle = dbase_sql.ConvertQueryParam(sTitle).Replace("&", "%26")
-        sAlbum = dbase_sql.ConvertQueryParam(sAlbum).Replace("&", "%26")
-        sRok = dbase_sql.ConvertQueryParam(sRok)
+        sArtist = ConvertQueryParam(sArtist).Replace("&", "%26")
+        sTitle = ConvertQueryParam(sTitle).Replace("&", "%26")
+        sAlbum = ConvertQueryParam(sAlbum).Replace("&", "%26")
+        sRok = ConvertQueryParam(sRok)
 
         Dim sLinkQuery As String = $"artist={sArtist}&title={sTitle}&album={sAlbum}&rok={sRok}"
         sLinkQuery = sLinkQuery.Replace("%", "%25")

@@ -1,3 +1,23 @@
+Migracja cygan-* na JSON, do uproszczenia - ale przede wszystkim do pozbycia się zależności od literek itp.
+Czemu getDbUpdate zepsuł polskie literki? A może to nie on, tylko zły collation bazy jest? I trzeba zrobić reset na niej :)
+
+Search wielopoziomowe (back) w ramach kolejnych Search
+Search checkbox: inside results ?
+Dodać można fotosy prosty browser, a przynajmniej counter - sprawdzić czy się zmieści na Papugach
+Można zrobić Browser plików wedle bazy, i wyszukiwarkę w pełnym FileSystem
+
+
+select sum([len]) from StoreFiles where path like '%oldmusic%'	-- 413 311 209 340
+select sum([len]) from StoreFiles where path like '%winylown%'	--  12 170 368 105
+select sum([len]) from StoreFiles where path like '%polcd%'	    --  10 837 511 291
+select sum([len]) from StoreFiles where path like '%\lps\%' 	--   6 500 236 826
+select sum([len]) from StoreFiles where path like '%cdrips%'	--  15 003 483 817
+TOTAL MUSIC                                                     == 456
+select sum([len]) from StoreFiles where path like '%texts.0%'	-- 413 956 680 607
+select sum([len]) from StoreFiles where path like '%models.0%'	--  59 805 443 627
+TOTAL                                                           == 929 - za dużo jednak, albo: za mała rezerwa
+
+Sprawdzić Cosmo czy się uda - tak tylko na wszelki wypadek, choć może to w ogóle nie ma sensu? Bo do telefonu i tak nie podepnę OneDrive
 
 ' https://docs.microsoft.com/en-us/onedrive/sync-process  ?
 To find new changes and upload information: https://<tenant_name, i.e. contoso>-my.sharepoint.com/personal/<user_contoso_onmicrosoft_com>/_api/SPFileSync/sync/<default document library ID GUID>/
@@ -6,14 +26,9 @@ To download items: https://<tenant_name, i.e. contoso>-my.sharepoint.com/persona
 
 Rozpoznawanie języka niezależnie dla wykonawcy oraz dla tytułu?
 
-Zrobić vblib 1.4 - może się przydać między różnymi app, szczególnie biblioteki DB
-
-Może być oddzielny ClassLib z samym DB ? Bo indeksy będą nie tylko przy graniu,
-ale również przy synchronizacji, emulacji mp3check...
 Dodać funkcję: GetSongsList(typ:byartist,bytitle,byalbum,byyear,bydekada, oCurrentSong) - jako ENUM, odpowiedniki zapętlenia, i nie maska tylko string ?
 albo jako GetSongsList(sArtistMask, sTitleMask, sAlbumMask ...)
 GetCounts sprawdzic czy nie zrobić jako GetCounts(typ, oCurrentSong)
-podefiniować sobie typy, np. typ do counterów
 używać DataContext w RadioButtonach? {typ, string} ustawiany przy starcie
 
 skoki do wikipedii, próba w imdb aktorki? , próba obrazków (lokalnie)

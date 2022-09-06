@@ -28,18 +28,19 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <StackPanel>
-                <TextBox Header="Artist" Name="uiArtist" HorizontalAlignment="Stretch" />
-                <TextBox Header="Title" Name="uiTitle" HorizontalAlignment="Stretch"/>
-                <TextBox Header="Album" Name="uiAlbum" HorizontalAlignment="Stretch"/>
-                <TextBox Header="Rok" Name="uiRok" Width="60" HorizontalAlignment="Left"/>
+                <TextBox Header="Artist" Name="uiArtist" HorizontalAlignment="Stretch" TextChanged="uiMask_Changed" />
+                <TextBox Header="Title" Name="uiTitle" HorizontalAlignment="Stretch" TextChanged="uiMask_Changed"/>
+                <TextBox Header="Album" Name="uiAlbum" HorizontalAlignment="Stretch" TextChanged="uiMask_Changed"/>
+                <TextBox Header="Rok" Name="uiRok" Width="100" HorizontalAlignment="Left" TextChanged="uiMask_Changed"/>
             </StackPanel>
             <Button Content="Current" Click="uiCurrent_Click" Margin="10,10,0,10" Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Center" />
+            <CheckBox Name="uiSearchInside" Grid.Column="1" VerticalAlignment="Center" Content="inside" HorizontalAlignment="Right" Margin="20,0,0,0" />
             <Button Click="uiSearch_Click" Margin="10,20,0,10" Grid.Column="1" VerticalAlignment="Bottom" HorizontalAlignment="Center">
                 <SymbolIcon Symbol="Find" />
             </Button>
         </Grid>
 
-        <TextBlock Name="uiFoundSummary" Grid.Row="2" />
+        <TextBlock Name="uiFoundSummary" Grid.Row="2" Margin="2,4,2,4"/>
 
         <ListView Grid.Row="3" Name="uiListaSzeroka" HorizontalContentAlignment="Stretch" >
             <ListView.ItemContainerStyle>
@@ -137,8 +138,8 @@
                             <ColumnDefinition Width="Auto" x:Name="uiColInfoHdr"/>
                             <ColumnDefinition Width="Auto" x:Name="uiColPlayHdr"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" Text="Artist" FontWeight="Bold" HorizontalAlignment="Center" FontSize="11"/>
-                        <TextBlock Grid.Column="1" Text="Title" FontWeight="Bold" HorizontalAlignment="Center" FontSize="11"/>
+                        <TextBlock Grid.Column="0" Text="Artist" FontWeight="Bold" HorizontalAlignment="Center" FontSize="11" Tapped="uiSortArtist_Tap"/>
+                        <TextBlock Grid.Column="1" Text="Title" FontWeight="Bold" HorizontalAlignment="Center" FontSize="11" Tapped="uiSortTitle_Tap"/>
                     </Grid>
                 </DataTemplate>
             </ListView.HeaderTemplate>
@@ -158,6 +159,7 @@
                                     <MenuFlyoutItem Text="open Wiki" Name="uiArtistWiki" Click="uiMenuWiki_Click"/>
                                     <MenuFlyoutItem Text="search" Name="uiArtistSearch" Click="uiMenuSearch_Click"/>
                                     <MenuFlyoutItem Text="copy" Name="uiArtistCopy" Click="uiMenuCopy_Click" />
+                                    <MenuFlyoutItem Text="fotosy" Click="uiFotosy_Click" />
                                 </MenuFlyout>
                             </TextBox.ContextFlyout>
                         </TextBox>

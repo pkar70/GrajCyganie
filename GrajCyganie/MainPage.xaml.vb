@@ -87,7 +87,7 @@ Public NotInheritable Class MainPage
         uiTitle.Text = oGranyUtwor.oAudioParam.title
         WypelnPoleZapetlacza(uiTitle_Radio, oGranyUtwor.countTitle)
 
-        If oGranyUtwor.oAudioParam.track <> "" Then
+        If Not String.IsNullOrWhiteSpace(oGranyUtwor.oAudioParam.track) Then
             uiAlbum.Text = oGranyUtwor.oAudioParam.track & " z: " & oGranyUtwor.oAudioParam.album
         Else
             uiAlbum.Text = oGranyUtwor.oAudioParam.album
@@ -366,7 +366,7 @@ Public NotInheritable Class MainPage
 
         Dim oNextSong As Vblib.tGranyUtwor = Nothing
 
-        For iGuard As Integer = 0 To 50
+        For iGuard As Integer = 0 To 100
 
             oNextSong = Await App.inVb.GetCurrentDb.GetNextSongAsync(iNextMode, oGrany)
             If oNextSong Is Nothing Then Return Nothing
@@ -536,6 +536,7 @@ Public NotInheritable Class MainPage
         vb14.DumpCurrMethod()
         ' ui(Artist|Title|Album)(Wiki|Search|Copy)
         Dim sTxt As String = ""
+        Dim sField As String = ""
         Dim iInd As Integer
         Dim sSenderName As String = TryCast(sender, MenuFlyoutItem).Name.ToLower
 
@@ -544,10 +545,13 @@ Public NotInheritable Class MainPage
                 sTxt = App.mtGranyUtwor.oAudioParam.artist
                 iInd = sTxt.IndexOfAny(",&")
                 If iInd > -1 Then sTxt = sTxt.Substring(0, iInd)
+                sField = "artist"
             Case "titl"
                 sTxt = App.mtGranyUtwor.oAudioParam.title
+                sField = "title"
             Case "albu"
                 sTxt = App.mtGranyUtwor.oAudioParam.album
+                sField = "album"
         End Select
 
         If sTxt = "" Then Return
@@ -555,6 +559,7 @@ Public NotInheritable Class MainPage
         If sSenderName.EndsWith("copy") Then
             vb14.ClipPut(sTxt)
         ElseIf sSenderName.EndsWith("search") Then
+            Me.Frame.Navigate(GetType(Search), sField & "|" & sTxt)
         ElseIf sSenderName.EndsWith("wiki") Then
             Dim sUrl As String = "https://en.wikipedia.org/wiki"
             sUrl = sUrl & "/" & sTxt
@@ -648,5 +653,15 @@ Public NotInheritable Class MainPage
         Await SpeechOnOffAsync(uiUseMicro.IsChecked)
     End Sub
 
+    Private Sub uiFotosy_Click(sender As Object, e As RoutedEventArgs)
+        Me.Navigate(GetType(Modelki), uiArtist)
+    End Sub
 
+    Private Sub uiGoBrowse_Click(sender As Object, e As RoutedEventArgs)
+        Me.Navigate(GetType(Browser))
+    End Sub
+
+    Private Sub uiGoFotosy_Click(sender As Object, e As RoutedEventArgs)
+        Me.Navigate(GetType(Modelki))
+    End Sub
 End Class

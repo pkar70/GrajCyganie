@@ -74,8 +74,8 @@
                             <TextBlock Text="{Binding sNazwa, Mode=OneWay }" FontWeight="Bold" VerticalAlignment="Center"  />
                             <TextBlock Text="{Binding iCount, Mode=OneWay }" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center" />
                             <TextBlock Text="{Binding iPlayTimeSecs, Mode=OneWay, Converter={StaticResource KonwersjaPlayTime } }" HorizontalAlignment="Right"  Grid.Column="2" VerticalAlignment="Center" />
-                            <Slider Minimum="0" Maximum="5" Grid.Column="3" Value="{Binding iFreq, Mode=TwoWay }" Height="20" Margin="20,0,10,0" IsThumbToolTipEnabled="False" />
-                            <TextBlock Margin="0,0,0,10" Text="{Binding iFreq,Mode=OneWay, Converter={StaticResource KonwersjaFrequency} }"  Grid.Column="4" VerticalAlignment="Center" HorizontalAlignment="Right"  />
+                            <Slider Minimum="0" Maximum="5" Grid.Column="3" Value="{Binding iFreq, Mode=TwoWay }" Height="20" Margin="20,0,10,0" IsThumbToolTipEnabled="False" ValueChanged="Slider_ValueChanged" />
+                            <TextBlock Margin="0,0,0,10" Name="uiFreqStrD" Grid.Column="4" VerticalAlignment="Center" HorizontalAlignment="Right"  />
                         </Grid>
                     </DataTemplate>
                 </ListView.ItemTemplate>

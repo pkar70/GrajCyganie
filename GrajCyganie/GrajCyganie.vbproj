@@ -114,8 +114,14 @@
     <Compile Include="App.xaml.vb">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Browser.xaml.vb">
+      <DependentUpon>Browser.xaml</DependentUpon>
+    </Compile>
     <Compile Include="DbaseAndStorage.xaml.vb">
       <DependentUpon>DbaseAndStorage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Modelki.xaml.vb">
+      <DependentUpon>Modelki.xaml</DependentUpon>
     </Compile>
     <Compile Include="SetupAudio.xaml.vb">
       <DependentUpon>SetupAudio.xaml</DependentUpon>
@@ -181,7 +187,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="Browser.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="DbaseAndStorage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Modelki.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

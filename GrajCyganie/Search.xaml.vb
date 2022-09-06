@@ -5,7 +5,14 @@ Public NotInheritable Class Search
     Inherits Page
 
     ' Public Shared mPageWidth As Integer = -1
-    Private Shared mLista As New List(Of Vblib.oneAudioParam)
+    Private Shared mLista As New List(Of Vblib.oneAudioParam)   ' shared: ponowne wejście daje że mamy, ale wtedy nie ma szukań kolejnych
+    Private mSearch As String = ""
+
+    Protected Overrides Sub onNavigatedTo(e As NavigationEventArgs)
+        mSearch = e.Parameter?.ToString
+        If mSearch Is Nothing Then mSearch = ""
+    End Sub
+
 
     Private Sub uiCurrent_Click(sender As Object, e As RoutedEventArgs)
         If App.mtGranyUtwor Is Nothing Then Return
@@ -31,11 +38,21 @@ Public NotInheritable Class Search
     Private Sub PokazListe(oLista As List(Of Vblib.oneAudioParam))
         uiFoundSummary.Text = ""
 
-        If mLista Is Nothing Then Return
-        uiListaSzeroka.ItemsSource = mLista
-        uiListaWaska.ItemsSource = mLista
+        If oLista Is Nothing Then Return
 
-        uiFoundSummary.Text = CreateSummary(mLista)
+        Select Case meSortMode
+            Case eSortMode.NoOrder
+                uiListaSzeroka.ItemsSource = oLista
+                uiListaWaska.ItemsSource = oLista
+            Case eSortMode.ByArtist
+                uiListaSzeroka.ItemsSource = From c In oLista Order By c.artist
+                uiListaWaska.ItemsSource = From c In oLista Order By c.artist
+            Case eSortMode.ByTitle
+                uiListaSzeroka.ItemsSource = From c In oLista Order By c.title
+                uiListaWaska.ItemsSource = From c In oLista Order By c.title
+        End Select
+
+        uiFoundSummary.Text = CreateSummary(oLista)
     End Sub
 
     Private Function CreateSummary(oLista As List(Of Vblib.oneAudioParam)) As String
@@ -56,6 +73,18 @@ Public NotInheritable Class Search
     Private Sub Page_Loaded(sender As Object, e As RoutedEventArgs)
         Me.ProgRingInit(True, False)
         PokazListe(mLista)
+
+        If Not String.IsNullOrWhiteSpace(mSearch) Then
+            Dim aArr As String() = mSearch.Split("|")
+            Select Case aArr(0).ToLowerInvariant
+                Case "artist"
+                    uiArtist.Text = aArr(1)
+                Case "title"
+                    uiTitle.Text = aArr(1)
+                Case "album"
+                    uiAlbum.Text = aArr(1)
+            End Select
+        End If
     End Sub
 
     Private Sub uiInfo_Tapped(sender As Object, e As TappedRoutedEventArgs)
@@ -94,6 +123,7 @@ Comment: {oItem.comment}
         oGranyUtwor.oAudioParam = oAudioParam
         Await App.inVb.GetCurrentDb.RetrieveCountsyAsync(oGranyUtwor)
         oGranyUtwor.oStoreFile = Await App.inVb.GetCurrentDb.GetStoreFileAsync(oGranyUtwor.oAudioParam.fileID)
+        oGranyUtwor.oStoreFile.path = IO.Path.Combine(oGranyUtwor.oStoreFile.path, oGranyUtwor.oStoreFile.name)
 
         App.mtGranyUtwor = oGranyUtwor
 
@@ -159,6 +189,48 @@ Comment: {oItem.comment}
 
         GetTextBoxFromMFI(sender).Text = GetStringAttribFromMFI(sender)
 
+    End Sub
+
+    Private Enum eSortMode
+        NoOrder
+        ByArtist
+        ByTitle
+    End Enum
+
+    Private meSortMode As eSortMode = eSortMode.NoOrder
+
+    Private Sub uiSortArtist_Tap(sender As Object, e As TappedRoutedEventArgs)
+        If mLista Is Nothing Then Return
+        meSortMode = eSortMode.ByArtist
+        PokazListe(mLista)
+    End Sub
+
+    Private Sub uiSortTitle_Tap(sender As Object, e As TappedRoutedEventArgs)
+        If mLista Is Nothing Then Return
+        If mLista Is Nothing Then Return
+        meSortMode = eSortMode.ByTitle
+        PokazListe(mLista)
+    End Sub
+
+    Private Sub uiFotosy_Click(sender As Object, e As RoutedEventArgs)
+        ' *TODO* zrobienie fotosów
+    End Sub
+
+    Private Sub uiMask_Changed(sender As Object, e As TextChangedEventArgs)
+        If Not uiSearchInside.IsChecked Then Return
+
+        Dim oTBox As TextBox = sender
+        Dim sQuery As String = oTBox.Text.ToUpperInvariant
+        Select Case oTBox.Name.Substring(2, 3).ToLowerInvariant
+            Case "art"
+                PokazListe((From c In mLista Where c.artist.ToUpperInvariant.Contains(sQuery)).ToList)
+            Case "tit"
+                PokazListe((From c In mLista Where c.title.ToUpperInvariant.Contains(sQuery)).ToList)
+            Case "alb"
+                PokazListe((From c In mLista Where c.album.ToUpperInvariant.Contains(sQuery)).ToList)
+            Case "rok"
+                PokazListe((From c In mLista Where c.year.ToUpperInvariant.Contains(sQuery)).ToList)
+        End Select
     End Sub
 End Class
 

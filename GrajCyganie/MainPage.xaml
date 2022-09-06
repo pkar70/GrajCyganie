@@ -37,6 +37,7 @@
                     <MenuFlyoutItem Text="open Wiki" x:Name="uiArtistWiki" Click="uiMenu_Click"/>
                     <MenuFlyoutItem Text="search"  x:Name="uiArtistSearch" Click="uiMenu_Click"/>
                     <MenuFlyoutItem Text="copy" x:Name="uiArtistCopy" Click="uiMenu_Click" />
+                    <MenuFlyoutItem Text="fotosy" Click="uiFotosy_Click" />
                 </MenuFlyout>
             </TextBox.ContextFlyout>
         </TextBox>
@@ -122,6 +123,9 @@
         <CommandBar ClosedDisplayMode="Minimal">
             <AppBarButton x:Name="uiGoSearch" Icon="Zoom" Label="Szukaj" Click="uiGoSearch_Click"/>
             <AppBarButton x:Name="uiGoLogin" Icon="Contact" Label="Login" Click="uiGoLogin_Click"/>
+            <AppBarButton Name="uiGoBrowser" Icon="Page2" Label="Browse" Click="uiGoBrowse_Click" />
+            <AppBarButton Name="uiGoPictures" Icon="Camera"  Label="Photos" Click="uiGoFotosy_Click"/>
+
             <AppBarButton x:Name="uiGoSetting" Icon="Setting" Label="Settings">
                 <AppBarButton.Flyout>
                     <MenuFlyout>

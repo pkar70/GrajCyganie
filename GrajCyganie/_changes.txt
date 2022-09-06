@@ -2,7 +2,9 @@
 * dalsze refactoring
 	* oddzielny plik Storage
 * SEARCH :)
-
+* strony (puste) dla modelek i browsera plików (id?c w stron? "kombajnu")
+* dekady - w wersji szerokiej te? pokazuje poprawnie tekst przy ruszaniu slider
+* szukanie w rezultatach
 
 2022.09.05
 * osobny plik dla gadaczki:

@@ -30,7 +30,7 @@ Partial Public Class App
 
         gaDbs.Add(New dbase_domekASP)
         gaDbs.Add(New dbase_localASP)
-        gaDbs.Add(New dbase_sql)
+        ' gaDbs.Add(New dbase_sql)
     End Sub
 
     Public Function GetCurrentDb() As dbase_base

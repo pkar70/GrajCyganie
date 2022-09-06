@@ -84,7 +84,9 @@ Partial NotInheritable Class App
 
 
     ' RemoteSystems
+#Disable Warning BC42356 ' This async method lacks 'Await' operators and so will run synchronously
     Protected Overrides Async Sub OnBackgroundActivated(args As BackgroundActivatedEventArgs)
+#Enable Warning BC42356 ' This async method lacks 'Await' operators and so will run synchronously
         ' tile update / warnings
         moTaskDeferal = args.TaskInstance.GetDeferral() ' w pkarmodule.App
 
@@ -135,112 +137,22 @@ Partial NotInheritable Class App
 
     End Sub
 
-
-    'Public Shared Function TimeSecToString(iSec As String) As String
-    '    Dim oTS As TimeSpan = TimeSpan.FromSeconds(iSec)
-    '    Dim sTxt As String = oTS.ToString("h\:mm\:ss")
-    '    If oTS.Days > 0 Then
-    '        If oTS.Hours < 10 Then sTxt = "0" & sTxt    ' jesli dajemy dni, to godziny z zerem
-    '        sTxt = oTS.Days & "d " & sTxt
-    '    End If
-    '    Return sTxt
-    'End Function
-
-    'Public Shared Function FreqSlider2Text(iValue As Integer) As String
-    '    Select Case iValue
-    '        Case 0
-    '            Return "  0 %"
-    '        Case 1
-    '            Return " 10 %"
-    '        Case 2
-    '            Return " 20 %"
-    '        Case 3
-    '            Return " 33 %"
-    '        Case 4
-    '            Return " 50 %"
-    '        Case Else
-    '            Return "100 %"
-    '    End Select
-    'End Function
-
     Public Shared miSessionFiles As Integer
     Public Shared miSessionMiB As Integer
 
     Public Shared mtGranyUtwor As Vblib.tGranyUtwor
-    Public Shared moMediaPlayer As Windows.Media.Playback.MediaPlayer = Nothing
 
-    Private Shared moRandom As Random = New Random
-    Public Shared Function MakeRandom(iMax As Integer) As Integer
-        ' Random = Windows.Security.Cryptography.CryptographicBuffer.GenerateRandomNumber()
-        Return moRandom.Next(iMax + 1)
-    End Function
-
-
-#Region "Speech control"
-    Public Shared moReco As Windows.Media.SpeechRecognition.SpeechRecognizer = Nothing
-
-    Private Shared Function MakeRule(sTag As String, Optional sStr1 As String = "", Optional sStr2 As String = "", Optional sStr3 As String = "", Optional sStr4 As String = "", Optional sStr5 As String = "") As Windows.Media.SpeechRecognition.SpeechRecognitionListConstraint
-        Dim oList As List(Of String)
-        oList = New List(Of String)
-        oList.Clear()
-        If sStr1 <> "" Then
-            oList.Add(sStr1)
-        Else
-            oList.Add(sTag)
-        End If
-        If sStr2 <> "" Then oList.Add(sStr2)
-        If sStr3 <> "" Then oList.Add(sStr3)
-        If sStr4 <> "" Then oList.Add(sStr4)
-        If sStr5 <> "" Then oList.Add(sStr5)
-
-        Return New Windows.Media.SpeechRecognition.SpeechRecognitionListConstraint(oList, sTag)
-
-    End Function
-    Public Shared Sub SpeechCommandCreateRules()
-
-        moReco.Constraints.Clear()
-        moReco.Constraints.Add(MakeRule("play", "play", "start"))
-        moReco.Constraints.Add(MakeRule("stop"))
-        moReco.Constraints.Add(MakeRule("pause", "pause", "silence"))
-        moReco.Constraints.Add(MakeRule("cont", "continue", "resume"))
-        moReco.Constraints.Add(MakeRule("next"))
-        moReco.Constraints.Add(MakeRule("prev", "previous", "back"))
-        moReco.Constraints.Add(MakeRule("info", "info", "describe"))
-        moReco.Constraints.Add(MakeRule("loopArt", "loop artist"))
-        moReco.Constraints.Add(MakeRule("loopTitle", "loop title"))
-        moReco.Constraints.Add(MakeRule("loopAlbum", "loop album"))
-        moReco.Constraints.Add(MakeRule("loopYear", "loop year"))
-        moReco.Constraints.Add(MakeRule("loopDecade", "loop decade"))
-        moReco.Constraints.Add(MakeRule("loopSong", "loop song"))
-        moReco.Constraints.Add(MakeRule("loopNone", "loop none", "no loop"))
-        moReco.Constraints.Add(MakeRule("stat", "stats", "how many", "statistic"))
-        moReco.Constraints.Add(MakeRule("before"))
-        moReco.Constraints.Add(MakeRule("after"))
-
-    End Sub
-
-    Public Shared Sub SpeechCommandSetTimeouts()
-        moReco.ContinuousRecognitionSession.AutoStopSilenceTimeout = TimeSpan.FromDays(60)
-        moReco.Timeouts.InitialSilenceTimeout = TimeSpan.FromDays(60)
-        moReco.Timeouts.BabbleTimeout = TimeSpan.FromDays(60)
-        moReco.Timeouts.EndSilenceTimeout = TimeSpan.FromDays(60)
-    End Sub
-
-    Public Shared Function SpeechCommandText2Tag(sTxt As String) As String
-        For Each oRule As Windows.Media.SpeechRecognition.SpeechRecognitionListConstraint In moReco.Constraints
-            For Each sCmd As String In oRule.Commands
-                If sCmd = sTxt Then Return oRule.Tag
-            Next
-        Next
-
-        Return ""
-    End Function
-
-#End Region
+    'Private Shared moRandom As Random = New Random
+    'Public Shared Function MakeRandom(iMax As Integer) As Integer
+    '    ' Random = Windows.Security.Cryptography.CryptographicBuffer.GenerateRandomNumber()
+    '    Return moRandom.Next(iMax + 1)
+    'End Function
 
     Public Shared Event PilotChce(sCmd As String)
 
+#Disable Warning BC42356 ' This async method lacks 'Await' operators and so will run synchronously
     Private Async Function AppServiceLocalCommand(sCommand As String) As Task(Of String)
+#Enable Warning BC42356 ' This async method lacks 'Await' operators and so will run synchronously
         Dim sResult As String = "ERROR while processing command " & sCommand
 
         Select Case sCommand.ToLower
@@ -301,6 +213,7 @@ Partial NotInheritable Class App
 
     Public Shared inVb As New Vblib.App(Windows.Storage.ApplicationData.Current.LocalCacheFolder.Path)
 
+    Public Shared gbNoSpeak As Boolean = False
 End Class
 
 

@@ -8,7 +8,7 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Loaded="Page_Loaded" Unloaded="Page_Unloaded">
 
-    <Grid Margin="5,5,5,5">
+    <Grid Margin="5,5,5,5" Name="uiGrid">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -28,22 +28,29 @@
             <ColumnDefinition  />
             <ColumnDefinition Width="60" />
         </Grid.ColumnDefinitions>
-        <TextBlock FontSize="18" HorizontalAlignment="Center" Text="GrajCyganie" Margin="0,0,0,15" Grid.ColumnSpan="3"/>
+        <TextBlock FontSize="18" HorizontalAlignment="Center" Text="GrajCyganie" Margin="0,0,0,20" Grid.ColumnSpan="3"/>
 
-        <TextBlock Text="Artist" Grid.Row="1" Grid.Column="0"  Margin="0,0,10,0" VerticalAlignment="Center"  />
-        <TextBox BorderThickness="0" IsReadOnly="True" Text=" " Grid.Row="1" Grid.Column="1" x:Name="uiArtist" VerticalAlignment="Center" >
+        <TextBlock Text="Artist" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" Margin="0,5,0,12"/>
+        <TextBlock Text="" Name="uiArtistSwitch" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" Margin="0,5,0,12" HorizontalAlignment="Right" Tapped="uiSwitchValues_Tapped"/>
+
+        <TextBox BorderThickness="0" IsReadOnly="True" Text=" " Grid.Row="1" Grid.Column="1" x:Name="uiArtist" VerticalAlignment="Center" Margin="0,5,0,5">
             <TextBox.ContextFlyout>
                 <MenuFlyout >
                     <MenuFlyoutItem Text="open Wiki" x:Name="uiArtistWiki" Click="uiMenu_Click"/>
+                    <MenuFlyoutItem Text="open Imdb" Click="uiOpenImdb_Click"/>
                     <MenuFlyoutItem Text="search"  x:Name="uiArtistSearch" Click="uiMenu_Click"/>
                     <MenuFlyoutItem Text="copy" x:Name="uiArtistCopy" Click="uiMenu_Click" />
+                    <MenuFlyoutItem Text="fotosy" Click="uiFotosy_Click" />
                 </MenuFlyout>
             </TextBox.ContextFlyout>
         </TextBox>
         <RadioButton Grid.Row="1" Grid.Column="2" x:Name="uiArtist_Radio" MinWidth="20" HorizontalAlignment="Left" AccessKey="A"/>
 
-        <TextBlock Text="Title" Grid.Row="2" Grid.Column="0"  Margin="0,0,10,0" VerticalAlignment="Center" />
-        <TextBox BorderThickness="0" IsReadOnly="True"  Text=" " Grid.Row="2" Grid.Column="1" x:Name="uiTitle" VerticalAlignment="Center">
+
+        <TextBlock Text="Title" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" Margin="0,5,0,12"/>
+        <TextBlock Text="" Name="uiTitleSwitch" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" Margin="0,5,0,12" HorizontalAlignment="Right" Tapped="uiSwitchValues_Tapped"/>
+
+        <TextBox BorderThickness="0" IsReadOnly="True"  Text=" " Grid.Row="2" Grid.Column="1" x:Name="uiTitle" VerticalAlignment="Center" Margin="0,5,0,5">
             <TextBox.ContextFlyout>
                 <MenuFlyout >
                     <MenuFlyoutItem Text="open Wiki" x:Name="uiTitleWiki" Click="uiMenu_Click"/>
@@ -54,8 +61,10 @@
         </TextBox>
         <RadioButton Grid.Row="2" Grid.Column="2" x:Name="uiTitle_Radio" MinWidth="20" HorizontalAlignment="Left" AccessKey="T"/>
 
-        <TextBlock Text="Album" Grid.Row="3" Grid.Column="0"  Margin="0,0,10,0" VerticalAlignment="Center" />
-        <TextBox BorderThickness="0" IsReadOnly="True"  Text=" " Grid.Row="3" Grid.Column="1" x:Name="uiAlbum" VerticalAlignment="Center">
+        <TextBlock Text="Album" Grid.Row="3" Grid.Column="0" VerticalAlignment="Center" Margin="0,5,0,12" />
+        <TextBlock Text="" Name="uiAlbumSwitch" Grid.Row="3" Grid.Column="0" VerticalAlignment="Center" Margin="0,5,0,12" HorizontalAlignment="Right" Tapped="uiSwitchValues_Tapped" />
+
+        <TextBox BorderThickness="0" IsReadOnly="True"  Text=" " Grid.Row="3" Grid.Column="1" x:Name="uiAlbum" VerticalAlignment="Center" Margin="0,5,0,5">
 <!--            <ToolTipService.ToolTip  >
                 <ToolTip Content="Right click: try wiki" />
             </ToolTipService.ToolTip> -->
@@ -71,13 +80,13 @@
 
         <RadioButton Grid.Row="3" Grid.Column="2" x:Name="uiAlbum_Radio" MinWidth="20" HorizontalAlignment="Left" AccessKey="P"/>
 
-        <TextBlock Text="Rok" Grid.Row="4" Grid.Column="0"  Margin="0,0,10,0" VerticalAlignment="Center" />
-        <TextBox BorderThickness="0" IsReadOnly="True"  Text=" " Grid.Row="4" Grid.Column="1" x:Name="uiRok" VerticalAlignment="Center" />
+        <TextBlock Text="Rok" Grid.Row="4" Grid.Column="0" VerticalAlignment="Center" Margin="0,5,0,12" />
+        <TextBox BorderThickness="0" IsReadOnly="True"  Text=" " Grid.Row="4" Grid.Column="1" x:Name="uiRok" VerticalAlignment="Center"  Margin="0,5,0,5"/>
         <RadioButton Grid.Row="4" Grid.Column="2" x:Name="uiRok_Radio" MinWidth="20" HorizontalAlignment="Left"  AccessKey="R"/>
 
-        <TextBlock Text="Dekada" Grid.Row="5" Grid.Column="0"  Margin="0,0,10,0" VerticalAlignment="Center" />
+        <TextBlock Text="Dekada" Grid.Row="5" Grid.Column="0" VerticalAlignment="Center" Margin="0,5,0,12" />
         <!-- wszystko textbox, żeby było równo -->
-        <TextBox Text=" " BorderThickness="0" IsReadOnly="True"  Grid.Row="5" Grid.Column="1" x:Name="uiDekada" VerticalAlignment="Center" />
+        <TextBox Text=" " BorderThickness="0" IsReadOnly="True"  Grid.Row="5" Grid.Column="1" x:Name="uiDekada" VerticalAlignment="Center"  Margin="0,5,0,5" />
         <RadioButton Grid.Row="5" Grid.Column="2" x:Name="uiDekada_Radio" MinWidth="20" HorizontalAlignment="Left" AccessKey="D"/>
 
         <Grid  Grid.Row="6" Grid.Column="1">
@@ -104,15 +113,17 @@
                 <ColumnDefinition/> 
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <ToggleButton HorizontalAlignment="Center" x:Name="uiReadBefore" Content="przed" />
+            <ToggleButton HorizontalAlignment="Center" x:Name="uiReadBefore" Content="przed" Checked="uiReadAfterBefore_Changed"/>
             <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center"  Text="odczytaj" Grid.Column="1" />
-            <ToggleButton HorizontalAlignment="Center" x:Name="uiReadAfter" Content="po" Grid.Column="2" />
+            <ToggleButton HorizontalAlignment="Center" x:Name="uiReadAfter" Content="po" Grid.Column="2" Checked="uiReadAfterBefore_Changed"/>
         </Grid> 
         
         <Button x:Name="uiStart" Grid.Column="1" Grid.Row="7" Content="Start" Click="uiStart_Click" HorizontalAlignment="Center" />
 
-        <TextBlock Text="Comment" Grid.Row="10" Grid.Column="0" Margin="0,0,10,0"/>
-        <TextBox BorderThickness="0" IsReadOnly="True"  Text=" " Grid.Row="10" Grid.Column="1" x:Name="uiComment" TextWrapping="Wrap"/>
+        <TextBlock Text="Comment" Grid.Row="10" Grid.Column="0" Margin="0,0,10,0" />
+        <TextBlock Text="" Name="uiCommentSwitch" Grid.Row="10" Grid.Column="0" VerticalAlignment="Center" Margin="0,0,10,0" HorizontalAlignment="Right" Tapped="uiSwitchValues_Tapped"/>
+
+        <TextBox BorderThickness="0" IsReadOnly="True"  Text=" " Grid.Row="10" Grid.Column="1" Name="uiComment" TextWrapping="Wrap"/>
 
         <ToggleButton Name="uiUseMicro" Grid.Row="10" Grid.Column="2" ToolTipService.ToolTip="use voice commands" Tapped="uiUseMicro_Tapped" VerticalAlignment="Bottom" HorizontalAlignment="Right" >
             <SymbolIcon Symbol="Microphone" />
@@ -122,6 +133,9 @@
         <CommandBar ClosedDisplayMode="Minimal">
             <AppBarButton x:Name="uiGoSearch" Icon="Zoom" Label="Szukaj" Click="uiGoSearch_Click"/>
             <AppBarButton x:Name="uiGoLogin" Icon="Contact" Label="Login" Click="uiGoLogin_Click"/>
+            <AppBarButton Name="uiGoBrowser" Icon="Page2" Label="Browse" Click="uiGoBrowse_Click" />
+            <AppBarButton Name="uiGoPictures" Icon="Camera"  Label="Photos" Click="uiGoFotosy_Click"/>
+
             <AppBarButton x:Name="uiGoSetting" Icon="Setting" Label="Settings">
                 <AppBarButton.Flyout>
                     <MenuFlyout>
@@ -131,13 +145,14 @@
                         <MenuFlyoutItem Text="Dekady" Click="uiGoStat_Click" />
                         <MenuFlyoutSeparator/>
                         <MenuFlyoutItem Text="Baza i pliki" Click="uiGoDbaseFiles_Click" />
+                        <MenuFlyoutItem Text="Gadaczka" Click="uiGoGadaczka_Click" />
                         <MenuFlyoutSeparator/>
                         <MenuFlyoutItem Text="Net stat" Click="uiGoNetStat_Click" />
                     </MenuFlyout>
                 </AppBarButton.Flyout>
             </AppBarButton>
             <AppBarButton x:Name="uiGoNet" Icon="MapDrive" Label ="Network" Click="uiGoNet_Click" />
-            <AppBarButton x:Name="uiGoAudio" Icon="Volume" Label ="Audio" Click="uiGoAudio_Click" />
+           
         </CommandBar>
 
     </Page.BottomAppBar>

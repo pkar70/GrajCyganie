@@ -1,4 +1,6 @@
-﻿Partial Public MustInherit Class dbase_baseASP
+﻿
+
+Partial Public MustInherit Class dbase_baseASP
     Inherits dbase_base
 
     Public MustOverride Overrides ReadOnly Property Nazwa As String
@@ -90,43 +92,42 @@
 
     End Sub
 
-    Public Overrides Async Function GetNextSongAsync(iNextMode As Integer, oGrany As tGranyUtwor) As Task(Of tGranyUtwor)
-        DumpCurrMethod()
+    Public Overrides Async Function GetNextSongAsync(iNextMode As eNextMode, oGrany As tGranyUtwor) As Task(Of tGranyUtwor)
+        DumpCurrMethod("miNextMode=" & iNextMode)
 
-        DebugOut("GetNextSong, miNextMode=" & iNextMode)
         Try
             Dim iCurrId As Integer = 0
             Dim sParams As String = ""
 
             If oGrany IsNot Nothing Then iCurrId = oGrany.oAudioParam.id
             Select Case iNextMode
-                Case 0
+                Case eNextMode.random
                     iCurrId = GetSettingsInt("maxSoundId")
                     If iCurrId = 0 Then Return Nothing
                     iCurrId = App.MakeRandom(iCurrId)
                     ' random
                     sParams = "id=" & iCurrId & "&mode=random"
-                Case 1
+                Case eNextMode.sameArtist
                     sParams = "id=" & iCurrId & "&mode=artist"
-                Case 2
+                Case eNextMode.sameTitle
                     sParams = "id=" & iCurrId & "&mode=title"
-                Case 3
+                Case eNextMode.sameAlbum
                     sParams = "id=" & iCurrId & "&mode=album"
-                Case 4
+                Case eNextMode.sameRok
                     sParams = "id=" & iCurrId & "&mode=rok"
-                Case 5
+                Case eNextMode.sameDekada
                     sParams = "id=" & iCurrId & "&mode=dekada"
             End Select
 
             ' dane o nastepnym HttpPage -> App.mtGranyUtwor
             Dim sPage As String = Await ThisHttpPageAsync("/cygan-info.asp?" & sParams, "file data")
             If sPage = "" Then
-                DialogBox("ERROR get cygan-info empty")
+                Await DialogBoxAsync("ERROR get cygan-info empty, " & sParams)
                 Return Nothing
             End If
             Dim aArr As String() = sPage.Split(vbCrLf)
             If aArr.GetUpperBound(0) < 2 Then
-                DialogBox("ERROR get cygan-info too short, " & vbCrLf &
+                Await DialogBoxAsync("ERROR get cygan-info too short, " & vbCrLf &
                     "Request: " & "/cygan-info.asp?" & sParams & vbCrLf &
                     "Returned: " & sPage)
                 Return Nothing
@@ -136,20 +137,20 @@
                 Await LoginAsync(True)
                 sPage = Await ThisHttpPageAsync("/cygan-info.asp?" & sParams, "file data")
                 If sPage = "" Then
-                    DialogBox("ERROR retry get cygan-info empty")
+                    Await DialogBoxAsync("ERROR retry get cygan-info empty")
                     Return Nothing
                 End If
 
                 aArr = sPage.Split(vbCrLf)
                 If aArr.GetUpperBound(0) < 2 Then
-                    DialogBox("ERROR retry get cygan-info too short, " & vbCrLf &
+                    Await DialogBoxAsync("ERROR retry get cygan-info too short, " & vbCrLf &
                     "Request: " & "/cygan-info.asp?" & sParams & vbCrLf &
                     "Returned: " & sPage)
                     Return Nothing
                 End If
 
                 If aArr(0).Trim <> "OK" Then
-                    DialogBox("ERROR get cygan-info not OK, aArr(0): " & aArr(0))
+                    Await DialogBoxAsync("ERROR get cygan-info not OK, aArr(0): " & aArr(0))
                     Return Nothing
                 End If
             End If
@@ -158,8 +159,10 @@
 
         Catch ex As Exception
             CrashMessageAdd("@GetNextSong", ex)
+            DialogBox("FAIL: " & ex.Message)
         End Try
 
+        Await DialogBoxAsync("exception caught")
         Return Nothing
     End Function
 
@@ -263,8 +266,90 @@
         If sPage = "" Then
             Await DialogBoxAsync(sErrMsg)
         End If
+        If sPage.Contains("Brak uprawnien, co tu robisz") Then
+            ' czyżby na tym polegał minus?
+            Await DialogBoxAsync(sPage)
+        End If
 
         Return sPage
 
+    End Function
+
+    Public Shared Function ConvertQueryParam(sMask As String) As String
+        If String.IsNullOrWhiteSpace(sMask) Then Return ""
+        sMask = sMask.Replace("'", "''")
+        sMask = sMask.Replace("*", "%")
+        sMask = sMask.Replace("?", "_")
+        If sMask.Contains("%") OrElse sMask.Contains("_") Then Return sMask
+
+        If Not sMask.StartsWith("^") Then
+            sMask = "%" & sMask
+        Else
+            sMask = sMask.Substring(1)
+        End If
+
+        If Not sMask.EndsWith("$") Then
+            sMask = sMask & "%"
+        Else
+            sMask = sMask.Substring(0, sMask.Length - 1)
+        End If
+
+        Return sMask
+    End Function
+
+    Public Overrides Async Function SearchAsync(sArtist As String, sTitle As String, sAlbum As String, sRok As String) As Task(Of List(Of oneAudioParam))
+        If (sArtist & sTitle & sAlbum & sRok).Length < 3 Then Return Nothing
+
+        sArtist = ConvertQueryParam(sArtist).Replace("&", "%26")
+        sTitle = ConvertQueryParam(sTitle).Replace("&", "%26")
+        sAlbum = ConvertQueryParam(sAlbum).Replace("&", "%26")
+        sRok = ConvertQueryParam(sRok)
+
+        Dim sLinkQuery As String = $"artist={sArtist}&title={sTitle}&album={sAlbum}&rok={sRok}"
+        sLinkQuery = sLinkQuery.Replace("%", "%25")
+
+        Dim sPage As String = Await ThisHttpPageAsync("/cygan-search.asp?" & sLinkQuery, "file data")
+        If sPage = "" Then Return Nothing
+
+        Dim oLista As New List(Of oneAudioParam)
+        oLista = Newtonsoft.Json.JsonConvert.DeserializeObject(sPage, GetType(List(Of oneAudioParam)))
+        Return oLista
+
+    End Function
+
+    Public Overrides Async Function GetStoreFileAsync(id As Integer) As Task(Of oneStoreFile)
+        DumpCurrMethod()
+
+        Dim sPage As String = Await ThisHttpPageAsync("/cygan-getfile.asp?id=" & id, "file data")
+        If sPage = "" Then Return Nothing
+
+        Dim oItem As oneStoreFile
+        oItem = Newtonsoft.Json.JsonConvert.DeserializeObject(sPage, GetType(oneStoreFile))
+        Return oItem
+
+    End Function
+
+    Public Overrides Async Function GetStorageItemsAsync(sPath As String) As Task(Of List(Of oneStoreFile))
+        DumpCurrMethod()
+
+        sPath = sPath.Replace(" ", "%25") ' pewnie można lepiej to zrobić
+        Dim sPage As String = Await ThisHttpPageAsync("/cygan-getdir.asp?path=" & sPath, "file data")
+        If sPage = "" Then Return Nothing
+
+        Dim oLista As List(Of oneStoreFile)
+        oLista = Newtonsoft.Json.JsonConvert.DeserializeObject(sPage, GetType(List(Of oneStoreFile)))
+        Return oLista
+
+    End Function
+
+    Public Overrides Async Function GetDirSize(id As Integer) As Task(Of Long)
+        DumpCurrMethod(id)
+        Dim sPage As String = Await ThisHttpPageAsync("/cygan-getdirsize.asp?id=" & id, "dirsize")
+        If sPage = "" Then Return -1
+
+        Dim retval As Long = -1
+        If Not Long.TryParse(sPage, retval) Then Return -1
+
+        Return retval
     End Function
 End Class

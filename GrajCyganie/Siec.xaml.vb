@@ -8,14 +8,6 @@ Public NotInheritable Class Siec
     '1. ping
     '2. statystyka transferu
 
-    Private Function BigNumFormat(iValue As Integer) As String
-        Dim sTxt As String = iValue.ToString
-
-        If sTxt.Length > 4 Then sTxt = sTxt.Substring(0, sTxt.Length - 3) & " " & sTxt.Substring(sTxt.Length - 3)
-
-        Return sTxt
-    End Function
-
     Private Sub Page_Loaded(sender As Object, e As RoutedEventArgs)
         uiSessionFiles.Text = App.miSessionFiles
         uiSessionMiB.Text = App.miSessionMiB

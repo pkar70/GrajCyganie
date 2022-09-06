@@ -1,0 +1,29 @@
+﻿<Page
+    x:Class="GrajCyganie.SetupAudio"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:GrajCyganie"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Loaded="Page_Loaded">
+
+    <StackPanel Margin="5,5,5,5">
+        <TextBlock FontSize="18" HorizontalAlignment="Center" Text="Audio config" />
+        <ComboBox Header="Device" Name="uiComboDevices" Margin="0,15,0,5" />
+
+        <TextBlock Text="Zapowiedzi" FontSize="14" FontWeight="Bold" />
+        <ToggleSwitch Name="uiSexZapowiedzi" OnContent="Male" OffContent="Female" Header="Płeć zapowiedzi" Margin="0,5,0,5" />
+        <TextBlock Name="uiDefaultVoice"/>
+        <TextBox Name="uiTextDoPrzeczytania" Header="Tekst do przeczytania" Margin="0,5,0,5" />
+
+        <Grid>
+        <ComboBox Name="uiVoices" VerticalAlignment="Center" />
+            <Button Margin="0,64,10,0" Click="uiGadaj_Click" HorizontalAlignment="Right" Name="uiGadaj" VerticalAlignment="Top" >
+                <SymbolIcon Symbol="Volume" />
+            </Button>
+        </Grid>
+        <Button Grid.Row="5" VerticalAlignment="Top" Content="OK" Click="uiSave_Click" Margin="0,10,0,0"/>
+    </StackPanel>
+    
+</Page>

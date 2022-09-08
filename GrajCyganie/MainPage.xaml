@@ -28,10 +28,10 @@
             <ColumnDefinition  />
             <ColumnDefinition Width="60" />
         </Grid.ColumnDefinitions>
-        <TextBlock FontSize="18" HorizontalAlignment="Center" Text="GrajCyganie" Margin="0,0,0,15" Grid.ColumnSpan="3"/>
+        <TextBlock FontSize="18" HorizontalAlignment="Center" Text="GrajCyganie" Margin="0,0,0,20" Grid.ColumnSpan="3"/>
 
-        <TextBlock Text="Artist" Grid.Row="1" Grid.Column="0"  Margin="0,0,10,0" VerticalAlignment="Center"  />
-        <TextBox BorderThickness="0" IsReadOnly="True" Text=" " Grid.Row="1" Grid.Column="1" x:Name="uiArtist" VerticalAlignment="Center" >
+        <TextBlock Text="Artist" Grid.Row="1" Grid.Column="0"  VerticalAlignment="Center" Margin="0,5,0,12"/>
+        <TextBox BorderThickness="0" IsReadOnly="True" Text=" " Grid.Row="1" Grid.Column="1" x:Name="uiArtist" VerticalAlignment="Center" Margin="0,5,0,5">
             <TextBox.ContextFlyout>
                 <MenuFlyout >
                     <MenuFlyoutItem Text="open Wiki" x:Name="uiArtistWiki" Click="uiMenu_Click"/>
@@ -43,8 +43,8 @@
         </TextBox>
         <RadioButton Grid.Row="1" Grid.Column="2" x:Name="uiArtist_Radio" MinWidth="20" HorizontalAlignment="Left" AccessKey="A"/>
 
-        <TextBlock Text="Title" Grid.Row="2" Grid.Column="0"  Margin="0,0,10,0" VerticalAlignment="Center" />
-        <TextBox BorderThickness="0" IsReadOnly="True"  Text=" " Grid.Row="2" Grid.Column="1" x:Name="uiTitle" VerticalAlignment="Center">
+        <TextBlock Text="Title" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" Margin="0,5,0,12"/>
+        <TextBox BorderThickness="0" IsReadOnly="True"  Text=" " Grid.Row="2" Grid.Column="1" x:Name="uiTitle" VerticalAlignment="Center" Margin="0,5,0,5">
             <TextBox.ContextFlyout>
                 <MenuFlyout >
                     <MenuFlyoutItem Text="open Wiki" x:Name="uiTitleWiki" Click="uiMenu_Click"/>
@@ -55,8 +55,8 @@
         </TextBox>
         <RadioButton Grid.Row="2" Grid.Column="2" x:Name="uiTitle_Radio" MinWidth="20" HorizontalAlignment="Left" AccessKey="T"/>
 
-        <TextBlock Text="Album" Grid.Row="3" Grid.Column="0"  Margin="0,0,10,0" VerticalAlignment="Center" />
-        <TextBox BorderThickness="0" IsReadOnly="True"  Text=" " Grid.Row="3" Grid.Column="1" x:Name="uiAlbum" VerticalAlignment="Center">
+        <TextBlock Text="Album" Grid.Row="3" Grid.Column="0" VerticalAlignment="Center" Margin="0,5,0,12" />
+        <TextBox BorderThickness="0" IsReadOnly="True"  Text=" " Grid.Row="3" Grid.Column="1" x:Name="uiAlbum" VerticalAlignment="Center" Margin="0,5,0,5">
 <!--            <ToolTipService.ToolTip  >
                 <ToolTip Content="Right click: try wiki" />
             </ToolTipService.ToolTip> -->
@@ -72,13 +72,13 @@
 
         <RadioButton Grid.Row="3" Grid.Column="2" x:Name="uiAlbum_Radio" MinWidth="20" HorizontalAlignment="Left" AccessKey="P"/>
 
-        <TextBlock Text="Rok" Grid.Row="4" Grid.Column="0"  Margin="0,0,10,0" VerticalAlignment="Center" />
-        <TextBox BorderThickness="0" IsReadOnly="True"  Text=" " Grid.Row="4" Grid.Column="1" x:Name="uiRok" VerticalAlignment="Center" />
+        <TextBlock Text="Rok" Grid.Row="4" Grid.Column="0" VerticalAlignment="Center" Margin="0,5,0,12" />
+        <TextBox BorderThickness="0" IsReadOnly="True"  Text=" " Grid.Row="4" Grid.Column="1" x:Name="uiRok" VerticalAlignment="Center"  Margin="0,5,0,5"/>
         <RadioButton Grid.Row="4" Grid.Column="2" x:Name="uiRok_Radio" MinWidth="20" HorizontalAlignment="Left"  AccessKey="R"/>
 
-        <TextBlock Text="Dekada" Grid.Row="5" Grid.Column="0"  Margin="0,0,10,0" VerticalAlignment="Center" />
+        <TextBlock Text="Dekada" Grid.Row="5" Grid.Column="0" VerticalAlignment="Center" Margin="0,5,0,12" />
         <!-- wszystko textbox, żeby było równo -->
-        <TextBox Text=" " BorderThickness="0" IsReadOnly="True"  Grid.Row="5" Grid.Column="1" x:Name="uiDekada" VerticalAlignment="Center" />
+        <TextBox Text=" " BorderThickness="0" IsReadOnly="True"  Grid.Row="5" Grid.Column="1" x:Name="uiDekada" VerticalAlignment="Center"  Margin="0,5,0,5" />
         <RadioButton Grid.Row="5" Grid.Column="2" x:Name="uiDekada_Radio" MinWidth="20" HorizontalAlignment="Left" AccessKey="D"/>
 
         <Grid  Grid.Row="6" Grid.Column="1">

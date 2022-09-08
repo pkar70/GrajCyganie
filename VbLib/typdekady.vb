@@ -121,13 +121,12 @@ Public Class DekadyList
         End If
 
         oItem.iCounterToNext -= 1
-        If oItem.iCounterToNext > 0 Then
-            vb14.DumpMessage($"counter for dekada {sDekada}: {oItem.iCounterToNext}")
-            Return False
-        End If
+        vb14.DumpMessage($"counter for dekada {sDekada}: {oItem.iCounterToNext}")
+
+        If oItem.iCounterToNext > 0 Then Return False
 
         oItem.iCounterToNext = GetCounterValue(oItem.iFreq)
-        Return False
+        Return True
     End Function
 
 #End Region

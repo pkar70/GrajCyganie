@@ -3,7 +3,7 @@
 
 Public Class tGranyUtwor
 
-    Public Property oStoreFile As New oneStoreFiles
+    Public Property oStoreFile As New oneStoreFile
     Public Property oAudioParam As New oneAudioParam
 
     Public Property countArtist As Integer = 0

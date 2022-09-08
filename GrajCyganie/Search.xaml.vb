@@ -127,7 +127,7 @@ Comment: {oItem.comment}
 
         App.mtGranyUtwor = oGranyUtwor
 
-        Dim moMSource As Windows.Media.Core.MediaSource = Await GetMediaSourceFrom(App.mtGranyUtwor.oStoreFile)
+        Dim moMSource As Windows.Media.Core.MediaSource = Await GetMediaSourceFromAsync(App.mtGranyUtwor.oStoreFile)
         If moMSource Is Nothing Then
             vb14.DialogBox("Ale tego pliku niestety nie mam dostępnego")
             Return

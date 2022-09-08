@@ -8,6 +8,8 @@ Public NotInheritable Class DbaseAndStorage
 
         uiLocalPath.GetSettingsString()
         uiLocalODPath.GetSettingsString()
+        ' drugi OneDrive - 2022.09.08
+        uiLocalODPath2.GetSettingsString()
         ' FillComboPliki()
     End Sub
 
@@ -52,6 +54,7 @@ Public NotInheritable Class DbaseAndStorage
 
         uiLocalPath.SetSettingsString()
         uiLocalODPath.SetSettingsString()
+        uiLocalODPath2.SetSettingsString()
 
         Me.GoBack()
         ' przełączenie następuje w ramach MainPage:Loaded

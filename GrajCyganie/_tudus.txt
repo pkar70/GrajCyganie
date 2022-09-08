@@ -2,10 +2,7 @@ Migracja cygan-* na JSON, do uproszczenia - ale przede wszystkim do pozbycia si�
 Czemu getDbUpdate zepsuł polskie literki? A może to nie on, tylko zły collation bazy jest? I trzeba zrobić reset na niej :)
 
 Search wielopoziomowe (back) w ramach kolejnych Search
-Search checkbox: inside results ?
 Dodać można fotosy prosty browser, a przynajmniej counter - sprawdzić czy się zmieści na Papugach
-Można zrobić Browser plików wedle bazy, i wyszukiwarkę w pełnym FileSystem
-
 
 select sum([len]) from StoreFiles where path like '%oldmusic%'	-- 413 311 209 340
 select sum([len]) from StoreFiles where path like '%winylown%'	--  12 170 368 105

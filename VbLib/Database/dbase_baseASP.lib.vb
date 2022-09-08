@@ -1,4 +1,6 @@
-﻿Partial Public MustInherit Class dbase_baseASP
+﻿
+
+Partial Public MustInherit Class dbase_baseASP
     Inherits dbase_base
 
     Public MustOverride Overrides ReadOnly Property Nazwa As String
@@ -91,9 +93,8 @@
     End Sub
 
     Public Overrides Async Function GetNextSongAsync(iNextMode As eNextMode, oGrany As tGranyUtwor) As Task(Of tGranyUtwor)
-        DumpCurrMethod()
+        DumpCurrMethod("miNextMode=" & iNextMode)
 
-        DebugOut("GetNextSong, miNextMode=" & iNextMode)
         Try
             Dim iCurrId As Integer = 0
             Dim sParams As String = ""
@@ -121,12 +122,12 @@
             ' dane o nastepnym HttpPage -> App.mtGranyUtwor
             Dim sPage As String = Await ThisHttpPageAsync("/cygan-info.asp?" & sParams, "file data")
             If sPage = "" Then
-                DialogBox("ERROR get cygan-info empty")
+                Await DialogBoxAsync("ERROR get cygan-info empty, " & sParams)
                 Return Nothing
             End If
             Dim aArr As String() = sPage.Split(vbCrLf)
             If aArr.GetUpperBound(0) < 2 Then
-                DialogBox("ERROR get cygan-info too short, " & vbCrLf &
+                Await DialogBoxAsync("ERROR get cygan-info too short, " & vbCrLf &
                     "Request: " & "/cygan-info.asp?" & sParams & vbCrLf &
                     "Returned: " & sPage)
                 Return Nothing
@@ -136,20 +137,20 @@
                 Await LoginAsync(True)
                 sPage = Await ThisHttpPageAsync("/cygan-info.asp?" & sParams, "file data")
                 If sPage = "" Then
-                    DialogBox("ERROR retry get cygan-info empty")
+                    Await DialogBoxAsync("ERROR retry get cygan-info empty")
                     Return Nothing
                 End If
 
                 aArr = sPage.Split(vbCrLf)
                 If aArr.GetUpperBound(0) < 2 Then
-                    DialogBox("ERROR retry get cygan-info too short, " & vbCrLf &
+                    Await DialogBoxAsync("ERROR retry get cygan-info too short, " & vbCrLf &
                     "Request: " & "/cygan-info.asp?" & sParams & vbCrLf &
                     "Returned: " & sPage)
                     Return Nothing
                 End If
 
                 If aArr(0).Trim <> "OK" Then
-                    DialogBox("ERROR get cygan-info not OK, aArr(0): " & aArr(0))
+                    Await DialogBoxAsync("ERROR get cygan-info not OK, aArr(0): " & aArr(0))
                     Return Nothing
                 End If
             End If
@@ -158,8 +159,10 @@
 
         Catch ex As Exception
             CrashMessageAdd("@GetNextSong", ex)
+            DialogBox("FAIL: " & ex.Message)
         End Try
 
+        Await DialogBoxAsync("exception caught")
         Return Nothing
     End Function
 
@@ -314,17 +317,39 @@
 
     End Function
 
-    Public Overrides Async Function GetStoreFileAsync(id As Integer) As Task(Of oneStoreFiles)
+    Public Overrides Async Function GetStoreFileAsync(id As Integer) As Task(Of oneStoreFile)
         DumpCurrMethod()
 
         Dim sPage As String = Await ThisHttpPageAsync("/cygan-getfile.asp?id=" & id, "file data")
         If sPage = "" Then Return Nothing
 
-        Dim oItem As oneStoreFiles
-        oItem = Newtonsoft.Json.JsonConvert.DeserializeObject(sPage, GetType(oneStoreFiles))
+        Dim oItem As oneStoreFile
+        oItem = Newtonsoft.Json.JsonConvert.DeserializeObject(sPage, GetType(oneStoreFile))
         Return oItem
 
     End Function
 
+    Public Overrides Async Function GetStorageItemsAsync(sPath As String) As Task(Of List(Of oneStoreFile))
+        DumpCurrMethod()
 
+        sPath = sPath.Replace(" ", "%25") ' pewnie można lepiej to zrobić
+        Dim sPage As String = Await ThisHttpPageAsync("/cygan-getdir.asp?path=" & sPath, "file data")
+        If sPage = "" Then Return Nothing
+
+        Dim oLista As List(Of oneStoreFile)
+        oLista = Newtonsoft.Json.JsonConvert.DeserializeObject(sPage, GetType(List(Of oneStoreFile)))
+        Return oLista
+
+    End Function
+
+    Public Overrides Async Function GetDirSize(id As Integer) As Task(Of Long)
+        DumpCurrMethod(id)
+        Dim sPage As String = Await ThisHttpPageAsync("/cygan-getdirsize.asp?id=" & id, "dirsize")
+        If sPage = "" Then Return -1
+
+        Dim retval As Long = -1
+        If Not Long.TryParse(sPage, retval) Then Return -1
+
+        Return retval
+    End Function
 End Class

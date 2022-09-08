@@ -5,7 +5,7 @@ Imports Vblib.Extensions
 Public Module Storage
 
 
-    Private Async Function GetFileFromPath(sPath As String) As Task(Of Windows.Storage.StorageFile)
+    Private Async Function GetFileFromPathAsync(sPath As String) As Task(Of Windows.Storage.StorageFile)
         vb14.DumpCurrMethod("sPath=" & sPath)
 
         Dim oFile As Windows.Storage.StorageFile
@@ -28,9 +28,7 @@ Public Module Storage
 
     End Function
 
-
-
-    Public Async Function GetMediaSourceFrom(oStoreFile As Vblib.oneStoreFiles) As Task(Of Windows.Media.Core.MediaSource)
+    Public Async Function GetFileFromStorageAsync(oStoreFile As Vblib.oneStoreFile) As Task(Of Windows.Storage.StorageFile)
         vb14.DumpCurrMethod()
 
         Dim sPath As String = oStoreFile.path
@@ -53,30 +51,50 @@ Public Module Storage
             If sPath.ToLower.StartsWith("pkar") Then sPath1 = sPath.Substring(5)
             If sPath.ToLower.StartsWith("public") Then sPath1 = sPath.Substring(7)
             sPath1 = vb14.GetSettingsString("uiLocalPath") & sPath1
-            oFile = Await GetFileFromPath(sPath1)
-            If oFile IsNot Nothing Then Return Windows.Media.Core.MediaSource.CreateFromStorageFile(oFile)
+            oFile = Await GetFileFromPathAsync(sPath1)
+            If oFile IsNot Nothing Then Return oFile
 
             ' lokalnie (co może być dysk external!), z podziałem na priv/public
             sPath1 = vb14.GetSettingsString("uiLocalPath") & sPath
-            oFile = Await GetFileFromPath(sPath1)
-            If oFile IsNot Nothing Then Return Windows.Media.Core.MediaSource.CreateFromStorageFile(oFile)
+            oFile = Await GetFileFromPathAsync(sPath1)
+            If oFile IsNot Nothing Then Return oFile
+        End If
+
+        If Not NetIsIPavailable() Then
+            Await vb14.DialogBoxAsync("Nie ma lokalnie, a do OD potrzebuję sieci")
+            Return Nothing
         End If
 
         ' potem wedle pliku z lokalnego cache OneDrive - ale tylko wtedy gdy jest sieć, inaczej nie ma sensu :)
         If vb14.GetSettingsString("uiLocalODPath") <> "" Then
-            If NetIsIPavailable() Then
-                sPath1 = vb14.GetSettingsString("uiLocalODPath") & sPath
-                oFile = Await GetFileFromPath(sPath1)
-                If oFile IsNot Nothing Then Return Windows.Media.Core.MediaSource.CreateFromStorageFile(oFile)
-            Else
-                Await vb14.DialogBoxAsync("Nie ma lokalnie, a do OD potrzebuję sieci")
-                Return Nothing
-            End If
+            sPath1 = vb14.GetSettingsString("uiLocalODPath") & sPath
+            oFile = Await GetFileFromPathAsync(sPath1)
+            If oFile IsNot Nothing Then Return oFile
+        End If
+
+        ' drugi OneDrive - 2022.09.08
+        If vb14.GetSettingsString("uiLocalODPath2") <> "" Then
+            sPath1 = vb14.GetSettingsString("uiLocalODPath2") & sPath
+            oFile = Await GetFileFromPathAsync(sPath1)
+            If oFile IsNot Nothing Then Return oFile
         End If
 
         ' a potem się poddajemy
         Await vb14.DialogBoxAsync("Ale sorry, nie mogę znaleźć pliku")
         Return Nothing
+
+
+    End Function
+
+
+    Public Async Function GetMediaSourceFromAsync(oStoreFile As Vblib.oneStoreFile) As Task(Of Windows.Media.Core.MediaSource)
+        vb14.DumpCurrMethod()
+
+        Dim oFile As Windows.Storage.StorageFile = Await GetFileFromStorageAsync(oStoreFile)
+        If oFile Is Nothing Then Return Nothing
+
+        Return Windows.Media.Core.MediaSource.CreateFromStorageFile(oFile)
+
 
     End Function
 

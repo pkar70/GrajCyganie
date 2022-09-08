@@ -366,7 +366,7 @@ Public NotInheritable Class MainPage
 
         Dim oNextSong As Vblib.tGranyUtwor = Nothing
 
-        For iGuard As Integer = 0 To 100
+        For iGuard As Integer = 0 To 50
 
             oNextSong = Await App.inVb.GetCurrentDb.GetNextSongAsync(iNextMode, oGrany)
             If oNextSong Is Nothing Then Return Nothing
@@ -445,7 +445,7 @@ Public NotInheritable Class MainPage
 
             'sTxt = sTxt.Replace("#", "%23")  ' to jest tylko proba - teraz moze podwojnie escapeowa?
             'Dim oUri As Uri = New Uri(App.BaseUri & "/p" & sTxt)   ' sTxt = "/store/.... "
-            Dim moMSource As Windows.Media.Core.MediaSource = Await GetMediaSourceFrom(App.mtGranyUtwor.oStoreFile)
+            Dim moMSource As Windows.Media.Core.MediaSource = Await GetMediaSourceFromAsync(App.mtGranyUtwor.oStoreFile)
             If moMSource Is Nothing Then
                 App.gsLog = App.gsLog & "GoNextSong, ale nie ma pliku w " & App.mtGranyUtwor.oStoreFile.path & vbCrLf
                 miCoGram = eCoGram.zapowiedzPost ' znaczy na pewno będzie losował następny
@@ -591,7 +591,7 @@ Public NotInheritable Class MainPage
 
     Private Sub uiGoStat_Click(sender As Object, e As RoutedEventArgs)
         vb14.DumpCurrMethod()
-        Me.Navigate(GetType(OpenM3u))
+        Me.Navigate(GetType(Dekady))
     End Sub
 
     Private Sub uiGoNetStat_Click(sender As Object, e As RoutedEventArgs)
@@ -662,6 +662,6 @@ Public NotInheritable Class MainPage
     End Sub
 
     Private Sub uiGoFotosy_Click(sender As Object, e As RoutedEventArgs)
-        Me.Navigate(GetType(Modelki))
+        Me.Navigate(GetType(Modelki), uiArtist.Text)
     End Sub
 End Class

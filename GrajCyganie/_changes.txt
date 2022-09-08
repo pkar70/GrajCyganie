@@ -1,21 +1,32 @@
+2022.09.08
+* drugi OneDrive (w Setup oraz w Storage) 
+* SLIDESHOW("1PATH"), 1/0 rekurencja, reszta to sciezka do wyszukiwania; w du偶ej mierze klon FotoRamka
+* aktualizacja cygan-getdir.asp , by uwzglednia艂o rekurencj臋
+
+2022.09.07
+* poprawienie dekad - zawsze by艂o 偶e jeszcze nie wolno gra膰
+* BROWSER - niby zrobiony, kilka dodatkowych plik贸w ASP
+* pocz膮tek MODELKI
+
 2022.09.06
 * dalsze refactoring
 	* oddzielny plik Storage
 * SEARCH :)
-* strony (puste) dla modelek i browsera plik體 (id?c w stron? "kombajnu")
-* dekady - w wersji szerokiej te? pokazuje poprawnie tekst przy ruszaniu slider
+* strony (puste) dla modelek i browsera plik贸w (id膮c w stron臋 "kombajnu")
+* dekady - w wersji szerokiej te偶 pokazuje poprawnie tekst przy ruszaniu slider
 * szukanie w rezultatach
+* zaREMowanie dbase_sql oraz dbase_cosmos 偶eby nie trzeba by艂o do nich regularnie wpisywa膰 rzeczy kt贸re niekoniecznie b臋da w og贸le - bo po co wersja cosmos, skoro i tak telefon nie zagra (nie podepnie OneDrive)
 
 2022.09.05
 * osobny plik dla gadaczki:
-	* wi?cej j?zyk體 umie rozpozna?,
-	* lepsza architektura rozwi?zania,
-	* dowolny sub-region dla j?zyka
-	* tester gadaczki (do uruchamiania na naciskaniu w??cznika, ?eby potem nie by?o b??d體 podczas gadania przy utworach)
+	* wi臋cej j臋zyk贸w umie rozpozna膰,
+	* lepsza architektura rozwi膮zania,
+	* dowolny sub-region dla j臋zyka
+	* tester gadaczki (do uruchamiania na naciskaniu w艂膮cznika, 偶eby potem nie by艂o b艂臋d贸w podczas gadania przy utworach)
 	* iNextMode oraz iCoCzytam (teraz iCoGram) z integer na enum
 * osobny plik MediaGrajek, Speak, GadaniaRecognizer
 
 2022.09.02
-* VBlib - obs硊ga pliku dekad oraz DB (IDX)
+* VBlib - obs艂uga pliku dekad oraz DB (IDX)
 * openm3u (dekady): sFreq, sTime dekad robione konwerterami
 

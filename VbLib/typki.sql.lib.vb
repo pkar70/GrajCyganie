@@ -8,7 +8,9 @@
 
 End Class
 
-Public Class oneStoreFiles
+Public Class oneStoreFile
+    Inherits MojaStruct
+
     Public Property id As String
     Public Property name As String
     Public Property path As String

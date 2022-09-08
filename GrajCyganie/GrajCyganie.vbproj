@@ -145,8 +145,11 @@
     <Compile Include="Siec.xaml.vb">
       <DependentUpon>Siec.xaml</DependentUpon>
     </Compile>
-    <Compile Include="OpenM3u.xaml.vb">
-      <DependentUpon>OpenM3u.xaml</DependentUpon>
+    <Compile Include="Dekady.xaml.vb">
+      <DependentUpon>Dekady.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Slideshow.xaml.vb">
+      <DependentUpon>Slideshow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Speak.vb" />
     <Compile Include="Storage.vb" />
@@ -223,7 +226,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="OpenM3u.xaml">
+    <Page Include="Dekady.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Slideshow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

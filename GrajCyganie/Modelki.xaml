@@ -6,9 +6,16 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Loaded="Page_Loaded">
 
-    <Grid>
+    <Grid Margin="5,5,5,5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
 
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <TextBlock Text="Fotosy" HorizontalAlignment="Center" FontSize="15" />
+        <TextBox Name="uiSearchTerm" Margin="0,5,40,5" VerticalAlignment="Center" HorizontalAlignment="Stretch" Grid.Row="1" />
     </Grid>
 </Page>

@@ -444,6 +444,7 @@ Public NotInheritable Class MainPage
             ' gdyby tu brać StorageFile, to można byłoby https://docs.microsoft.com/en-us/uwp/api/Windows.Storage.FileProperties.MusicProperties?view=winrt-22621
             ' MusicProperties musicProperties = await file.Properties.GetMusicPropertiesAsync();
             ' outputText.AppendLine("Album: " + musicProperties.Album);
+            'i wypełnić wszystko biorąc z pliku
             Dim moMSource As Windows.Media.Core.MediaSource = Await GetMediaSourceFromAsync(App.mtGranyUtwor.oStoreFile)
             If moMSource Is Nothing Then
                 App.gsLog = App.gsLog & "GoNextSong, ale nie ma pliku w " & App.mtGranyUtwor.oStoreFile.path & vbCrLf

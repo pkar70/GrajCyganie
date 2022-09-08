@@ -441,10 +441,9 @@ Public NotInheritable Class MainPage
         End If ' if NOT LoopUtworu
 
         If miCoGram = eCoGram.zapowiedzPre Or iNextMode = Vblib.eNextMode.loopSong Then
-            'Dim sTxt As String = App.mtGranyUtwor.uri
-
-            'sTxt = sTxt.Replace("#", "%23")  ' to jest tylko proba - teraz moze podwojnie escapeowa?
-            'Dim oUri As Uri = New Uri(App.BaseUri & "/p" & sTxt)   ' sTxt = "/store/.... "
+            ' gdyby tu brać StorageFile, to można byłoby https://docs.microsoft.com/en-us/uwp/api/Windows.Storage.FileProperties.MusicProperties?view=winrt-22621
+            ' MusicProperties musicProperties = await file.Properties.GetMusicPropertiesAsync();
+            ' outputText.AppendLine("Album: " + musicProperties.Album);
             Dim moMSource As Windows.Media.Core.MediaSource = Await GetMediaSourceFromAsync(App.mtGranyUtwor.oStoreFile)
             If moMSource Is Nothing Then
                 App.gsLog = App.gsLog & "GoNextSong, ale nie ma pliku w " & App.mtGranyUtwor.oStoreFile.path & vbCrLf

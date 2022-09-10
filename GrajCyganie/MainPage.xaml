@@ -8,7 +8,7 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Loaded="Page_Loaded" Unloaded="Page_Unloaded">
 
-    <Grid Margin="5,5,5,5">
+    <Grid Margin="5,5,5,5" Name="uiGrid">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -30,11 +30,14 @@
         </Grid.ColumnDefinitions>
         <TextBlock FontSize="18" HorizontalAlignment="Center" Text="GrajCyganie" Margin="0,0,0,20" Grid.ColumnSpan="3"/>
 
-        <TextBlock Text="Artist" Grid.Row="1" Grid.Column="0"  VerticalAlignment="Center" Margin="0,5,0,12"/>
+        <TextBlock Text="Artist" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" Margin="0,5,0,12"/>
+        <TextBlock Text="" Name="uiArtistSwitch" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" Margin="0,5,0,12" HorizontalAlignment="Right" Tapped="uiSwitchValues_Tapped"/>
+
         <TextBox BorderThickness="0" IsReadOnly="True" Text=" " Grid.Row="1" Grid.Column="1" x:Name="uiArtist" VerticalAlignment="Center" Margin="0,5,0,5">
             <TextBox.ContextFlyout>
                 <MenuFlyout >
                     <MenuFlyoutItem Text="open Wiki" x:Name="uiArtistWiki" Click="uiMenu_Click"/>
+                    <MenuFlyoutItem Text="open Imdb" Click="uiOpenImdb_Click"/>
                     <MenuFlyoutItem Text="search"  x:Name="uiArtistSearch" Click="uiMenu_Click"/>
                     <MenuFlyoutItem Text="copy" x:Name="uiArtistCopy" Click="uiMenu_Click" />
                     <MenuFlyoutItem Text="fotosy" Click="uiFotosy_Click" />
@@ -43,7 +46,10 @@
         </TextBox>
         <RadioButton Grid.Row="1" Grid.Column="2" x:Name="uiArtist_Radio" MinWidth="20" HorizontalAlignment="Left" AccessKey="A"/>
 
+
         <TextBlock Text="Title" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" Margin="0,5,0,12"/>
+        <TextBlock Text="" Name="uiTitleSwitch" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" Margin="0,5,0,12" HorizontalAlignment="Right" Tapped="uiSwitchValues_Tapped"/>
+
         <TextBox BorderThickness="0" IsReadOnly="True"  Text=" " Grid.Row="2" Grid.Column="1" x:Name="uiTitle" VerticalAlignment="Center" Margin="0,5,0,5">
             <TextBox.ContextFlyout>
                 <MenuFlyout >
@@ -56,6 +62,8 @@
         <RadioButton Grid.Row="2" Grid.Column="2" x:Name="uiTitle_Radio" MinWidth="20" HorizontalAlignment="Left" AccessKey="T"/>
 
         <TextBlock Text="Album" Grid.Row="3" Grid.Column="0" VerticalAlignment="Center" Margin="0,5,0,12" />
+        <TextBlock Text="" Name="uiAlbumSwitch" Grid.Row="3" Grid.Column="0" VerticalAlignment="Center" Margin="0,5,0,12" HorizontalAlignment="Right" Tapped="uiSwitchValues_Tapped" />
+
         <TextBox BorderThickness="0" IsReadOnly="True"  Text=" " Grid.Row="3" Grid.Column="1" x:Name="uiAlbum" VerticalAlignment="Center" Margin="0,5,0,5">
 <!--            <ToolTipService.ToolTip  >
                 <ToolTip Content="Right click: try wiki" />
@@ -113,6 +121,8 @@
         <Button x:Name="uiStart" Grid.Column="1" Grid.Row="7" Content="Start" Click="uiStart_Click" HorizontalAlignment="Center" />
 
         <TextBlock Text="Comment" Grid.Row="10" Grid.Column="0" Margin="0,0,10,0" />
+        <TextBlock Text="" Name="uiCommentSwitch" Grid.Row="10" Grid.Column="0" VerticalAlignment="Center" Margin="0,0,10,0" HorizontalAlignment="Right" Tapped="uiSwitchValues_Tapped"/>
+
         <TextBox BorderThickness="0" IsReadOnly="True"  Text=" " Grid.Row="10" Grid.Column="1" Name="uiComment" TextWrapping="Wrap"/>
 
         <ToggleButton Name="uiUseMicro" Grid.Row="10" Grid.Column="2" ToolTipService.ToolTip="use voice commands" Tapped="uiUseMicro_Tapped" VerticalAlignment="Bottom" HorizontalAlignment="Right" >

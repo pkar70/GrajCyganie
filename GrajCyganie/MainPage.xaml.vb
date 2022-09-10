@@ -1,5 +1,9 @@
 ﻿Imports vb14 = Vblib.pkarlibmodule14
 Imports Vblib.Extensions
+'Imports Windows.Security.Authentication.Identity.Provider
+Imports System.Reflection
+Imports Vblib
+
 
 
 ' 2021.10.16: nowszy pkarmodule (z RemoteSystem)
@@ -36,7 +40,7 @@ Public NotInheritable Class MainPage
 #Region "Gadaczka"
 
 
-    Private Function CreateWinTitle(oGranyUtwor As Vblib.tGranyUtwor, iNextMode As Vblib.eNextMode) As String
+    Private Shared Function CreateWinTitle(oGranyUtwor As Vblib.tGranyUtwor, iNextMode As Vblib.eNextMode) As String
         vb14.DumpCurrMethod()
         Dim sTxt As String = ""
         If iNextMode <> Vblib.eNextMode.sameArtist Then sTxt = oGranyUtwor.oAudioParam.artist
@@ -140,7 +144,7 @@ Public NotInheritable Class MainPage
 
 #End Region
 
-    Private Sub AktualizujLiczniki(lFileLen As Long)
+    Private Shared Sub AktualizujLiczniki(lFileLen As Long)
         Dim iMiB As Integer = lFileLen
         iMiB = iMiB / 1024 / 1024
         iMiB = iMiB + 1
@@ -362,7 +366,7 @@ Public NotInheritable Class MainPage
         song = 3
     End Enum
 
-    Private Async Function LosujDoSkutkuAsync(oGrany As Vblib.tGranyUtwor, iNextMode As Vblib.eNextMode) As Task(Of Vblib.tGranyUtwor)
+    Private Shared Async Function LosujDoSkutkuAsync(oGrany As Vblib.tGranyUtwor, iNextMode As Vblib.eNextMode) As Task(Of Vblib.tGranyUtwor)
 
         Dim oNextSong As Vblib.tGranyUtwor = Nothing
 
@@ -388,6 +392,25 @@ Public NotInheritable Class MainPage
         Return oNextSong
     End Function
 
+    Public Shared Async Function ZagrajPlik(oGranyUtwor As Vblib.tGranyUtwor) As Task(Of Windows.Media.Core.MediaSource)
+        Dim oFile As Windows.Storage.StorageFile = Await GetFileFromStorageAsync(oGranyUtwor.oStoreFile)
+        If oFile Is Nothing Then
+            vb14.DumpMessage("nie mogę znaleźć pliku w " & oGranyUtwor.oStoreFile.path)
+            App.gsLog = App.gsLog & "GoNextSong, ale nie ma pliku w " & oGranyUtwor.oStoreFile.path & vbCrLf
+            Return Nothing
+        End If
+
+        oGranyUtwor.oAudioParamFile = Await OdczytajMp3Info(oFile)
+
+
+        Dim moMSource As Windows.Media.Core.MediaSource = Windows.Media.Core.MediaSource.CreateFromStorageFile(oFile)
+        If moMSource Is Nothing Then
+            vb14.DumpMessage("nie mogę zmienić pliku na sound source")
+            Return Nothing
+        End If
+
+        Return moMSource
+    End Function
 
     Private Async Function GoNextSong(iNextMode As Vblib.eNextMode) As Task(Of Boolean)
         Dim sDOut As String = ""
@@ -441,16 +464,12 @@ Public NotInheritable Class MainPage
         End If ' if NOT LoopUtworu
 
         If miCoGram = eCoGram.zapowiedzPre Or iNextMode = Vblib.eNextMode.loopSong Then
-            ' gdyby tu brać StorageFile, to można byłoby https://docs.microsoft.com/en-us/uwp/api/Windows.Storage.FileProperties.MusicProperties?view=winrt-22621
-            ' MusicProperties musicProperties = await file.Properties.GetMusicPropertiesAsync();
-            ' outputText.AppendLine("Album: " + musicProperties.Album);
-            'i wypełnić wszystko biorąc z pliku
-            Dim moMSource As Windows.Media.Core.MediaSource = Await GetMediaSourceFromAsync(App.mtGranyUtwor.oStoreFile)
+            Dim moMSource As Windows.Media.Core.MediaSource = Await ZagrajPlik(App.mtGranyUtwor)
             If moMSource Is Nothing Then
-                App.gsLog = App.gsLog & "GoNextSong, ale nie ma pliku w " & App.mtGranyUtwor.oStoreFile.path & vbCrLf
                 miCoGram = eCoGram.zapowiedzPost ' znaczy na pewno będzie losował następny
                 Return Await GoNextSong(iNextMode)
             End If
+            ZaznaczRoznice(App.mtGranyUtwor)
 
             Grajek_SetSource(moMSource)
             Grajek_Play()
@@ -467,6 +486,73 @@ Public NotInheritable Class MainPage
     End Function
 
 
+    Private Shared Async Function OdczytajMp3Info(oFile As Windows.Storage.StorageFile) As Task(Of Vblib.oneAudioParam)
+        vb14.DumpCurrMethod()
+        If oFile Is Nothing Then Return Nothing
+        ' nie widzi tego, zawsze jest puste - może więc trzeba wziąć do tego nugeta
+        ' https://docs.microsoft.com/en-us/windows/win32/properties/music-bumper
+#If False Then
+
+        Dim oMusicProp As Windows.Storage.FileProperties.MusicProperties = Nothing
+        Try
+            oMusicProp = Await oFile.Properties.GetMusicPropertiesAsync
+        Catch ex As Exception
+            Return Nothing
+        End Try
+
+        If oMusicProp Is Nothing Then Return Nothing
+
+        Dim oMp3Info As New Vblib.oneAudioParam
+        oMp3Info.artist = oMusicProp.Artist
+        oMp3Info.title = oMusicProp.Title
+        ' oMp3Info.comment = oMusicProp.comment
+        oMp3Info.duration = oMusicProp.Duration.TotalSeconds
+        oMp3Info.bitrate = oMusicProp.Bitrate
+
+        ' atrybuty ryzykowne - bo nie są UINT, powinny być stringi
+        'oMp3Info.year = oMusicProp.Year
+        'oMp3Info.track = oMusicProp.TrackNumber
+        Dim oList As New List(Of String)
+        oList.Add("Artist")
+        oList.Add("Title")
+        oList.Add("duration")
+        oList.Add("bitrate")
+        Dim oDict1 As IDictionary(Of String, Object) = Await oMusicProp.RetrievePropertiesAsync(oList)
+
+        Try
+            Dim oDict As IDictionary(Of String, Object) = Await oMusicProp.RetrievePropertiesAsync({"comment", "year", "track", "channels", "sample", "vbr"})
+            If oDict IsNot Nothing Then
+                For Each oItem As KeyValuePair(Of String, Object) In oDict
+                    If oItem.Key = "comment" Then oMp3Info.comment = oItem.Value
+                    If oItem.Key = "year" Then oMp3Info.comment = oItem.Value
+                    If oItem.Key = "track" Then oMp3Info.comment = oItem.Value
+                    If oItem.Key = "channels" Then oMp3Info.comment = oItem.Value
+                    If oItem.Key = "sample" Then oMp3Info.comment = oItem.Value
+                    If oItem.Key = "vbr" Then oMp3Info.comment = oItem.Value
+                Next
+            End If
+        Catch ex As Exception
+
+        End Try
+
+        ' można byłoby wyliczać
+        'oMp3Info.dekada = oMusicProp.dekada
+
+        Return oMp3Info
+#End If
+        Return Nothing
+
+    End Function
+
+    Private Sub ZaznaczRoznice(oGranyUtwor As Vblib.tGranyUtwor)
+        vb14.DumpCurrMethod()
+        If oGranyUtwor.oAudioParamFile Is Nothing Then Return
+
+        If oGranyUtwor.oAudioParam.artist <> oGranyUtwor.oAudioParamFile.artist Then uiArtistSwitch.Text = "b"
+        If oGranyUtwor.oAudioParam.title <> oGranyUtwor.oAudioParamFile.title Then uiArtistSwitch.Text = "b"
+        If oGranyUtwor.oAudioParam.album <> oGranyUtwor.oAudioParamFile.album Then uiArtistSwitch.Text = "b"
+        If oGranyUtwor.oAudioParam.comment <> oGranyUtwor.oAudioParamFile.comment Then uiArtistSwitch.Text = "b"
+    End Sub
     Private Async Sub GoNextSongSub()
         vb14.DumpCurrMethod()
         Await GoNextSong(miNextMode)
@@ -531,6 +617,17 @@ Public NotInheritable Class MainPage
         vb14.DumpCurrMethod()
         Grajek_PauseResume()
     End Sub
+
+    Private Sub uiOpenImdb_Click(sender As Object, e As RoutedEventArgs)
+        Dim sTxt As String = App.mtGranyUtwor.oAudioParam.artist
+        Dim iInd As Integer = sTxt.IndexOfAny(",&")
+        If iInd > -1 Then sTxt = sTxt.Substring(0, iInd)
+
+        Dim sUrl As String = "https://www.imdb.com/find?s=nm&q=" & sTxt
+        Dim oUri = New Uri(sUrl)
+        oUri.OpenBrowser()
+    End Sub
+
 
     Private Sub uiMenu_Click(sender As Object, e As RoutedEventArgs)
         vb14.DumpCurrMethod()
@@ -663,5 +760,35 @@ Public NotInheritable Class MainPage
 
     Private Sub uiGoFotosy_Click(sender As Object, e As RoutedEventArgs)
         Me.Navigate(GetType(Modelki), uiArtist.Text)
+    End Sub
+
+    Private Sub uiSwitchValues_Tapped(sender As Object, e As TappedRoutedEventArgs)
+        ' przełączenie między aktualnym a nieaktualnym, zmiana tekstu
+        Dim oTBlock As TextBlock = sender
+
+        ' zmień literkę
+        If oTBlock.Text = "b" Then
+            oTBlock.Text = "f"
+        Else
+            oTBlock.Text = "b"
+        End If
+
+        ' weź zestaw danych
+        Dim oSkad As Vblib.oneAudioParam
+        If oTBlock.Text = "b" Then
+            oSkad = App.mtGranyUtwor.oAudioParam
+        Else
+            oSkad = App.mtGranyUtwor.oAudioParamFile
+        End If
+
+        Dim sNameDocelowe As String = oTBlock.Name.Replace("Switch", "")    ' name tego gdzie mamy trafić
+        Dim sNameProperty As String = sNameDocelowe.Replace("ui", "").ToLowerInvariant  ' artist, title, album, comment
+
+        ' weź poprawną daną
+        Dim sCoMaByc As String = oSkad.GetType.GetProperty(sNameProperty).ToString
+
+        Dim oDocelowy As TextBox = uiGrid.FindName(sNameDocelowe)
+        If oDocelowy IsNot Nothing Then oDocelowy.Text = sCoMaByc
+
     End Sub
 End Class

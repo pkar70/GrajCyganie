@@ -87,15 +87,4 @@ Public Module Storage
     End Function
 
 
-    Public Async Function GetMediaSourceFromAsync(oStoreFile As Vblib.oneStoreFile) As Task(Of Windows.Media.Core.MediaSource)
-        vb14.DumpCurrMethod()
-
-        Dim oFile As Windows.Storage.StorageFile = Await GetFileFromStorageAsync(oStoreFile)
-        If oFile Is Nothing Then Return Nothing
-
-        Return Windows.Media.Core.MediaSource.CreateFromStorageFile(oFile)
-
-
-    End Function
-
 End Module

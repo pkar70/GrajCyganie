@@ -1,3 +1,6 @@
+2022.09.09
+* MainPage:context:Open Imdb
+
 2022.09.08
 * drugi OneDrive (w Setup oraz w Storage) 
 * SLIDESHOW("1PATH"), 1/0 rekurencja, reszta to sciezka do wyszukiwania; w dużej mierze klon FotoRamka

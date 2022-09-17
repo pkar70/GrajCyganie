@@ -306,7 +306,7 @@ Partial Public MustInherit Class dbase_baseASP
         sRok = ConvertQueryParam(sRok)
 
         Dim sLinkQuery As String = $"artist={sArtist}&title={sTitle}&album={sAlbum}&rok={sRok}"
-        sLinkQuery = sLinkQuery.Replace("%", "%25")
+        'sLinkQuery = sLinkQuery.Replace("%", "%25")
 
         Dim sPage As String = Await ThisHttpPageAsync("/cygan-search.asp?" & sLinkQuery, "file data")
         If sPage = "" Then Return Nothing
@@ -342,7 +342,7 @@ Partial Public MustInherit Class dbase_baseASP
 
     End Function
 
-    Public Overrides Async Function GetDirSize(id As Integer) As Task(Of Long)
+    Public Overrides Async Function GetDirSizeAsync(id As Integer) As Task(Of Long)
         DumpCurrMethod(id)
         Dim sPage As String = Await ThisHttpPageAsync("/cygan-getdirsize.asp?id=" & id, "dirsize")
         If sPage = "" Then Return -1
@@ -351,5 +351,16 @@ Partial Public MustInherit Class dbase_baseASP
         If Not Long.TryParse(sPage, retval) Then Return -1
 
         Return retval
+    End Function
+
+    Protected Overrides Async Function GetModelsSummaryMainAsync(sModel As String) As Task(Of List(Of oneModelSummmary))
+        DumpCurrMethod(sModel)
+        Dim sPage As String = Await ThisHttpPageAsync("/cygan-srchmodel.asp?model=" & sModel, "modelgroup")
+        If sPage = "" Then Return Nothing
+
+        Dim oLista As List(Of oneModelSummmary)
+        oLista = Newtonsoft.Json.JsonConvert.DeserializeObject(sPage, GetType(List(Of oneModelSummmary)))
+        Return oLista
+
     End Function
 End Class

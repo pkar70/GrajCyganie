@@ -750,9 +750,9 @@ Public NotInheritable Class MainPage
         Await SpeechOnOffAsync(uiUseMicro.IsChecked)
     End Sub
 
-    Private Sub uiFotosy_Click(sender As Object, e As RoutedEventArgs)
-        Me.Navigate(GetType(Modelki), uiArtist)
-    End Sub
+    'Private Sub uiFotosy_Click(sender As Object, e As RoutedEventArgs)
+    '    Me.Navigate(GetType(Modelki), uiArtist)
+    'End Sub
 
     Private Sub uiGoBrowse_Click(sender As Object, e As RoutedEventArgs)
         Me.Navigate(GetType(Browser))

@@ -8,14 +8,45 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Loaded="Page_Loaded">
 
+    <UserControl.Resources>
+        <local:KonwersjaBigNum x:Key="KonwersjaBigNum" />
+        <local:KonwersjaIsoPrefix x:Key="KonwersjaIsoPrefix" />
+    </UserControl.Resources>
+
+
     <Grid Margin="5,5,5,5">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
-
+            <RowDefinition />
             <RowDefinition/>
         </Grid.RowDefinitions>
         <TextBlock Text="Fotosy" HorizontalAlignment="Center" FontSize="15" />
         <TextBox Name="uiSearchTerm" Margin="0,5,40,5" VerticalAlignment="Center" HorizontalAlignment="Stretch" Grid.Row="1" />
+
+        <ListView Grid.Row="2" Name="uiListaTrafien" HorizontalContentAlignment="Stretch" >
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="HorizontalContentAlignment"  Value="Stretch"/>
+                    <Setter Property="MinHeight" Value="10"/>
+                </Style>
+            </ListView.ItemContainerStyle>
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Margin="0,5,0,0" >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="100" />
+                            <ColumnDefinition Width="100" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBox Grid.Column="0" BorderThickness="0" IsReadOnly="true" Text="{Binding modelDir}" />
+                        <TextBox Grid.Column="1" BorderThickness="0" IsReadOnly="true" Text="{Binding items, Converter={StaticResource KonwersjaBigNum}}" HorizontalAlignment="Right"/>
+                        <TextBox Grid.Column="2" BorderThickness="0" IsReadOnly="true" Text="{Binding total, Converter={StaticResource KonwersjaIsoPrefix}, ConverterParameter=B}"  HorizontalAlignment="Right" />
+                        <TextBlock Grid.Column="3" Text=" [►] " Foreground="Green" FontWeight="Bold" ToolTipService.ToolTip="Slideshow" Tapped="uiDoSlideshow_Tapped"/>
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
     </Grid>
 </Page>

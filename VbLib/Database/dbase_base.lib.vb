@@ -6,6 +6,9 @@
 ' local SQL
 ' Azure
 
+Imports System.ComponentModel
+Imports System.Linq.Expressions
+
 Public MustInherit Class dbase_base
 
     Public MustOverride ReadOnly Property Nazwa As String
@@ -39,7 +42,10 @@ Public MustInherit Class dbase_base
     Public MustOverride Async Function GetStoreFileAsync(id As Integer) As Task(Of oneStoreFile)
     Public MustOverride Async Function GetStorageItemsAsync(sPath As String) As Task(Of List(Of oneStoreFile))
 
-    Public MustOverride Async Function GetDirSize(id As Integer) As Task(Of Long)
+    Public MustOverride Async Function GetDirSizeAsync(id As Integer) As Task(Of Long)
+
+    Protected MustOverride Async Function GetModelsSummaryMainAsync(sModel As String) As Task(Of List(Of oneModelSummmary))
+
     ' Dim sPage As String = Await App.HttpPageAsync("/cygan-info.asp?" & sParams, "file data")
 
     ''' <summary>
@@ -77,4 +83,45 @@ Public MustInherit Class dbase_base
 
     End Function
 
+    Public Async Function GetModelsSummaryAsync(sModelName As String) As Task(Of List(Of oneModelSummmary))
+        sModelName = sModelName.Replace(" ", "")
+
+        'Dim iLen As Integer = sModelName.Length
+        'If sModelName.StartsWith("^") Then iLen -= 1
+        'If sModelName.EndsWith("$") Then iLen -= 1
+        'If iLen < 3 Then Return Nothing
+
+
+        'sModelName = Vblib.dbase_baseASP.ConvertQueryParam(sModelName)
+        'sModelName = sModelName.Replace("%", "*")
+        Dim lista As List(Of oneModelSummmary) = Await GetModelsSummaryMainAsync(sModelName)
+
+
+        Dim listaSorted As New List(Of oneModelSummmary)
+        '         ' AnnaAberg	2	367
+        ' AnnaAberg\Models.001	2	78764
+        ' AnnaJagodzinska	9	979
+        ' AnnaJagodzinska\Models.002	10	3655712
+        ' AnnaJagodzinska\Models.004	104	15626125
+        ' AnnaJagodzinska\Models.004\0bw	15	2502598
+
+        Dim sLastName As String = ""
+        Dim oNew As oneModelSummmary = Nothing
+        For Each oItem As oneModelSummmary In lista
+            sModelName = oItem.modelDir
+            Dim iInd As Integer = sModelName.IndexOf("\")
+            If iInd > 1 Then sModelName = sModelName.Substring(0, iInd)
+            If sModelName <> sLastName Then
+                If oNew IsNot Nothing Then listaSorted.Add(oNew)
+                oNew = New oneModelSummmary
+                oNew.modelDir = sModelName
+                sLastName = sModelName
+            End If
+
+            oNew.items += oItem.items
+            oNew.total += oItem.total
+        Next
+
+        Return listaSorted
+    End Function
 End Class

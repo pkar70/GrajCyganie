@@ -96,7 +96,7 @@ Public NotInheritable Class Browser
         Dim iId As Integer = oItem.id
 
         Me.ProgRingShow(True)
-        Dim dirsize As Long = Await App.inVb.GetCurrentDb.GetDirSize(iId)
+        Dim dirsize As Long = Await App.inVb.GetCurrentDb.GetDirSizeAsync(iId)
         Me.ProgRingShow(False)
 
         vb14.DialogBox("Len: " & dirsize.ToStringISOsufix("Bytes"))

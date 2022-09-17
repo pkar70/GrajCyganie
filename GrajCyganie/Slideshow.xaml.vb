@@ -21,7 +21,8 @@ Public NotInheritable Class Slideshow
         If e.Parameter Is Nothing Then Return
 
         _Recursive = e.Parameter.ToString.Substring(0, 1) = "1"
-        _Path = e.Parameter.ToString.Substring(1)
+        _Path = e.Parameter.ToString
+        If _Path.Substring(0, 1) = "1" Or _Path.Substring(0, 1) = "0" Then _Path = _Path.Substring(1)
 
     End Sub
 
@@ -114,7 +115,7 @@ Public NotInheritable Class Slideshow
         Me.ProgRingShow(False)
 
         ' DEL będzie wykorzystywany jako "już pokazany"
-
+        Return lista
     End Function
 
     Private Async Function NextPic() As Task

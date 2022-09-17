@@ -1,5 +1,6 @@
 ﻿Imports vb14 = Vblib.pkarlibmodule14
 Imports Vblib.Extensions
+Imports Vblib
 
 ' proste wyszukiwanie - pole tekstowe, ale z maskami
 ' pokazywanie znalezionych modelek
@@ -18,22 +19,101 @@ Public NotInheritable Class Modelki
     Private mSearch As String = ""
 
     Protected Overrides Sub onNavigatedTo(e As NavigationEventArgs)
-        mSearch = e.Parameter?.ToString
+        mSearch = e.Parameter?.ToString.Trim
         If mSearch Is Nothing Then mSearch = ""
     End Sub
 
     Private Sub Page_Loaded(sender As Object, e As RoutedEventArgs)
+        Me.ProgRingInit(True, False)
         If mSearch <> "" Then uiSearchTerm.Text = mSearch
     End Sub
 
-    Private Sub uiSearchTerm_TextChanged(sender As Object, e As TextChangedEventArgs) Handles uiSearchTerm.TextChanged
-        ' *TODO* poszukaj modelek pasujących do stringu
+    Private Async Sub uiSearchTerm_TextChanged(sender As Object, e As TextChangedEventArgs) Handles uiSearchTerm.TextChanged
+
+        Dim sModelName As String = uiSearchTerm.Text
+        If sModelName.Length < 3 Then Return
+
+        Me.ProgRingShow(True)
+        Dim lista As List(Of oneModelSummmary) = Await App.inVb.GetCurrentDb.GetModelsSummaryAsync(sModelName)
+        Me.ProgRingShow(False)
+
+        If lista Is Nothing Then Return
+
+        uiListaTrafien.ItemsSource = lista
+
+        ' pokaż listę modelek
+
+        ' do każdego daj guzik <slideshow> - zakładamy że raczej nie jest to lokalnie
+
+        ' PicMdlCheck robi Enable na guzikach browsera, gdy znajdzie takową w katalogu newDVD, archDVD, sorted
+
     End Sub
 
-    Private Function NameToPathQuery(sName As String) As String
-        ' odpowiednik tworzenia maski do nazwy katalogu
-        Dim sWhere As String = Vblib.dbase_baseASP.ConvertQueryParam(sName)
-        sWhere = "_:\Public\MyProduction\Models\" & sName.Substring(0, 1) & "\" & sName.Substring(0, 2) & "\" & sWhere
-        Return sWhere
+    Private Sub uiDoSlideshow_Tapped(sender As Object, e As TappedRoutedEventArgs)
+        Dim oItem As Vblib.oneModelSummmary = TryCast(sender, FrameworkElement)?.DataContext
+        If oItem Is Nothing Then Return
+
+        Frame.Navigate(GetType(Slideshow), "1" & oItem.modelDir) ' z rekursją
+    End Sub
+End Class
+
+Public Class KonwersjaBigNum
+    Implements IValueConverter
+
+    Public Function Convert(ByVal value As Object,
+    ByVal targetType As Type, ByVal parameter As Object,
+    ByVal language As System.String) As Object _
+    Implements IValueConverter.Convert
+
+        Dim temp As Integer = CType(value, Integer)
+
+        Return temp.BigNumFormat
+
+    End Function
+
+
+    ' ConvertBack is not implemented for a OneWay binding.
+    Public Function ConvertBack(ByVal value As Object,
+    ByVal targetType As Type, ByVal parameter As Object,
+    ByVal language As System.String) As Object _
+    Implements IValueConverter.ConvertBack
+
+        Throw New NotImplementedException
+
     End Function
 End Class
+
+Public Class KonwersjaIsoPrefix
+    Implements IValueConverter
+
+    Public Function Convert(ByVal value As Object,
+    ByVal targetType As Type, ByVal parameter As Object,
+    ByVal language As System.String) As Object _
+    Implements IValueConverter.Convert
+
+        Dim temp As Long = CType(value, Integer)
+        Dim sRet As String = temp.ToStringISOsufix("")
+        If parameter IsNot Nothing Then
+            Dim sParam As String = CType(parameter, String)
+            sRet &= sParam
+        End If
+        Return sRet
+
+    End Function
+
+
+    ' ConvertBack is not implemented for a OneWay binding.
+    Public Function ConvertBack(ByVal value As Object,
+    ByVal targetType As Type, ByVal parameter As Object,
+    ByVal language As System.String) As Object _
+    Implements IValueConverter.ConvertBack
+
+        Throw New NotImplementedException
+
+    End Function
+End Class
+
+' z PictMdlCheck
+' wpisywanie modelki - jeśli < 3 znaki, nic nie robi
+' wyszukuje trafienia w pliku z modelkami (czyli ze spacjami!), wersja zwykła oraz pozbawiona akcentów - do listbox (sorted, scrollowalny)
+' podmiany akcentów - podmiana znaków wedle pliku/sekcji Accents

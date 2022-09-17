@@ -23,3 +23,9 @@ Public Enum eNextMode
     sameDekada
     loopSong
 End Enum
+
+Public Class oneModelSummmary
+    Public Property modelDir As String
+    Public Property items As Integer
+    Public Property total As Long
+End Class

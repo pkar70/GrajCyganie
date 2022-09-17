@@ -40,7 +40,7 @@
                     <MenuFlyoutItem Text="open Imdb" Click="uiOpenImdb_Click"/>
                     <MenuFlyoutItem Text="search"  x:Name="uiArtistSearch" Click="uiMenu_Click"/>
                     <MenuFlyoutItem Text="copy" x:Name="uiArtistCopy" Click="uiMenu_Click" />
-                    <MenuFlyoutItem Text="fotosy" Click="uiFotosy_Click" />
+                    <MenuFlyoutItem Text="fotosy" Click="uiGoFotosy_Click" />
                 </MenuFlyout>
             </TextBox.ContextFlyout>
         </TextBox>

@@ -123,6 +123,9 @@
     <Compile Include="Modelki.xaml.vb">
       <DependentUpon>Modelki.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Mp3Add.xaml.vb">
+      <DependentUpon>Mp3Add.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SetupAudio.xaml.vb">
       <DependentUpon>SetupAudio.xaml</DependentUpon>
     </Compile>
@@ -199,6 +202,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Modelki.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Mp3Add.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

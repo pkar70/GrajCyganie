@@ -62,7 +62,7 @@ Public NotInheritable Class MainPage
         ' ale gdy loop/lock, wtedy niekoniecznie
         Dim sTxt As String = CreateWinTitle(App.mtGranyUtwor, miNextMode)
 
-        If sTxt <> "" Then Await SpeakOdczytajStringAsync(sTxt, sLang, vb14.GetLangString("uiSexZapowiedzi"))
+        If sTxt <> "" Then Await SpeakOdczytajStringAsync(sTxt, sLang, vb14.GetSettingsBool("uiSexZapowiedzi"))
 
     End Function
 
@@ -400,7 +400,7 @@ Public NotInheritable Class MainPage
             Return Nothing
         End If
 
-        oGranyUtwor.oAudioParamFile = Await OdczytajMp3Info(oFile)
+        oGranyUtwor.oAudioParamFile = Await OdczytajMp3InfoAsync(oFile)
 
 
         Dim moMSource As Windows.Media.Core.MediaSource = Windows.Media.Core.MediaSource.CreateFromStorageFile(oFile)
@@ -485,73 +485,132 @@ Public NotInheritable Class MainPage
         Return True
     End Function
 
-
-    Private Shared Async Function OdczytajMp3Info(oFile As Windows.Storage.StorageFile) As Task(Of Vblib.oneAudioParam)
-        vb14.DumpCurrMethod()
-        If oFile Is Nothing Then Return Nothing
-        ' nie widzi tego, zawsze jest puste - może więc trzeba wziąć do tego nugeta
-        ' https://docs.microsoft.com/en-us/windows/win32/properties/music-bumper
-#If False Then
+    ''' <summary>
+    ''' Dodaj atrybuty wyciągnięte przez GetMusicPropertiesAsync
+    ''' </summary>
+    ''' <param name="oProps"></param>
+    ''' <param name="oFile"></param>
+    ''' <returns>FALSE jeśli nic nie dodał</returns>
+    Private Shared Async Function FilePropertiesAddMusicAsync(oProps As Vblib.oneAudioParam, oFile As Windows.Storage.StorageFile) As Task(Of Boolean)
+        If oFile Is Nothing Then Return False
 
         Dim oMusicProp As Windows.Storage.FileProperties.MusicProperties = Nothing
         Try
             oMusicProp = Await oFile.Properties.GetMusicPropertiesAsync
         Catch ex As Exception
-            Return Nothing
+            Return False
         End Try
 
-        If oMusicProp Is Nothing Then Return Nothing
+        oProps.artist = oMusicProp.Artist
+        oProps.title = oMusicProp.Title
+        oProps.album = oMusicProp.Album
+        'oProps.comment = oMusicProp.comment
+        oProps.duration = oMusicProp.Duration.TotalSeconds
+        'oProps.dekada As String    '": "200x    ",
+        oProps.bitrate = oMusicProp.Bitrate
 
-        Dim oMp3Info As New Vblib.oneAudioParam
-        oMp3Info.artist = oMusicProp.Artist
-        oMp3Info.title = oMusicProp.Title
-        ' oMp3Info.comment = oMusicProp.comment
-        oMp3Info.duration = oMusicProp.Duration.TotalSeconds
-        oMp3Info.bitrate = oMusicProp.Bitrate
+        ' oProps.channels = As String    '": "                                ",
+        'oProps.sample = oMusicProp.Integer ' ": 0,
+        ' oProps.vbr = oMusicProp.v  As Integer ' ": 0,
+        oProps.year = oMusicProp.Year ' ale to UINT, a my chcemy stringa
+        oProps.track = oMusicProp.TrackNumber ' ale to UINT, a my chcemy stringa
 
-        ' atrybuty ryzykowne - bo nie są UINT, powinny być stringi
-        'oMp3Info.year = oMusicProp.Year
-        'oMp3Info.track = oMusicProp.TrackNumber
-        Dim oList As New List(Of String)
-        oList.Add("Artist")
-        oList.Add("Title")
-        oList.Add("duration")
-        oList.Add("bitrate")
-        Dim oDict1 As IDictionary(Of String, Object) = Await oMusicProp.RetrievePropertiesAsync(oList)
+        Return True
+    End Function
 
+    Private Shared Async Function FilePropertiesAddDictAsync(oProps As Vblib.oneAudioParam, oFile As Windows.Storage.StorageFile) As Task(Of Boolean)
+        If oFile Is Nothing Then Return False
+
+        Dim oMusicProp As Windows.Storage.FileProperties.MusicProperties = Nothing
         Try
-            Dim oDict As IDictionary(Of String, Object) = Await oMusicProp.RetrievePropertiesAsync({"comment", "year", "track", "channels", "sample", "vbr"})
-            If oDict IsNot Nothing Then
-                For Each oItem As KeyValuePair(Of String, Object) In oDict
-                    If oItem.Key = "comment" Then oMp3Info.comment = oItem.Value
-                    If oItem.Key = "year" Then oMp3Info.comment = oItem.Value
-                    If oItem.Key = "track" Then oMp3Info.comment = oItem.Value
-                    If oItem.Key = "channels" Then oMp3Info.comment = oItem.Value
-                    If oItem.Key = "sample" Then oMp3Info.comment = oItem.Value
-                    If oItem.Key = "vbr" Then oMp3Info.comment = oItem.Value
-                Next
-            End If
+            oMusicProp = Await oFile.Properties.GetMusicPropertiesAsync
         Catch ex As Exception
-
+            Return False
         End Try
+
+        Dim oList As New List(Of String)
+
+        'oProps.artist = oMusicProp.Artist
+        'oProps.title = oMusicProp.Title
+        'oProps.album = oMusicProp.Album
+        oList.Add("System.Comment")
+        'oProps.duration = oMusicProp.Duration.TotalSeconds
+        'Public Property dekada As String    '": "200x    ",
+        ' oProps.bitrate = oMusicProp.Bitrate
+        oList.Add("System.Audio.ChannelCount")
+        oList.Add("System.Audio.SampleRate")
+        oList.Add("System.Audio.IsVariableBitRate") ' bool
+        'oList.Add("System.Media.Year")  ' string
+
+        'Public Property track As String    '": "12              ",
+        ' oList.Add("System.Audio.SampleSize") - tego nie mamy w audioParam, może szkoda
+
+        Dim oDict1 As IDictionary(Of String, Object) = Await oMusicProp.RetrievePropertiesAsync(oList)
+        If oDict1 IsNot Nothing Then
+            For Each oItem As KeyValuePair(Of String, Object) In oDict1
+                If oItem.Key = "System.Comment" Then oProps.comment = CType(oItem.Value, String)
+                If oItem.Key = "System.Audio.ChannelCount" Then oProps.channels = CType(oItem.Value, UInt32)
+                If oItem.Key = "System.Audio.IsVariableBitRate" Then oProps.vbr = CType(oItem.Value, Boolean)
+                If oItem.Key = "System.Media.Year" Then oProps.year = CType(oItem.Value, String)
+            Next
+        End If
+
+
+        Return True
+    End Function
+
+    Public Shared Async Function OdczytajMp3InfoAsync(oFile As Windows.Storage.StorageFile) As Task(Of Vblib.oneAudioParam)
+        vb14.DumpCurrMethod()
+        If oFile Is Nothing Then Return Nothing
+        ' nie widzi tego, zawsze jest puste - może więc trzeba wziąć do tego nugeta
+        ' https://docs.microsoft.com/en-us/windows/win32/properties/music-bumper
+
+        Dim oPropsy As New Vblib.oneAudioParam
+
+        Await FilePropertiesAddMusicAsync(oPropsy, oFile)
+        Await FilePropertiesAddDictAsync(oPropsy, oFile)
+
+        If oPropsy.artist.Length + oPropsy.title.Length < 2 Then Return Nothing
+        Return oPropsy
 
         ' można byłoby wyliczać
         'oMp3Info.dekada = oMusicProp.dekada
 
-        Return oMp3Info
-#End If
-        Return Nothing
+        ' Wszystkie property:
+        'Public Property id As String    '" "1",
+        'Public Property fileID As Long    '": 1296117,
+        'Public Property artist As String    '": "Intimate orchestra",
+        'Public Property title As String    '": "Song sung blue",
+        'Public Property album As String    '": "Various Artists",
+        'Public Property comment As String    '": "",
+        'Public Property duration As Integer ' ": 229,
+        'Public Property dekada As String    '": "200x    ",
+        'Public Property bitrate As Integer ' ": 167,
+        'Public Property channels As String    '": "                                ",
+        'Public Property sample As Integer ' ": 0,
+        'Public Property vbr As Integer ' ": 0,
+        'Public Property year As String    '": "2002      ",
+        'Public Property track As String    '": "12              ",
+
 
     End Function
 
-    Private Sub ZaznaczRoznice(oGranyUtwor As Vblib.tGranyUtwor)
-        vb14.DumpCurrMethod()
-        If oGranyUtwor.oAudioParamFile Is Nothing Then Return
+    Private Sub ZaznaczRozniceField(oTBox As TextBlock, bRoznica As Boolean)
+        If bRoznica Then
+            oTBox.Text = "b"
+        Else
+            oTBox.Text = ""
+        End If
+    End Sub
 
-        If oGranyUtwor.oAudioParam.artist <> oGranyUtwor.oAudioParamFile.artist Then uiArtistSwitch.Text = "b"
-        If oGranyUtwor.oAudioParam.title <> oGranyUtwor.oAudioParamFile.title Then uiArtistSwitch.Text = "b"
-        If oGranyUtwor.oAudioParam.album <> oGranyUtwor.oAudioParamFile.album Then uiArtistSwitch.Text = "b"
-        If oGranyUtwor.oAudioParam.comment <> oGranyUtwor.oAudioParamFile.comment Then uiArtistSwitch.Text = "b"
+    Private Sub ZaznaczRoznice(oGrany As Vblib.tGranyUtwor)
+        vb14.DumpCurrMethod()
+        If oGrany.oAudioParamFile Is Nothing Then Return
+
+        ZaznaczRozniceField(uiArtistSwitch, oGrany.oAudioParam.artist <> oGrany.oAudioParamFile.artist)
+        ZaznaczRozniceField(uiTitleSwitch, oGrany.oAudioParam.title <> oGrany.oAudioParamFile.title)
+        ZaznaczRozniceField(uiAlbumSwitch, oGrany.oAudioParam.album <> oGrany.oAudioParamFile.album)
+        ZaznaczRozniceField(uiCommentSwitch, oGrany.oAudioParam.comment <> oGrany.oAudioParamFile.comment)
     End Sub
     Private Async Sub GoNextSongSub()
         vb14.DumpCurrMethod()
@@ -785,10 +844,14 @@ Public NotInheritable Class MainPage
         Dim sNameProperty As String = sNameDocelowe.Replace("ui", "").ToLowerInvariant  ' artist, title, album, comment
 
         ' weź poprawną daną
-        Dim sCoMaByc As String = oSkad.GetType.GetProperty(sNameProperty).ToString
+        Dim sCoMaByc As String = oSkad.GetType.GetProperty(sNameProperty).GetValue(oSkad).ToString
 
         Dim oDocelowy As TextBox = uiGrid.FindName(sNameDocelowe)
         If oDocelowy IsNot Nothing Then oDocelowy.Text = sCoMaByc
 
+    End Sub
+
+    Private Sub uiMp3Add_Click(sender As Object, e As RoutedEventArgs)
+        Me.Navigate(GetType(Mp3Add))
     End Sub
 End Class

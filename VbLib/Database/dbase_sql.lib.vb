@@ -225,7 +225,7 @@
 '    End Function
 
 '#Disable Warning BC42356 ' This async method lacks 'Await' operators and so will run synchronously
-'    Public Overrides Async Function SearchAsync(sArtist As String, sTitle As String, sAlbum As String, sRok As String) As Task(Of List(Of oneAudioParam))
+'    Public Overrides Async Function SearchMusicAsync(sArtist As String, sTitle As String, sAlbum As String, sRok As String) As Task(Of List(Of oneAudioParam))
 '#Enable Warning BC42356 ' This async method lacks 'Await' operators and so will run synchronously
 '        DumpCurrMethod()
 

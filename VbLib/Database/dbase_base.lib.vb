@@ -37,7 +37,7 @@ Public MustInherit Class dbase_base
 
     Public MustOverride Async Function GetNextSongAsync(iNextMode As eNextMode, oGrany As tGranyUtwor) As Task(Of tGranyUtwor)
 
-    Public MustOverride Async Function SearchAsync(sArtist As String, sTitle As String, sAlbum As String, sRok As String) As Task(Of List(Of oneAudioParam))
+    Public MustOverride Async Function SearchMusicAsync(sArtist As String, sTitle As String, sAlbum As String, sRok As String) As Task(Of List(Of oneAudioParam))
 
     Public MustOverride Async Function GetStoreFileAsync(id As Integer) As Task(Of oneStoreFile)
     Public MustOverride Async Function GetStorageItemsAsync(sPath As String) As Task(Of List(Of oneStoreFile))
@@ -45,6 +45,8 @@ Public MustInherit Class dbase_base
     Public MustOverride Async Function GetDirSizeAsync(id As Integer) As Task(Of Long)
     Public MustOverride Async Function GetMusicAlbums(sArtist As String) As Task(Of List(Of oneAlbumForArtist))
     Protected MustOverride Async Function GetModelsSummaryMainAsync(sModel As String) As Task(Of List(Of oneModelSummmary))
+
+    Public MustOverride Async Function SearchFilesAsync(sPath As String, sName As String) As Task(Of List(Of oneStoreFile))
 
     ' Dim sPage As String = Await App.HttpPageAsync("/cygan-info.asp?" & sParams, "file data")
 

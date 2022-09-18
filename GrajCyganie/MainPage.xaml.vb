@@ -690,7 +690,7 @@ Public NotInheritable Class MainPage
 
     Private Sub uiMenu_Click(sender As Object, e As RoutedEventArgs)
         vb14.DumpCurrMethod()
-        ' ui(Artist|Title|Album)(Wiki|Search|Copy)
+        ' ui(Artist|Title|Album)(Wiki|SearchMusic|Copy)
         Dim sTxt As String = ""
         Dim sField As String = ""
         Dim iInd As Integer
@@ -715,7 +715,7 @@ Public NotInheritable Class MainPage
         If sSenderName.EndsWith("copy") Then
             vb14.ClipPut(sTxt)
         ElseIf sSenderName.EndsWith("search") Then
-            Me.Frame.Navigate(GetType(Search), sField & "|" & sTxt)
+            Me.Frame.Navigate(GetType(SearchMusic), sField & "|" & sTxt)
         ElseIf sSenderName.EndsWith("wiki") Then
             Dim sUrl As String = "https://en.wikipedia.org/wiki"
             sUrl = sUrl & "/" & sTxt
@@ -763,7 +763,7 @@ Public NotInheritable Class MainPage
 
     Private Sub uiGoSearch_Click(sender As Object, e As RoutedEventArgs)
         vb14.DumpCurrMethod()
-        Me.Navigate(GetType(Search))
+        Me.Navigate(GetType(SearchMusic))
     End Sub
 
     Private Sub uiGoLogin_Click(sender As Object, e As RoutedEventArgs)

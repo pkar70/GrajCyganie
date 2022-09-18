@@ -24,7 +24,7 @@
 '        Throw New NotImplementedException()
 '    End Function
 
-'    Public Overrides Function SearchAsync(sArtist As String, sTitle As String, sAlbum As String, sRok As String) As Task(Of List(Of oneAudioParam))
+'    Public Overrides Function SearchMusicAsync(sArtist As String, sTitle As String, sAlbum As String, sRok As String) As Task(Of List(Of oneAudioParam))
 '        Throw New NotImplementedException()
 '    End Function
 

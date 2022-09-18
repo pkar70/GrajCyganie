@@ -148,8 +148,8 @@
     <Compile Include="MediaGrajek.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="pkarModule.vb" />
-    <Compile Include="Search.xaml.vb">
-      <DependentUpon>Search.xaml</DependentUpon>
+    <Compile Include="SearchMusic.xaml.vb">
+      <DependentUpon>SearchMusic.xaml</DependentUpon>
     </Compile>
     <Compile Include="Siec.xaml.vb">
       <DependentUpon>Siec.xaml</DependentUpon>
@@ -239,7 +239,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Search.xaml">
+    <Page Include="SearchMusic.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

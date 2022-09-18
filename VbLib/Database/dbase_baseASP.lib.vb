@@ -297,7 +297,7 @@ Partial Public MustInherit Class dbase_baseASP
         Return sMask
     End Function
 
-    Public Overrides Async Function SearchAsync(sArtist As String, sTitle As String, sAlbum As String, sRok As String) As Task(Of List(Of oneAudioParam))
+    Public Overrides Async Function SearchMusicAsync(sArtist As String, sTitle As String, sAlbum As String, sRok As String) As Task(Of List(Of oneAudioParam))
         If (sArtist & sTitle & sAlbum & sRok).Length < 3 Then Return Nothing
 
         sArtist = ConvertQueryParam(sArtist).Replace("&", "%26")
@@ -375,5 +375,15 @@ Partial Public MustInherit Class dbase_baseASP
 
     End Function
 
+    Public Overrides Async Function SearchFilesAsync(sPathMask As String, sFileMask As String) As Task(Of List(Of oneStoreFile))
+        DumpCurrMethod(sPathMask & ", " & sFileMask)
+        Dim sPage As String = Await ThisHttpPageAsync("/api-searchfiles.asp?path=" & sPathMask & "&name=" & sFileMask, "searchfiles")
+        If sPage = "" Then Return Nothing
+
+        Dim oLista As List(Of oneStoreFile)
+        oLista = Newtonsoft.Json.JsonConvert.DeserializeObject(sPage, GetType(List(Of oneStoreFile)))
+        Return oLista
+
+    End Function
 
 End Class

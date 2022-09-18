@@ -56,7 +56,7 @@ Public NotInheritable Class Mp3Add
 
         Dim oProps As Vblib.oneAudioParam = oItem.oAudioParamDiskFile
         Dim lista As List(Of Vblib.oneAudioParam)
-        lista = Await App.inVb.GetCurrentDb.SearchAsync(oProps.artist, oProps.title, "", "")
+        lista = Await App.inVb.GetCurrentDb.SearchMusicAsync(oProps.artist, oProps.title, "", "")
 
         If lista Is Nothing Then Return
         oItem.lMatches = lista

@@ -8,7 +8,77 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <Grid>
+    <UserControl.Resources>
+        <local:KonwersjaDaty x:Key="KonwersjaDaty" />
+        <local:KonwersjaPath x:Key="KonwersjaPath" />
+        <local:KonwersjaLen x:Key="KonwersjaLen" />
+    </UserControl.Resources>
+    
+    <Grid Margin="5,5,5,5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <TextBlock HorizontalAlignment="Center" FontSize="16" FontWeight="Bold" Text="Książki" />
 
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <TextBox Grid.Row="0" Name="uiBook" HorizontalAlignment="Stretch" Header="Book" />
+            <TextBox Grid.Row="1" Name="uiPath" HorizontalAlignment="Stretch" Header="Path" />
+            <Button Grid.RowSpan="2" Grid.Column="1" Click="uiSzukaj_Click" Margin="5,5,5,5">
+                <SymbolIcon Symbol="Find" />
+            </Button>
+        </Grid>
+        
+        <ListView Grid.Row="2" Name="uiLista" HorizontalContentAlignment="Stretch" >
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="HorizontalContentAlignment"  Value="Stretch"/>
+                    <Setter Property="MinHeight" Value="10"/>
+                </Style>
+            </ListView.ItemContainerStyle>
+            <ListView.HeaderTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="100" />
+                            <ColumnDefinition Width="140" />
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Name" FontWeight="Bold" HorizontalAlignment="Center" />
+                        <TextBlock Grid.Column="1" Text="Date" FontWeight="Bold" HorizontalAlignment="Center" />
+                        <TextBlock Grid.Column="2" Text="Len" FontWeight="Bold" HorizontalAlignment="Center" Margin="5,0,5,0"/>
+                        <TextBlock Grid.Column="3" Text="path" FontWeight="Bold" HorizontalAlignment="Center" />
+                    </Grid>
+                </DataTemplate>
+            </ListView.HeaderTemplate>
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="100" />
+                            <ColumnDefinition Width="140" />
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <TextBox Grid.Column="0" Text="{Binding name}" IsReadOnly="True" BorderThickness="0" />
+                        <TextBox Grid.Column="1" Text="{Binding filedate, Converter={StaticResource KonwersjaDaty}}" IsReadOnly="True" BorderThickness="0"  HorizontalAlignment="Right" />
+                        <!--<TextBox Grid.Column="2" Text="{Binding len }" IsReadOnly="True" BorderThickness="0" HorizontalAlignment="Right"  />-->
+                        <TextBox Grid.Column="2" Text="{Binding len, Converter={StaticResource KonwersjaLen}}" IsReadOnly="True" BorderThickness="0" HorizontalAlignment="Right"  />
+                        <TextBox Grid.Column="3" Text="{Binding path, Converter={StaticResource KonwersjaPath }}" IsReadOnly="True" BorderThickness="0" />
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
     </Grid>
 </Page>

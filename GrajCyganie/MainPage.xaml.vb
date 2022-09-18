@@ -196,13 +196,13 @@ Public NotInheritable Class MainPage
         If Not Await App.inVb.GetCurrentDb.LoginAsync(True) Then
             uiGoLogin.Visibility = Visibility.Visible
             uiGoSetting.Visibility = Visibility.Collapsed
-            uiGoSearch.Visibility = Visibility.Collapsed
+            'uiGoSearch.Visibility = Visibility.Collapsed
             Exit Sub
         End If
 
         uiGoLogin.Visibility = Visibility.Collapsed
         uiGoSetting.Visibility = Visibility.Visible
-        uiGoSearch.Visibility = Visibility.Visible
+        'uiGoSearch.Visibility = Visibility.Visible
 
         Await App.inVb.GetCurrentDb.ReloadDekadyAsync(False)
 
@@ -853,5 +853,13 @@ Public NotInheritable Class MainPage
 
     Private Sub uiMp3Add_Click(sender As Object, e As RoutedEventArgs)
         Me.Navigate(GetType(Mp3Add))
+    End Sub
+
+    Private Sub uiGoSearchPlyty_Click(sender As Object, e As RoutedEventArgs)
+        Me.Navigate(GetType(SearchPlyty))
+    End Sub
+
+    Private Sub uiGoSearchBooks_Click(sender As Object, e As RoutedEventArgs)
+        Me.Navigate(GetType(SearchBooks))
     End Sub
 End Class

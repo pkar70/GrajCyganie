@@ -29,3 +29,10 @@ Public Class oneModelSummmary
     Public Property items As Integer
     Public Property total As Long
 End Class
+
+Public Class oneAlbumForArtist
+    Public Property artist As String
+    Public Property album As String
+    Public Property tracks As Integer
+    Public Property totalTime As Integer
+End Class

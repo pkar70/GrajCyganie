@@ -49,7 +49,7 @@ Partial Public MustInherit Class dbase_baseASP
     Protected Overrides Async Function RetrieveMaxIdAsync() As Task(Of Integer)
         DumpCurrMethod()
 
-        Dim sRes As String = Await ThisHttpPageAsync("/cygan-maxId.asp", "maxno")
+        Dim sRes As String = Await ThisHttpPageAsync("/api-maxId.asp", "maxno")
         If sRes = "" Then Return -1
         Return sRes.Trim
     End Function
@@ -128,14 +128,14 @@ Partial Public MustInherit Class dbase_baseASP
             Dim aArr As String() = sPage.Split(vbCrLf)
             If aArr.GetUpperBound(0) < 2 Then
                 Await DialogBoxAsync("ERROR get cygan-info too short, " & vbCrLf &
-                    "Request: " & "/cygan-info.asp?" & sParams & vbCrLf &
+                    "Request: " & "/*-info.asp?" & sParams & vbCrLf &
                     "Returned: " & sPage)
                 Return Nothing
             End If
             If aArr(0).Trim <> "OK" Then
                 ' moze wygasła sesja, to powtarzamy
                 Await LoginAsync(True)
-                sPage = Await ThisHttpPageAsync("/cygan-info.asp?" & sParams, "file data")
+                sPage = Await ThisHttpPageAsync("/*-info.asp?" & sParams, "file data")
                 If sPage = "" Then
                     Await DialogBoxAsync("ERROR retry get cygan-info empty")
                     Return Nothing
@@ -144,7 +144,7 @@ Partial Public MustInherit Class dbase_baseASP
                 aArr = sPage.Split(vbCrLf)
                 If aArr.GetUpperBound(0) < 2 Then
                     Await DialogBoxAsync("ERROR retry get cygan-info too short, " & vbCrLf &
-                    "Request: " & "/cygan-info.asp?" & sParams & vbCrLf &
+                    "Request: " & "/*-info.asp?" & sParams & vbCrLf &
                     "Returned: " & sPage)
                     Return Nothing
                 End If
@@ -308,7 +308,7 @@ Partial Public MustInherit Class dbase_baseASP
         Dim sLinkQuery As String = $"artist={sArtist}&title={sTitle}&album={sAlbum}&rok={sRok}"
         'sLinkQuery = sLinkQuery.Replace("%", "%25")
 
-        Dim sPage As String = Await ThisHttpPageAsync("/cygan-search.asp?" & sLinkQuery, "file data")
+        Dim sPage As String = Await ThisHttpPageAsync("/api-search.asp?" & sLinkQuery, "file data")
         If sPage = "" Then Return Nothing
 
         Dim oLista As New List(Of oneAudioParam)
@@ -320,7 +320,7 @@ Partial Public MustInherit Class dbase_baseASP
     Public Overrides Async Function GetStoreFileAsync(id As Integer) As Task(Of oneStoreFile)
         DumpCurrMethod()
 
-        Dim sPage As String = Await ThisHttpPageAsync("/cygan-getfile.asp?id=" & id, "file data")
+        Dim sPage As String = Await ThisHttpPageAsync("/api-getfile.asp?id=" & id, "file data")
         If sPage = "" Then Return Nothing
 
         Dim oItem As oneStoreFile
@@ -333,7 +333,7 @@ Partial Public MustInherit Class dbase_baseASP
         DumpCurrMethod()
 
         sPath = sPath.Replace(" ", "%25") ' pewnie można lepiej to zrobić
-        Dim sPage As String = Await ThisHttpPageAsync("/cygan-getdir.asp?path=" & sPath, "file data")
+        Dim sPage As String = Await ThisHttpPageAsync("/api-getdir.asp?path=" & sPath, "file data")
         If sPage = "" Then Return Nothing
 
         Dim oLista As List(Of oneStoreFile)
@@ -344,7 +344,7 @@ Partial Public MustInherit Class dbase_baseASP
 
     Public Overrides Async Function GetDirSizeAsync(id As Integer) As Task(Of Long)
         DumpCurrMethod(id)
-        Dim sPage As String = Await ThisHttpPageAsync("/cygan-getdirsize.asp?id=" & id, "dirsize")
+        Dim sPage As String = Await ThisHttpPageAsync("/api-getdirsize.asp?id=" & id, "dirsize")
         If sPage = "" Then Return -1
 
         Dim retval As Long = -1
@@ -355,7 +355,7 @@ Partial Public MustInherit Class dbase_baseASP
 
     Protected Overrides Async Function GetModelsSummaryMainAsync(sModel As String) As Task(Of List(Of oneModelSummmary))
         DumpCurrMethod(sModel)
-        Dim sPage As String = Await ThisHttpPageAsync("/cygan-srchmodel.asp?model=" & sModel, "modelgroup")
+        Dim sPage As String = Await ThisHttpPageAsync("/api-srchmodel.asp?model=" & sModel, "modelgroup")
         If sPage = "" Then Return Nothing
 
         Dim oLista As List(Of oneModelSummmary)
@@ -363,4 +363,17 @@ Partial Public MustInherit Class dbase_baseASP
         Return oLista
 
     End Function
+
+    Public Overrides Async Function GetMusicAlbums(sArtist As String) As Task(Of List(Of oneAlbumForArtist))
+        DumpCurrMethod(sArtist)
+        Dim sPage As String = Await ThisHttpPageAsync("/api-musicalbums.asp?artist=" & sArtist, "artistalbum")
+        If sPage = "" Then Return Nothing
+
+        Dim oLista As List(Of oneAlbumForArtist)
+        oLista = Newtonsoft.Json.JsonConvert.DeserializeObject(sPage, GetType(List(Of oneAlbumForArtist)))
+        Return oLista
+
+    End Function
+
+
 End Class

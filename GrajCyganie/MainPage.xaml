@@ -132,11 +132,19 @@
     <Page.BottomAppBar>
         <CommandBar ClosedDisplayMode="Minimal">
             <AppBarButton Icon="Add" Label="mp3add" Click="uiMp3Add_Click" />
-            <AppBarButton x:Name="uiGoSearch" Icon="Zoom" Label="Szukaj" Click="uiGoSearch_Click"/>
+            <AppBarButton Icon="Zoom" Label="Szukaj" >
+                <AppBarButton.Flyout>
+                    <MenuFlyout>
+                        <MenuFlyoutItem Text="music" Click="uiGoSearch_Click"/>
+                        <MenuFlyoutItem Text="album" Click="uiGoSearchPlyty_Click" />
+                        <MenuFlyoutItem Text="ksiazki" Click="uiGoSearchBooks_Click" />
+                        <MenuFlyoutSeparator/>
+                        <MenuFlyoutItem Text="Browse" Click="uiGoBrowse_Click" />
+                    </MenuFlyout>
+                </AppBarButton.Flyout>
+            </AppBarButton>
             <AppBarButton x:Name="uiGoLogin" Icon="Contact" Label="Login" Click="uiGoLogin_Click"/>
-            <AppBarButton Name="uiGoBrowser" Icon="Page2" Label="Browse" Click="uiGoBrowse_Click" />
             <AppBarButton Name="uiGoPictures" Icon="Camera"  Label="Photos" Click="uiGoFotosy_Click"/>
-
             <AppBarButton x:Name="uiGoSetting" Icon="Setting" Label="Settings">
                 <AppBarButton.Flyout>
                     <MenuFlyout>

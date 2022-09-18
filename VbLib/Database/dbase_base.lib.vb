@@ -43,7 +43,7 @@ Public MustInherit Class dbase_base
     Public MustOverride Async Function GetStorageItemsAsync(sPath As String) As Task(Of List(Of oneStoreFile))
 
     Public MustOverride Async Function GetDirSizeAsync(id As Integer) As Task(Of Long)
-
+    Public MustOverride Async Function GetMusicAlbums(sArtist As String) As Task(Of List(Of oneAlbumForArtist))
     Protected MustOverride Async Function GetModelsSummaryMainAsync(sModel As String) As Task(Of List(Of oneModelSummmary))
 
     ' Dim sPage As String = Await App.HttpPageAsync("/cygan-info.asp?" & sParams, "file data")

@@ -126,6 +126,12 @@
     <Compile Include="Mp3Add.xaml.vb">
       <DependentUpon>Mp3Add.xaml</DependentUpon>
     </Compile>
+    <Compile Include="SearchBooks.xaml.vb">
+      <DependentUpon>SearchBooks.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SearchPlyty.xaml.vb">
+      <DependentUpon>SearchPlyty.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SetupAudio.xaml.vb">
       <DependentUpon>SetupAudio.xaml</DependentUpon>
     </Compile>
@@ -206,6 +212,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Mp3Add.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SearchBooks.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SearchPlyty.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

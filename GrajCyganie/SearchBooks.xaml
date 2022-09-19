@@ -81,4 +81,9 @@
             </ListView.ItemTemplate>
         </ListView>
     </Grid>
+    <Page.BottomAppBar>
+        <CommandBar ClosedDisplayMode="Minimal">
+            <AppBarButton Icon="List" Label="Files to Clip" Click="uiExport_Click" />
+        </CommandBar>
+    </Page.BottomAppBar>
 </Page>

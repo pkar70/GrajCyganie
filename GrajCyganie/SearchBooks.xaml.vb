@@ -1,4 +1,6 @@
 ﻿Imports Vblib.Extensions
+Imports vb14 = Vblib.pkarlibmodule14
+
 
 Public NotInheritable Class SearchBooks
     Inherits Page
@@ -24,7 +26,16 @@ Public NotInheritable Class SearchBooks
 
     End Sub
 
+    Private Sub uiExport_Click(sender As Object, e As RoutedEventArgs)
+        If mLista Is Nothing Then Return
 
+        Dim sText As String = ""
+        For Each oItem As Vblib.oneStoreFile In mLista
+            sText = sText & vbCrLf & oItem.path & "\" & oItem.name
+        Next
+
+        vb14.ClipPut(sText)
+    End Sub
 End Class
 
 Public Class KonwersjaPath

@@ -36,6 +36,14 @@ Public NotInheritable Class SearchBooks
 
         vb14.ClipPut(sText)
     End Sub
+
+    Private Sub uiLubimyCzytac_Click(sender As Object, e As RoutedEventArgs)
+        Dim oItem As Vblib.oneStoreFile = TryCast(sender, FrameworkElement).DataContext
+        If oItem Is Nothing Then Return
+
+        Dim oUri As New Uri("https://lubimyczytac.pl/szukaj/ksiazki?phrase=" & oItem.name.Replace(" ", "%20"))
+        oUri.OpenBrowser()
+    End Sub
 End Class
 
 Public Class KonwersjaPath

@@ -59,6 +59,11 @@
                         <TextBlock Grid.Column="1" Text="Date" FontWeight="Bold" HorizontalAlignment="Center" />
                         <TextBlock Grid.Column="2" Text="Len" FontWeight="Bold" HorizontalAlignment="Center" Margin="5,0,5,0"/>
                         <TextBlock Grid.Column="3" Text="path" FontWeight="Bold" HorizontalAlignment="Center" />
+                        <Grid.ContextFlyout>
+                            <MenuFlyout>
+                                <MenuFlyoutItem Text="LubimyCzytac" Click="uiLubimyCzytac_Click" />
+                            </MenuFlyout>
+                        </Grid.ContextFlyout>
                     </Grid>
                 </DataTemplate>
             </ListView.HeaderTemplate>

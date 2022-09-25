@@ -843,8 +843,16 @@ Public NotInheritable Class MainPage
         Dim sNameDocelowe As String = oTBlock.Name.Replace("Switch", "")    ' name tego gdzie mamy trafić
         Dim sNameProperty As String = sNameDocelowe.Replace("ui", "").ToLowerInvariant  ' artist, title, album, comment
 
-        ' weź poprawną daną
-        Dim sCoMaByc As String = oSkad.GetType.GetProperty(sNameProperty).GetValue(oSkad).ToString
+        Dim sCoMaByc As String = ""
+        Try
+            ' weź poprawną daną
+            Dim oObj As Object = oSkad.GetType.GetProperty(sNameProperty).GetValue(oSkad)
+            If oObj IsNot Nothing Then
+                sCoMaByc = CStr(oObj)
+            End If
+        Catch ex As Exception
+            vb14.DialogBox("Error getting value via Reflection")
+        End Try
 
         Dim oDocelowy As TextBox = uiGrid.FindName(sNameDocelowe)
         If oDocelowy IsNot Nothing Then oDocelowy.Text = sCoMaByc

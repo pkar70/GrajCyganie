@@ -32,6 +32,7 @@ Public Module Storage
         vb14.DumpCurrMethod()
 
         Dim sPath As String = oStoreFile.path
+        If oStoreFile.name <> "" Then sPath = IO.Path.Combine(sPath, oStoreFile.name)   ' wersja z cygan-info ma tylko path (i poza tym puste wszystkie pola), wersja api-info ma rozdzielone path i name
         If sPath.ToLower.StartsWith("u:") Then sPath = sPath.Substring(3)     ' u:\...
         ' teraz sPath zaczyna sie od pkar badz od public
 
@@ -80,7 +81,9 @@ Public Module Storage
         End If
 
         ' a potem się poddajemy
-        Await vb14.DialogBoxAsync("Ale sorry, nie mogę znaleźć pliku")
+        If Await vb14.DialogBoxYNAsync("Ale sorry, nie mogę znaleźć pliku, path do clip?") Then
+            vb14.ClipPut(sPath)
+        End If
         Return Nothing
 
 

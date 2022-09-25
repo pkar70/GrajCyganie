@@ -92,6 +92,58 @@ Partial Public MustInherit Class dbase_baseASP
 
     End Sub
 
+#If True Then
+    Public Overrides Async Function GetNextSongAsync(iNextMode As eNextMode, oGrany As tGranyUtwor) As Task(Of tGranyUtwor)
+        DumpCurrMethod("miNextMode=" & iNextMode)
+
+        Try
+            Dim iCurrId As Integer = 0
+            Dim sParams As String = ""
+
+            If oGrany IsNot Nothing Then iCurrId = oGrany.oAudioParam.id
+            Select Case iNextMode
+                Case eNextMode.random
+                    iCurrId = GetSettingsInt("maxSoundId")
+                    If iCurrId = 0 Then Return Nothing
+                    iCurrId = App.MakeRandom(iCurrId)
+                    ' random
+                    sParams = "id=" & iCurrId & "&mode=random"
+                Case eNextMode.sameArtist
+                    sParams = "id=" & iCurrId & "&mode=artist"
+                Case eNextMode.sameTitle
+                    sParams = "id=" & iCurrId & "&mode=title"
+                Case eNextMode.sameAlbum
+                    sParams = "id=" & iCurrId & "&mode=album"
+                Case eNextMode.sameRok
+                    sParams = "id=" & iCurrId & "&mode=rok"
+                Case eNextMode.sameDekada
+                    sParams = "id=" & iCurrId & "&mode=dekada"
+            End Select
+
+            ' dane o nastepnym HttpPage -> App.mtGranyUtwor
+            Dim sPage As String = Await ThisHttpPageAsync("/api-info.asp?" & sParams, "file data")
+            If sPage = "" Then
+                Await DialogBoxAsync("ERROR get cygan-info empty, " & sParams)
+                Return Nothing
+            End If
+
+            If sPage.StartsWith("[") Then sPage = sPage.Substring(1)
+            If sPage.EndsWith("]") Then sPage = sPage.Substring(0, sPage.Length - 1)
+            Dim oRet As New tGranyUtwor
+            oRet.oAudioParam = Newtonsoft.Json.JsonConvert.DeserializeObject(sPage, GetType(oneAudioParam))
+            oRet.oStoreFile = Newtonsoft.Json.JsonConvert.DeserializeObject(sPage, GetType(oneStoreFile))
+
+            Return oRet
+
+        Catch ex As Exception
+            CrashMessageAdd("@GetNextSong", ex)
+            DialogBox("FAIL: " & ex.Message)
+        End Try
+
+        Await DialogBoxAsync("exception caught")
+        Return Nothing
+    End Function
+#Else
     Public Overrides Async Function GetNextSongAsync(iNextMode As eNextMode, oGrany As tGranyUtwor) As Task(Of tGranyUtwor)
         DumpCurrMethod("miNextMode=" & iNextMode)
 
@@ -135,7 +187,7 @@ Partial Public MustInherit Class dbase_baseASP
             If aArr(0).Trim <> "OK" Then
                 ' moze wygasła sesja, to powtarzamy
                 Await LoginAsync(True)
-                sPage = Await ThisHttpPageAsync("/*-info.asp?" & sParams, "file data")
+                sPage = Await ThisHttpPageAsync("/cygan-info.asp?" & sParams, "file data")
                 If sPage = "" Then
                     Await DialogBoxAsync("ERROR retry get cygan-info empty")
                     Return Nothing
@@ -165,6 +217,7 @@ Partial Public MustInherit Class dbase_baseASP
         Await DialogBoxAsync("exception caught")
         Return Nothing
     End Function
+#End If
 
     Private Async Function ExtractCyganInfo(aArr As String()) As Task(Of tGranyUtwor)
         DumpCurrMethod()
@@ -306,7 +359,7 @@ Partial Public MustInherit Class dbase_baseASP
         sRok = ConvertQueryParam(sRok)
 
         Dim sLinkQuery As String = $"artist={sArtist}&title={sTitle}&album={sAlbum}&rok={sRok}"
-        'sLinkQuery = sLinkQuery.Replace("%", "%25")
+        sLinkQuery = sLinkQuery.Replace("%", "%25")
 
         Dim sPage As String = Await ThisHttpPageAsync("/api-search.asp?" & sLinkQuery, "file data")
         If sPage = "" Then Return Nothing

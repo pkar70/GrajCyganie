@@ -92,7 +92,7 @@ Public NotInheritable Class MainPage
         WypelnPoleZapetlacza(uiTitle_Radio, oGranyUtwor.countTitle)
 
         If Not String.IsNullOrWhiteSpace(oGranyUtwor.oAudioParam.track) Then
-            uiAlbum.Text = oGranyUtwor.oAudioParam.track & " z: " & oGranyUtwor.oAudioParam.album
+            uiAlbum.Text = oGranyUtwor.oAudioParam.track.Trim & " z: " & oGranyUtwor.oAudioParam.album.Trim
         Else
             uiAlbum.Text = oGranyUtwor.oAudioParam.album
         End If

@@ -207,7 +207,6 @@ Comment: {oItem.comment}
 
     Private Sub uiSortTitle_Tap(sender As Object, e As TappedRoutedEventArgs)
         If mLista Is Nothing Then Return
-        If mLista Is Nothing Then Return
         meSortMode = eSortMode.ByTitle
         PokazListe(mLista)
     End Sub

@@ -43,11 +43,13 @@ Public Module Storage
 
         sPath = sPath.Replace("/", IO.Path.DirectorySeparatorChar)
 
+        Dim bNoPaths As Boolean = True
         Dim sPath1 As String = ""
         Dim oFile As Windows.Storage.StorageFile
 
         ' najpierw plik lokalnie jak jest
         If vb14.GetSettingsString("uiLocalPath") <> "" Then
+            bNoPaths = False
             ' moje L:\, bez podziału na priv/public
             If sPath.ToLower.StartsWith("pkar") Then sPath1 = sPath.Substring(5)
             If sPath.ToLower.StartsWith("public") Then sPath1 = sPath.Substring(7)
@@ -68,6 +70,7 @@ Public Module Storage
 
         ' potem wedle pliku z lokalnego cache OneDrive - ale tylko wtedy gdy jest sieć, inaczej nie ma sensu :)
         If vb14.GetSettingsString("uiLocalODPath") <> "" Then
+            bNoPaths = False
             sPath1 = vb14.GetSettingsString("uiLocalODPath") & sPath
             oFile = Await GetFileFromPathAsync(sPath1)
             If oFile IsNot Nothing Then Return oFile
@@ -75,9 +78,15 @@ Public Module Storage
 
         ' drugi OneDrive - 2022.09.08
         If vb14.GetSettingsString("uiLocalODPath2") <> "" Then
+            bNoPaths = False
             sPath1 = vb14.GetSettingsString("uiLocalODPath2") & sPath
             oFile = Await GetFileFromPathAsync(sPath1)
             If oFile IsNot Nothing Then Return oFile
+        End If
+
+        If bNoPaths Then
+            Await vb14.DialogBoxAsync("Nie zdefiniowałeś żadnej ścieżki, więc nie mam skąd czerpać plików")
+            Return Nothing
         End If
 
         ' a potem się poddajemy

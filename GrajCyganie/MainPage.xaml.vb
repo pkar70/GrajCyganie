@@ -380,6 +380,8 @@ Public NotInheritable Class MainPage
             ' skoro nie losowo, to slidery dekadowe są ignorowane
             If iNextMode <> Vblib.eNextMode.random Then Return oNextSong
 
+            If Not vb14.GetSettingsBool("uiUseDekady") Then Return oNextSong
+
             If Vblib.App._dekady.CanPlay(oNextSong.oAudioParam.dekada) Then Return oNextSong
 
             ' jeszcze nie

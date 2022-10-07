@@ -27,6 +27,7 @@ Public NotInheritable Class Dekady
 
     Private Sub Page_Loaded(sender As Object, e As RoutedEventArgs)
         ShowStat()
+        uiUseDekady.GetSettingsBool()
     End Sub
 
     Private Async Sub uiRefresh_Click(sender As Object, e As RoutedEventArgs)
@@ -37,6 +38,7 @@ Public NotInheritable Class Dekady
 
     Private Sub uiSave_Click(sender As Object, e As RoutedEventArgs)
         Vblib.App._dekady.Save()
+        uiUseDekady.SetSettingsBool()
     End Sub
 
     'Private Sub uiFreqSlider_ValueChanged(sender As Object, e As RangeBaseValueChangedEventArgs) Handles uiFreqSlider.ValueChanged

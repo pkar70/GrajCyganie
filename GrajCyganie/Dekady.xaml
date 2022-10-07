@@ -24,7 +24,7 @@
         
         <TextBlock HorizontalAlignment="Center" Text="Statystyka indeksu" FontSize="18" />
 
-        <ToggleSwitch Name="uiUseDekady" OnContent="use dekady" OffContent="play all files" Grid.Row="2" Margin="0,10,0,10" />
+        <ToggleSwitch Name="uiUseDekady" OnContent="use dekady" OffContent="play all files" Grid.Row="1" Margin="0,10,0,10" />
 
         <ScrollViewer Grid.Row="2" HorizontalAlignment="Center" Visibility="Collapsed" x:Name="uiScroll2Row">
             <ListView x:Name="uiListItems2Row"  >
